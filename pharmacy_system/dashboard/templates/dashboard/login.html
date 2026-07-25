@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+
+<title>
+تسجيل الدخول - نظام إدارة الصيدلية
+</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+*{
+    box-sizing:border-box;
+ }
+  body
+  {
+    margin:0;
+    height:100vh;
+    font-family:'Cairo',sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    background:
+    linear-gradient
+    (
+      135deg,
+      #dbeafe,
+      #ecfdf5,
+      #f0fdfa
+    );
+    position:relative;
+}    
+
+.login-card
+{
+  width:420px;
+  background:white;
+  padding:45px;
+  border-radius:25px;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  position:relative;
+  z-index:2;
+  position:relative;
+  z-index:2;
+}
+
+.logo
+{
+  width:90px;
+  height:90px;
+  margin:0 auto 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(15,118,110,.08);
+  color:#0f766e;
+  font-size:46px;
+}
+
+.title
+{
+  text-align:center;
+  color:#064e3b;
+  font-size:24px;
+  font-weight:700;
+}
+
+.subtitle
+{
+  text-align:center;
+  color:#64748b;
+  margin-bottom:35px;
+}
+
+label
+{
+  font-weight:600;
+  color:#334155;
+}
+
+input
+{
+  width:100%;
+  height:50px;
+  border-radius:12px;
+  border:1px solid #d1d5db;
+  padding:10px 15px;
+  margin-top:8px;
+  font-family:'Cairo';
+}
+
+input:focus
+{
+  outline:none;
+  border-color:#065f46;
+}
+
+button
+{
+  width:100%;
+  height:52px;
+  margin-top:25px;
+  border:none;
+  border-radius:12px;
+  background:#065f46;
+  color:white;
+  font-family:'Cairo';
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover
+{
+  background:#064e3b;
+  transform:translateY(-2px);
+}
+
+.footer
+{
+  text-align:center;
+  color:#94a3b8;
+  font-size:13px;
+  margin-top:25px;
+}
+
+.bubble
+{
+  position:absolute;
+  border-radius:50%;
+  background:rgba(16,185,129,.15);
+  z-index:0;
+}
+
+.bubble1
+{
+  width:250px;
+  height:250px;
+  top:-80px;
+  right:-60px;
+}
+
+.bubble2
+{
+  width:180px;
+  height:180px;
+  bottom:-50px;
+  left:-40px;
+  background:rgba(59,130,246,.15);
+}
+
+.bubble3
+{
+  width:100px;
+  height:100px;
+  top:30%;
+  left:10%;
+  background:rgba(16,185,129,.12);
+}
+
+.bubble4
+{
+  width:140px;
+  height:140px;
+  bottom:20%;
+  right:10%;
+  background:rgba(59,130,246,.10);
+}
+</style>
+</head>
+
+<body>
+  <div class="login-card">
+    <div class="logo">
+    <i class="bi bi-heart-pulse-fill"></i>
+    </div>
+
+    <div class="title">
+      نظام إدارة الصيدلية
+    </div>
+    
+    <div class="subtitle">
+      تسجيل الدخول إلى النظام
+    </div>
+    
+    <form method="post">
+      {% csrf_token %}
+      
+      <label>
+        اسم المستخدم
+      </label>
+      
+      <input
+      type="text"
+      name="username"
+      placeholder="أدخل اسم المستخدم"
+      required
+      >
+      
+      <br><br>
+      
+      <label>
+        كلمة المرور
+      </label>
+      
+      <input
+      type="password"
+      name="password"
+      placeholder="أدخل كلمة المرور"
+      required
+      >
+      
+      <button>
+         دخول
+        </button>
+      </form>
+      
+      <div class="footer">
+        By/Eng.Abeer AL-Mufti. © 2026
+      </div>
+    </div>
+    
+    <div class="bubble bubble1"></div>
+    <div class="bubble bubble2"></div>
+    <div class="bubble bubble3"></div>
+    <div class="bubble bubble4"></div>
+      
+  </body>
+  </html>

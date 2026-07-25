@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>
+{% block title %}
+نظام إدارة الصيدلية
+{% endblock %}
+</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+*{
+  box-sizing:border-box;
+ }
+ 
+ body
+ {
+  font-family:'Cairo',sans-serif;
+  background:
+  linear-gradient
+  (
+    135deg,
+    #dbeafe,
+    #ecfdf5,
+    #f0fdfa
+  );
+    overflow-x:hidden;
+}
+
+/* الشريط الجانبي */
+.sidebar
+{
+  width:250px;
+  height:100vh;
+  position:fixed;
+  right:0;
+  top:0;
+  background:
+  linear-gradient(
+    180deg,
+    rgba(233,250,245,.96),
+    rgba(213,244,231,.96)
+    );
+
+  backdrop-filter:blur(18px);
+  border-left:1px solid rgba(6,95,70,.12);
+  box-shadow:-12px 0 35px rgba(0,0,0,.08);
+  padding:28px 18px;
+}
+
+/* الشعار */
+.logo
+{
+  text-align:center;
+  font-size:52px;
+  color:#0f766e;
+  margin-bottom:12px;
+}
+
+.system-name
+{
+  text-align:center;
+  font-size:19px;
+  font-weight:700;
+  color:#14532d;
+  margin-top:8px;
+  line-height:1.6;
+}
+
+.menu
+{
+  margin-top:20px;
+}
+
+.menu a
+{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#14532d;
+  text-decoration:none;
+  padding:15px 18px;
+  margin-bottom:12px;
+  border-radius:16px;
+  font-size:17px;
+  font-weight:600;
+  transition:.30s;
+}
+
+.menu a:hover
+{
+  background:white;
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
+  transform:translateX(-6px);
+  color:#047857;
+}
+
+.menu a.active
+{
+  background:white;
+  color:#047857;
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
+}
+
+.logout
+{
+  position:absolute;
+  right:18px;
+  left:18px;
+  bottom:6px;
+}
+
+/* المحتوى */
+.content
+{
+  margin-right:250px;
+  padding:30px;
+  transition:.35s ease;
+}
+
+.welcome-card
+{
+  background:white;
+  border-radius:20px;
+  padding:15px 25px;
+  width:fit-content;
+  margin:auto;
+  box-shadow:0 8px 25px rgba(0,0,0,.08);
+  cursor:pointer;
+  transition:.3s;
+  border:1px solid rgba(15,118,110,.15);
+}
+
+.welcome-card:hover
+{
+    background:#0f766e;
+    color:white;
+    transform:translateY(-2px);
+}
+
+.welcome-card:hover strong
+{
+    color:white;
+}
+
+.welcome-card span
+{
+  color:#64748b;
+}
+
+.welcome-card strong
+{
+  color:#059669;
+}
+
+.card-box
+{
+  background:white;
+  border-radius:25px;
+  padding:25px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.07);
+  transition:.3s;
+}
+
+.card-box:hover
+{
+  transform:translateY(-5px);
+}
+
+.icon
+{
+  font-size:40px;
+}
+
+.number
+{
+  font-size:30px;
+  font-weight:700;
+  color:#047857;
+}
+
+.menu-btn
+{
+  background:rgba(255,255,255,.65);
+  backdrop-filter:blur(10px);
+  color:#047857;
+  border:1px solid rgba(6,95,70,.15);
+  width:45px;
+  height:45px;
+  border-radius:14px;
+  font-size:22px;
+  cursor:pointer;
+  margin-bottom:20px;
+  transition:.3s;
+  box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.menu-btn:hover
+{
+  background:#d1fae5;
+  transform:scale(1.08);
+}
+
+/* حالة إخفاء الشريط */
+.sidebar.hide
+{
+  transform:translateX(100%);
+}
+
+.content.expand
+{
+  margin-right:0;
+}
+
+.bubble
+{
+  position:fixed;
+  border-radius:50%;
+  z-index:-1;
+}
+
+.bubble1
+{
+  width:300px;
+  height:300px;
+  top:-100px;
+  right:-80px;
+  background:rgba(16,185,129,.15);
+}
+
+.bubble2
+{
+  width:220px;
+  height:220px;
+  bottom:-80px;
+  left:-60px;
+  background:rgba(59,130,246,.12);
+}
+
+.bubble3
+{
+  width:120px;
+  height:120px;
+  top:35%;
+  left:15%;
+  background:rgba(16,185,129,.10);
+}
+
+.bubble4
+{
+  width:160px;
+  height:160px;
+  bottom:20%;
+  right:15%;
+  background:rgba(59,130,246,.10);
+}
+
+.about-btn
+{
+  background:white;
+  color:#0f766e;
+  border:1px solid rgba(15,118,110,.15);
+  border-radius:15px;
+  padding:12px 22px;
+  font-weight:600;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  transition:.3s;
+}
+
+.about-btn:hover
+{
+  background:#0f766e;
+  color:white;
+  transform:translateY(-2px);
+}
+
+.top-bar
+{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:18px;
+  margin-bottom:40px;
+}
+
+</style>
+
+</head>
+
+<body>
+  <div class="sidebar">
+    <div> 
+    <div class="logo">
+      <i class="bi bi-heart-pulse-fill"></i>
+    </div>
+    
+    <div class="system-name">
+      صيدلية الحياة  
+    </div>
+    
+    <small style="display:block;text-align:center;opacity:.7;">
+      Life Pharmacy 
+    </small>
+    
+    <hr style=
+    "border:none;
+    height:1px;
+    background:rgba(6,95,70,.12);
+    margin:20px 0 25px;">
+    
+    <div class="menu">
+      <a href="/" class="active">
+        <span><i class="bi bi-house-door"></i> الرئيسية</span>
+      </a>
+      
+      <a href="#">
+        <span><i class="bi bi-capsule-pill"></i> الأدوية</span>
+      </a>
+
+      <a href="#">
+        <span><i class="bi bi-truck"></i> الموردون</span>
+      </a>
+      
+      <a href="#">
+        <span><i class="bi bi-people"></i> العملاء</span>
+      </a>
+      
+      <a href="#">
+        <span><i class="bi bi-cart-check"></i> المبيعات</span>
+      </a>
+      
+      <a href="#">
+        <span><i class="bi bi-box-seam"></i> المشتريات</span>
+      </a>
+      
+      <a href="#">
+        <span><i class="bi bi-bar-chart"></i> التقارير</span>
+      </a>
+  </div>
+    </div>
+  
+  <div class="logout">
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      
+      <button class="btn btn-success w-100 rounded-4 py-2">
+        <i class="bi bi-box-arrow-right"></i>
+        تسجيل الخروج     
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="content">
+  <button class="menu-btn" onclick="toggleSidebar()">
+    <i class="bi bi-list"></i>
+  </button>
+
+  <div style="display:flex;justify-content:center;align-items:center;gap:15px;margin-bottom:30px;">
+
+    <div class="top-bar">
+      
+      <div class="welcome-card"
+      data-bs-toggle="modal"
+      data-bs-target="#developerModal"
+      style="cursor:pointer;">
+      
+      <i class="bi bi-person-circle"></i>
+      مرحباً
+      
+      <strong>{{ request.user.username }}</strong>
+    </div>
+    
+    
+    <button class="btn about-btn"
+    data-bs-toggle="modal"
+    data-bs-target="#aboutModal">
+    
+    <i class="bi bi-person-circle"></i>
+    حول النظام
+  </button>
+</div>
+</div>
+
+{% block content %}
+{% endblock %}
+</div>
+
+<script>
+function toggleSidebar()
+{
+  document.querySelector('.sidebar')
+  .classList.toggle('hide');
+  
+  document.querySelector('.content')
+  .classList.toggle('expand');
+}
+</script>
+
+<div class="bubble bubble1"></div>
+<div class="bubble bubble2"></div>
+<div class="bubble bubble3"></div>
+<div class="bubble bubble4"></div>
+
+<div class="modal fade" id="aboutModal" tabindex="-1">
+
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content rounded-4 border-0 shadow-lg">
+
+<div class="modal-header border-0">
+
+<h4 class="modal-title fw-bold text-success">
+
+<i class="bi bi-heart-pulse-fill"></i>
+
+نظام إدارة الصيدلية
+
+</h4>
+
+<button type="button"
+class="btn-close"
+data-bs-dismiss="modal">
+</button>
+</div>
+
+<div class="modal-body">
+
+<div class="text-center mb-4">
+
+<div style="font-size:60px;color:#0f766e;">
+  <i class="bi bi-heart-pulse-fill"></i>
+</div>
+
+<h5 class="fw-bold mt-3">
+Version 1.0
+</h5>
+</div>
+
+<p style="line-height:2;text-align:justify;">
+
+تم تطوير هذا النظام لتسهيل إدارة العمليات اليومية داخل الصيدلية بطريقة حديثة وآمنة، حيث يوفر واجهة سهلة الاستخدام لإدارة الأدوية والعملاء والموردين والمبيعات والمشتريات والتقارير.
+</p>
+
+<hr>
+
+<h6 class="fw-bold text-success">
+  الوظائف الرئيسية
+</h6>
+
+<ul>
+  <li>إدارة الأدوية.</li>
+  <li>إدارة الموردين.</li>
+  <li>إدارة العملاء.</li>
+  <li>إدارة المبيعات.</li>
+  <li>إدارة المشتريات.</li>
+  <li>التقارير والإحصائيات.</li>
+</ul>
+
+<hr>
+
+<h6 class="fw-bold text-success">
+  التقنيات المستخدمة
+</h6>
+
+<ul>
+  <li>Python</li>
+  <li>Django Framework</li>
+  <li>Bootstrap 5</li>
+  <li>SQLite Database</li>
+</ul>
+
+<div class="text-center mt-4 text-muted">
+  Version 1.0
+
+<br>
+
+© 2026 Pharmacy Management System
+</div>
+</div>
+
+<div class="modal-footer border-0 justify-content-center">
+  <button class="btn btn-success px-4"
+  data-bs-dismiss="modal">
+  إغلاق
+  </button>
+</div>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- نافذة عن المطور -->
+
+<div class="modal fade" id="developerModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow-lg">
+      <div class="modal-header border-0">
+        
+        <h4 class="modal-title fw-bold text-success">
+          <i class="bi bi-person-circle"></i>
+          عن المطور
+        </h4>
+        
+        <button type="button"
+        class="btn-close"
+        data-bs-dismiss="modal">
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <div style="font-size:70px;color:#0f766e;">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          
+          <h4 class="fw-bold mt-3">
+            Abeer Al-Mufti
+          </h4>
+          
+          <p class="text-muted">
+            Software Developer
+          </p>
+        </div>
+        
+        <p style="line-height:2;text-align:justify;">
+أنا مطور برمجيات مهتم بتطوير تطبيقات الويب باستخدام
+Python و Django، وأسعى إلى تصميم أنظمة حديثة تتميز
+بواجهة استخدام جميلة وسهلة، مع التركيز على الأداء
+والدقة في إدارة البيانات.
+</p>
+
+<hr>
+<h6 class="fw-bold text-success">
+  المهارات
+</h6>
+
+<ul>
+  <li>Python</li>
+  <li>Django Framework</li>
+  <li>HTML5 & CSS3</li>
+  <li>Bootstrap 5</li>
+  <li>SQLite Database</li>
+</ul>
+
+<hr>
+
+<h6 class="fw-bold text-success">
+  نبذة
+</h6>
+
+<p style="line-height:2;text-align:justify;">
+
+تم تطوير هذا النظام كمشروع لإدارة الصيدليات بهدف
+توفير بيئة عمل سهلة وحديثة تساعد على تنظيم الأدوية
+والمبيعات والعملاء والموردين بطريقة احترافية.
+</p>
+
+<div class="text-center mt-4 text-muted">
+  Developed by
+
+<br>
+
+<strong>Abeer Al-Mufti</strong>
+
+<br>
+
+© 2026
+
+</div>
+</div>
+
+<div class="modal-footer border-0 justify-content-center">
+  <button class="btn btn-success px-4"
+  data-bs-dismiss="modal">
+  إغلاق
+  </button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- نافذة عن المطور -->
+ <div class="modal fade" id="developerModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow-lg">
+      <div class="modal-header border-0">
+        
+        <h4 class="modal-title fw-bold text-success">
+          
+          <i class="bi bi-person-circle"></i>
+          عن المطور
+        </h4>
+        
+        <button type="button"
+        class="btn-close"
+        data-bs-dismiss="modal">
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <div style="font-size:70px;color:#0f766e;">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          
+          <h4 class="fw-bold mt-3">
+            Abeer Al-Mufti
+          </h4>
+          
+          <p class="text-muted">
+            Software Developer
+          </p>
+        </div>
+        
+        <p style="line-height:2;text-align:justify;">
+          أنا مطور برمجيات مهتم بتطوير تطبيقات الويب باستخدام
+          Python و Django، وأسعى إلى تصميم أنظمة حديثة تتميز
+          بواجهة استخدام جميلة وسهلة، مع التركيز على الأداء
+          والدقة في إدارة البيانات.
+        </p>
+        
+        <hr>
+        
+        <h6 class="fw-bold text-success">
+          المهارات
+        </h6>
+        
+        <ul>
+          <li>Python</li>
+          <li>Django Framework</li>
+          <li>HTML5 & CSS3 & JS</li>
+          <li>Bootstrap 5</li>
+          <li>SQLite Database</li>
+        </ul>
+        
+        <hr>
+        
+        <h6 class="fw-bold text-success">
+          نبذة
+        </h6>
+        
+        <p style="line-height:2;text-align:justify;">
+          تم تطوير هذا النظام كمشروع لإدارة الصيدليات بهدف
+          توفير بيئة عمل سهلة وحديثة تساعد على تنظيم الأدوية
+          والمبيعات والعملاء والموردين بطريقة احترافية.
+        </p>
+        
+        <div class="text-center mt-4 text-muted">
+          Developed by
+          <br>
+          
+          <strong>Abeer Al-Mufti</strong>
+          <br>
+          © 2026
+        </div>
+      </div>
+      
+      <div class="modal-footer border-0 justify-content-center">
+        
+        <button class="btn btn-success px-4"
+        data-bs-dismiss="modal">
+        إغلاق
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
