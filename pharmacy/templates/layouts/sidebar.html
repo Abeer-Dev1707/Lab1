@@ -1,0 +1,107 @@
+{% load static %}
+
+<aside class="sidebar" id="sidebar">
+
+    <!-- Logo -->
+    <div class="sidebar-header">
+
+        <img
+            src="{% static 'images/logo/logo.png' %}"
+            class="sidebar-logo"
+            alt="صيدلية الحياة">
+
+        <h3>إدارة الصيدلية</h3>
+        
+        {% if user.is_authenticated %}
+        
+        <p class="text-center text-white mt-2 mb-0">
+          مرحباً {{ user.username }}
+        </p>
+        {% endif %}
+
+    </div>
+
+    <!-- Menu -->
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="{% url 'dashboard' %}" class="active">
+                <span>الرئيسية</span>
+                <i class="fa-solid fa-house"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'medicine_list' %}">
+                <span>الأدوية</span>
+                <i class="fa-solid fa-capsules"></i>
+            </a>
+        </li>
+
+        <li>
+          <a href="{% url 'category_list' %}">
+            <span>الفئات</span>
+            <i class="fa-solid fa-layer-group"></i>
+          </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <span>المبيعات</span>
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <span>المشتريات</span>
+                <i class="fa-solid fa-bag-shopping"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <span>العملاء</span>
+                <i class="fa-solid fa-users"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <span>الموردين</span>
+                <i class="fa-solid fa-truck"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <span>التقارير</span>
+                <i class="fa-solid fa-chart-column"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <span>الإعدادات</span>
+                <i class="fa-solid fa-gear"></i>
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- Logout -->
+
+    <div class="sidebar-footer">
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+
+            <span>تسجيل خروج</span>
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+        </a>
+
+    </div>
+
+</aside>

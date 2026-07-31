@@ -1,0 +1,71 @@
+/* ==========================================================
+   Al Hayat Pharmacy Management System
+   Design System v1.0
+   ========================================================== */
+
+:root{
+
+    /* ========= Primary Colors ========= */
+
+    --primary-color:#0F766E;
+    --primary-light:#14B8A6;
+    --primary-dark:#115E59;
+
+    /* ========= Secondary ========= */
+
+    --secondary-color:#2563EB;
+    --secondary-light:#60A5FA;
+
+    /* ========= Status Colors ========= */
+
+    --success:#22C55E;
+    --warning:#F59E0B;
+    --danger:#EF4444;
+    --info:#06B6D4;
+
+    /* ========= Background ========= */
+
+    --background:#F8FAFC;
+    --surface:#FFFFFF;
+
+    /* ========= Text ========= */
+
+    --text-primary:#1E293B;
+    --text-secondary:#64748B;
+    --text-light:#94A3B8;
+
+    /* ========= Borders ========= */
+
+    --border:#E2E8F0;
+
+    /* ========= Shadows ========= */
+
+    --shadow-sm:0 2px 8px rgba(15,118,110,.08);
+
+    --shadow-md:0 8px 25px rgba(15,118,110,.12);
+
+    --shadow-lg:0 20px 45px rgba(15,118,110,.18);
+
+    /* ========= Radius ========= */
+
+    --radius-sm:8px;
+
+    --radius-md:14px;
+
+    --radius-lg:22px;
+
+    --radius-xl:30px;
+
+    /* ========= Transition ========= */
+
+    --transition:.35s ease;
+
+    /* ========= Sidebar ========= */
+
+    --sidebar-width:270px;
+
+    /* ========= Navbar ========= */
+
+    --navbar-height:75px;
+
+}

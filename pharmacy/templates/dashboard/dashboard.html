@@ -1,0 +1,804 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static %}
+
+{% block title %}
+لوحة التحكم | صيدلية الحياة
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="container-fluid">
+
+    <!-- Welcome Banner -->
+
+    <div class="welcome-card mb-5">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-8">
+
+                <span class="welcome-badge">
+                    نظام إدارة الصيدلية
+                </span>
+
+                <h2>
+                    أهلاً بك في
+                    <span>صيدلية الحياة</span>
+                </h2>
+
+                <p>
+                    يمكنك إدارة الأدوية والعملاء والموردين
+                    والمبيعات والمخزون بكل سهولة من لوحة التحكم.
+                </p>
+
+                <div class="welcome-buttons">
+
+                    <button class="btn btn-success">
+                        إضافة دواء
+                    </button>
+
+                    <button class="btn btn-outline-light">
+                        عرض التقارير
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 text-center">
+
+                <div class="welcome-icon">
+
+                    <img src="{% static 'images/logo/5.png' %}"
+                         alt="Pharmacy">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row g-4">
+
+              <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <div>
+
+                        <span class="stat-title">
+                            إجمالي الأدوية
+                        </span>
+
+                        <h2>{{ 125|add:"0" }}</h2>
+
+                        <div class="stat-info">
+
+                            <span class="positive">
+                                ↑ +12
+                            </span>
+
+                            <small>هذا الشهر</small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-image">
+
+                        <img src="{% static 'images/logo/5.png' %}"
+                             alt="Medicine">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+                <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <div>
+
+                        <span class="stat-title">
+                            العملاء
+                        </span>
+
+                        <h2>{{ 58|stringformat:"d" }}</h2>
+
+                        <div class="stat-info">
+
+                            <span class="positive">
+                                ↑ +8
+                            </span>
+
+                            <small>هذا الشهر</small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-image">
+
+                        <img src="{% static 'images/logo/4.png' %}"
+                             alt="Customers">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+                <!-- البطاقة الثالثة -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <div>
+
+                        <span class="stat-title">
+                            الموردون
+                        </span>
+
+                        <h2>17</h2>
+
+                        <div class="stat-info">
+
+                            <span class="negative">
+                                ↓ -2
+                            </span>
+
+                            <small>هذا الأسبوع</small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-image">
+
+                        <img src="{% static 'images/logo/3.png' %}"
+                             alt="Supplier">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- البطاقة الرابعة -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <div>
+
+                        <span class="stat-title">
+                            إجمالي المبيعات
+                        </span>
+
+                        <h2>326</h2>
+
+                        <div class="stat-info">
+
+                            <span class="positive">
+                                ↑ +21
+                            </span>
+
+                            <small>هذا الأسبوع</small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-image">
+
+                        <img src="{% static 'images/logo/2.png' %}"
+                             alt="Sales">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Charts & Stock -->
+
+    <div class="row mt-5 g-4">
+
+        <!-- Sales Chart -->
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-box">
+
+                <div class="box-header">
+
+                    <div>
+
+                        <h4>
+                            إحصائيات المبيعات
+                        </h4>
+
+                        <small>
+                            مقارنة المبيعات خلال آخر 6 أشهر
+                        </small>
+
+                    </div>
+
+                    <button class="btn btn-light btn-sm">
+
+                        هذا العام
+
+                    </button>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="salesChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Low Stock -->
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-box">
+
+                <div class="box-header">
+
+                    <h4>
+
+                        تنبيه المخزون
+
+                    </h4>
+
+                </div>
+
+                <div class="stock-items">
+
+                  <!-- العنصر الأول -->
+
+<div class="stock-row">
+
+    <div>
+
+        <strong>Paracetamol</strong>
+
+        <small>باقي 5 علب</small>
+
+    </div>
+
+    <div class="stock-progress">
+
+        <div class="progress">
+
+            <div class="progress-bar bg-danger"
+                 style="width:20%">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- العنصر الثاني -->
+
+<div class="stock-row">
+
+    <div>
+
+        <strong>Vitamin C</strong>
+
+        <small>باقي 3 علب</small>
+
+    </div>
+
+    <div class="stock-progress">
+
+        <div class="progress">
+
+            <div class="progress-bar bg-danger"
+                 style="width:12%">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- العنصر الثالث -->
+
+<div class="stock-row">
+
+    <div>
+
+        <strong>Ibuprofen</strong>
+
+        <small>باقي 9 علب</small>
+
+    </div>
+
+    <div class="stock-progress">
+
+        <div class="progress">
+
+            <div class="progress-bar bg-warning"
+                 style="width:38%">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- العنصر الرابع -->
+
+<div class="stock-row">
+
+    <div>
+
+        <strong>Omeprazole</strong>
+
+        <small>باقي 2 علبة</small>
+
+    </div>
+
+    <div class="stock-progress">
+
+        <div class="progress">
+
+            <div class="progress-bar bg-danger"
+                 style="width:8%">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- العنصر الخامس -->
+
+<div class="stock-row">
+
+    <div>
+
+        <strong>Amoxicillin</strong>
+
+        <small>باقي 8 علب</small>
+
+    </div>
+
+    <div class="stock-progress">
+
+        <div class="progress">
+
+            <div class="progress-bar bg-warning"
+                 style="width:32%">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- آخر المبيعات -->
+
+<div class="row mt-5">
+
+    <div class="col-12">
+
+        <div class="dashboard-box">
+
+            <div class="box-header">
+
+                <div>
+
+                    <h4>
+                        آخر المبيعات
+                    </h4>
+
+                    <small>
+                        آخر العمليات التي تمت داخل النظام
+                    </small>
+
+                </div>
+
+                <button class="btn btn-success btn-sm">
+
+                    عرض جميع المبيعات
+
+                </button>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table sales-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>رقم الفاتورة</th>
+
+                            <th>العميل</th>
+
+                            <th>التاريخ</th>
+
+                            <th>المبلغ</th>
+
+                            <th>الحالة</th>
+
+                            <th>الإجراء</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                      <tr>
+
+    <td>1</td>
+
+    <td><strong>INV-1001</strong></td>
+
+    <td>أحمد محمد</td>
+
+    <td>29/07/2026</td>
+
+    <td>4,500 ريال</td>
+
+    <td>
+
+        <span class="status-badge bg-success">
+
+            مكتملة
+
+        </span>
+
+    </td>
+
+    <td>
+
+        <button class="btn btn-light btn-sm">
+
+            عرض
+
+        </button>
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <td>2</td>
+
+    <td><strong>INV-1002</strong></td>
+
+    <td>محمد علي</td>
+
+    <td>29/07/2026</td>
+
+    <td>2,700 ريال</td>
+
+    <td>
+
+        <span class="status-badge bg-warning text-dark">
+
+            قيد التنفيذ
+
+        </span>
+
+    </td>
+
+    <td>
+
+        <button class="btn btn-light btn-sm">
+
+            عرض
+
+        </button>
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <td>3</td>
+
+    <td><strong>INV-1003</strong></td>
+
+    <td>سارة حسن</td>
+
+    <td>28/07/2026</td>
+
+    <td>1,950 ريال</td>
+
+    <td>
+
+        <span class="status-badge bg-success">
+
+            مكتملة
+
+        </span>
+
+    </td>
+
+    <td>
+
+        <button class="btn btn-light btn-sm">
+
+            عرض
+
+        </button>
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <td>4</td>
+
+    <td><strong>INV-1004</strong></td>
+
+    <td>خالد عبدالله</td>
+
+    <td>28/07/2026</td>
+
+    <td>6,250 ريال</td>
+
+    <td>
+
+        <span class="status-badge bg-danger">
+
+            ملغاة
+
+        </span>
+
+    </td>
+
+    <td>
+
+        <button class="btn btn-light btn-sm">
+
+            عرض
+
+        </button>
+
+    </td>
+
+</tr>
+
+<tr>
+
+    <td>5</td>
+
+    <td><strong>INV-1005</strong></td>
+
+    <td>عبدالله صالح</td>
+
+    <td>27/07/2026</td>
+
+    <td>3,800 ريال</td>
+
+    <td>
+
+        <span class="status-badge bg-success">
+
+            مكتملة
+
+        </span>
+
+    </td>
+
+    <td>
+
+        <button class="btn btn-light btn-sm">
+
+            عرض
+
+        </button>
+
+    </td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+const ctx = document.getElementById("salesChart");
+
+new Chart(ctx, {
+
+    type: "line",
+
+    data: {
+
+        labels: [
+
+            "يناير",
+
+            "فبراير",
+
+            "مارس",
+
+            "أبريل",
+
+            "مايو",
+
+            "يونيو",
+
+            "يوليو"
+
+        ],
+
+        datasets: [
+
+            {
+
+                label: "المبيعات",
+
+                data: [
+
+                    12,
+
+                    18,
+
+                    15,
+
+                    25,
+
+                    21,
+
+                    30,
+
+                    38
+
+                ],
+
+                borderColor:"#10b981",
+
+                backgroundColor:"rgba(16,185,129,.15)",
+
+                fill:true,
+
+                tension:.45,
+
+                borderWidth:4,
+
+                pointRadius:5,
+
+                pointHoverRadius:8,
+
+                pointBackgroundColor:"#10b981"
+
+            }
+
+        ]
+
+    },
+
+    options:{
+
+        responsive:true,
+
+        maintainAspectRatio:false,
+
+        plugins:{
+
+            legend:{
+
+                display:true,
+
+                position:"top"
+
+            }
+
+        },
+
+        interaction:{
+
+            intersect:false,
+
+            mode:"index"
+
+        },
+
+        scales:{
+
+            y:{
+
+                beginAtZero:true,
+
+                grid:{
+
+                    color:"#edf2f7"
+
+                }
+
+            },
+
+            x:{
+
+                grid:{
+
+                    display:false
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

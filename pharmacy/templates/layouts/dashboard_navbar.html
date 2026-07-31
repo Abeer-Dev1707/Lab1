@@ -1,0 +1,80 @@
+{% load static %}
+
+<nav class="dashboard-navbar">
+
+    <!-- Right -->
+    <div class="navbar-right">
+
+        <!-- Sidebar Toggle -->
+        <button id="menuToggle" class="menu-btn">
+    <span style="font-size:22px;color:white;">☰</span>
+</button>
+
+        <!-- Page Title -->
+        <div class="page-title">
+
+            <h4>لوحة التحكم</h4>
+
+            {% if user.is_authenticated %}
+            
+            <span>مرحباً {{ user.username|capfirst }}، نتمنى لك يوماً موفقاً 🌿</span>
+            {% else %}
+            
+            <span>مرحباً بك، نتمنى لك يوماً موفقاً 🌿</span>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Center -->
+    <div class="navbar-center">
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                placeholder="ابحث هنا...">
+
+        </div>
+
+    </div>
+
+    <!-- Left -->
+    <div class="navbar-left">
+
+        <!-- Messages -->
+        <button class="nav-icon">
+
+    <span style="font-size:22px;">✉</span>
+
+</button>
+
+      <!-- Notifications -->
+<button class="nav-icon">
+
+    <span style="font-size:22px;">🔔</span>
+
+    <span class="badge">3</span>
+
+</button>
+
+        <!-- User -->
+        <div class="user-menu">
+          <img src="{% static 'images/logo/1.jpg' %}" alt="Administrator">
+          
+          {% if user.is_authenticated %}
+          <span>{{ user.username }}</span>
+          {% else %}
+          
+          <span>زائر</span>
+          {% endif %}
+          
+          <i class="fa-solid fa-angle-down"></i>
+
+        </div>
+    </div>
+
+</nav>

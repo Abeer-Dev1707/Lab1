@@ -1,0 +1,47 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}
+لوحة التحكم | صيدلية الحياة
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-layout">
+
+    <!-- Sidebar -->
+    {% include "layouts/sidebar.html" %}
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+
+        <!-- Top Navbar -->
+        {% include "layouts/dashboard_navbar.html" %}
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-page">
+
+            {% block dashboard_content %}
+            {% endblock %}
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- Floating Button -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% endblock %}

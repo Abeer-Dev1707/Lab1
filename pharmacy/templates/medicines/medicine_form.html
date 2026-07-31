@@ -1,0 +1,43 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+{{ page_title }}
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="container-fluid mt-4">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+
+            <h3 class="mb-0">{{ page_title|default:"إدارة الأدوية" }}</h3>
+
+            <a href="{% url 'medicine_list' %}" class="btn btn-secondary">
+                رجوع
+            </a>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button type="submit" class="btn btn-success">
+                    حفظ الدواء
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

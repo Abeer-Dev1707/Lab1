@@ -1,0 +1,54 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="/">
+            <img src="{% static 'images/logo/logo.png' %}"
+                 width="45"
+                 class="me-2"
+                 alt="Logo">
+
+            صيدلية الحياة
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMenu">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMenu">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/">الرئيسية</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">حول النظام</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">تواصل معنا</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn btn-success ms-3" href="{% url 'login' %}">
+                      تسجيل الدخول
+                    </a>
+                    
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>

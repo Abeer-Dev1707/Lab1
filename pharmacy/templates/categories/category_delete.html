@@ -1,0 +1,63 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+حذف الفئة
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="container-fluid mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-trash"></i>
+                        حذف الفئة
+                    </h4>
+                </div>
+
+                <div class="card-body">
+
+                    <p class="fs-5">
+                        هل أنت متأكد من حذف الفئة التالية؟
+                    </p>
+
+                    <div class="alert alert-warning">
+
+                        <strong>اسم الفئة:</strong>
+
+                        {{ category.name }}
+
+                    </div>
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        <a href="{% url 'category_list' %}" class="btn btn-secondary">
+                            إلغاء
+                        </a>
+
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i>
+                            حذف الفئة
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

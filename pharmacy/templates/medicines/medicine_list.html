@@ -1,0 +1,283 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+إدارة الأدوية
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="container-fluid mt-4">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+
+            <h3 class="mb-0">
+                إدارة الأدوية
+            </h3>
+
+            <a href="{% url 'medicine_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                إضافة دواء
+            </a>
+
+        </div>
+
+        <div class="card-body">
+
+          <form method="GET" class="mb-4">
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="input-group">
+
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="ابحث باسم الدواء أو الباركود أو الشركة أو الفئة..."
+                    value="{{ search }}">
+
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i>
+                    بحث
+                </button>
+
+                {% if search %}
+                <a href="{% url 'medicine_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    مسح
+                </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
+
+            <table class="table table-striped table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم الدواء</th>
+                        <th>الفئة</th>
+                        <th>الشركة</th>
+                        <th>سعر البيع</th>
+                        <th>الكمية</th>
+                        <th>المخزون</th>
+                        <th>تاريخ الانتهاء</th>
+                        <th>الصلاحية</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for medicine in medicines %}
+                <tr
+{% if medicine.expiry_status == "expired" %}
+    class="table-danger"
+
+{% elif medicine.expiry_status == "warning" %}
+    class="table-warning"
+
+{% elif medicine.quantity <= medicine.minimum_stock %}
+    class="table-warning"
+
+{% endif %}
+>
+
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>{{ medicine.name }}</td>
+
+                        <td>{{ medicine.category.name }}</td>
+
+                        <td>{{ medicine.manufacturer }}</td>
+
+                        <td>{{ medicine.selling_price|floatformat:2 }}</td>
+
+                        <td>{{ medicine.quantity }}</td>
+
+<td>
+
+    {% if medicine.quantity <= medicine.minimum_stock %}
+
+        <div class="stock-low">
+            ⚠️ مخزون منخفض
+        </div>
+
+    {% else %}
+
+        <div class="stock-normal">
+            ✔ طبيعي
+        </div>
+
+    {% endif %}
+
+</td>
+
+                        <td>{{ medicine.expiry_date|date:"Y-m-d" }}</td>
+
+<td>
+
+    {% if medicine.expiry_status == "expired" %}
+
+        <div class="expiry-expired">
+            ❌ منتهي الصلاحية
+        </div>
+
+    {% elif medicine.expiry_status == "warning" %}
+
+        <div class="expiry-warning">
+            ⏳ ينتهي قريبًا
+        </div>
+
+    {% else %}
+
+        <div class="expiry-valid">
+            ✔ صالح
+        </div>
+
+    {% endif %}
+
+</td>
+
+                        <td>
+                          {% if medicine.status == "available" %}
+                          <span class="btn btn-success btn-sm rounded-pill px-3" style="pointer-events:none;">
+                              متوفر
+                          </span>
+                          
+                          {% else %}
+                          <span class="btn btn-danger btn-sm rounded-pill px-3" style="pointer-events:none;">
+                              غير متوفر
+                          </span>
+                          
+                          {% endif %}
+
+                        </td>
+                        
+                        <td>
+                          <a href="{% url 'medicine_update' medicine.id %}"
+                          class="btn btn-warning btn-sm">
+                            تعديل
+                          </a>
+                          
+                          <a href="{% url 'medicine_delete' medicine.id %}"
+                          class="btn btn-danger btn-sm">
+                            حذف
+                          </a>
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="11" class="text-center">
+
+                            لا توجد أدوية في النظام
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% if medicines.has_other_pages %}
+
+<nav class="mt-4">
+
+    <ul class="pagination justify-content-center">
+
+        {% if medicines.has_previous %}
+
+        <li class="page-item">
+
+            <a class="page-link"
+               href="?page={{ medicines.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                السابق
+            </a>
+
+        </li>
+
+        {% else %}
+
+        <li class="page-item disabled">
+            <span class="page-link">السابق</span>
+        </li>
+
+        {% endif %}
+
+        {% for num in medicines.paginator.page_range %}
+
+            {% if medicines.number == num %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        {{ num }}
+                    </span>
+                </li>
+
+            {% else %}
+
+                <li class="page-item">
+
+                    <a class="page-link"
+                       href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}">
+
+                        {{ num }}
+
+                    </a>
+
+                </li>
+
+            {% endif %}
+
+        {% endfor %}
+
+        {% if medicines.has_next %}
+
+        <li class="page-item">
+
+            <a class="page-link"
+               href="?page={{ medicines.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                التالي
+            </a>
+
+        </li>
+
+        {% else %}
+
+        <li class="page-item disabled">
+            <span class="page-link">التالي</span>
+        </li>
+
+        {% endif %}
+
+    </ul>
+
+</nav>
+
+{% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
