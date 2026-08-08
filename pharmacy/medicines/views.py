@@ -92,9 +92,13 @@ def medicine_update(request, pk):
 
     if request.method == "POST":
 
+        print("POST وصل")
+
         form = MedicineForm(request.POST, instance=medicine)
 
         if form.is_valid():
+
+            print("النموذج صحيح")
 
             form.save()
 
@@ -102,16 +106,17 @@ def medicine_update(request, pk):
 
             return redirect("medicine_list")
 
+        else:
+
+            print(form.errors)
+
     else:
 
         form = MedicineForm(instance=medicine)
 
     return render(request, "medicines/medicine_form.html", {
-
         "form": form,
-
         "page_title": "تعديل الدواء"
-
     })
 
 def medicine_delete(request, pk):

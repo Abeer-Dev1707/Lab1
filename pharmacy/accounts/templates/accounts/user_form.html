@@ -1,0 +1,111 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+{{ page_title }}
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="card shadow-sm border-0">
+
+    <div class="card-header">
+
+        <h3 class="mb-0">
+            {{ page_title }}
+        </h3>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">الاسم الكامل</label>
+
+                    {{ form.full_name }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">اسم المستخدم</label>
+
+                    {{ form.username }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">البريد الإلكتروني</label>
+
+                    {{ form.email }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">رقم الهاتف</label>
+
+                    {{ form.phone }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">كلمة المرور</label>
+
+                    {{ form.password }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">الدور</label>
+
+                    {{ form.role }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">الحالة</label>
+
+                    <div class="form-check mt-2">
+
+                        {{ form.is_active }}
+
+                        <label class="form-check-label">
+                            مستخدم نشط
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-success">
+
+                حفظ
+
+            </button>
+
+            <a href="{% url 'user_list' %}" class="btn btn-secondary">
+
+                إلغاء
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

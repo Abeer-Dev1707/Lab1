@@ -6,35 +6,145 @@
 
 {% block dashboard_content %}
 
-<div class="container-fluid mt-4">
+<div class="card shadow-sm border-0">
 
-    <div class="card shadow-sm border-0">
+    <div class="card-header d-flex justify-content-between align-items-center">
 
-        <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">
+            {{ page_title|default:"إدارة الأدوية" }}
+        </h3>
 
-            <h3 class="mb-0">{{ page_title|default:"إدارة الأدوية" }}</h3>
+        <a href="{% url 'medicine_list' %}" class="btn btn-secondary">
+            رجوع
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">اسم الدواء</label>
+                {{ form.name }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">نوع المنتج</label>
+                {{ form.product_type }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">الفئة</label>
+                {{ form.category }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">الشكل الدوائي</label>
+                {{ form.dosage_form }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">الباركود</label>
+                {{ form.barcode }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">الشركة المصنعة</label>
+                {{ form.manufacturer }}
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label class="form-label">سعر الشراء</label>
+                        {{ form.purchase_price }}
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label class="form-label">سعر البيع</label>
+                        {{ form.selling_price }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label class="form-label">الكمية</label>
+                        {{ form.quantity }}
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label class="form-label">الحد الأدنى للمخزون</label>
+                        {{ form.minimum_stock }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label class="form-label">تاريخ الإنتاج</label>
+                        {{ form.production_date }}
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label class="form-label">تاريخ الانتهاء</label>
+                        {{ form.expiry_date }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">الوصف</label>
+
+                {{ form.description }}
+
+            </div>
+
+            <button type="submit" class="btn btn-success">
+
+                <i class="fas fa-save"></i>
+
+                حفظ الدواء
+
+            </button>
 
             <a href="{% url 'medicine_list' %}" class="btn btn-secondary">
-                رجوع
+
+                إلغاء
+
             </a>
 
-        </div>
-
-        <div class="card-body">
-
-            <form method="post">
-
-                {% csrf_token %}
-
-                {{ form.as_p }}
-
-                <button type="submit" class="btn btn-success">
-                    حفظ الدواء
-                </button>
-
-            </form>
-
-        </div>
+        </form>
 
     </div>
 

@@ -1,5 +1,6 @@
 from django.db import models
 from categories.models import Category
+from product_types.models import ProductType
 
 
 class Medicine(models.Model):
@@ -8,6 +9,15 @@ class Medicine(models.Model):
         ('available', 'متوفر'),
         ('unavailable', 'غير متوفر'),
     ]
+
+    product_type = models.ForeignKey(
+    ProductType,
+    on_delete=models.CASCADE,
+    related_name="medicines",
+    verbose_name="نوع المنتج",
+    null=True,
+    blank=True
+    )
 
     name = models.CharField(max_length=200, verbose_name="اسم الدواء")
 
@@ -72,6 +82,12 @@ class Medicine(models.Model):
         default='available',
         verbose_name="الحالة"
     )
+
+    dosage_form = models.CharField(
+    max_length=100,
+    blank=True,
+    verbose_name="الشكل الدوائي"
+)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

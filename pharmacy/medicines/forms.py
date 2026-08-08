@@ -9,7 +9,9 @@ class MedicineForm(forms.ModelForm):
 
         fields = [
             'name',
+            "product_type",
             'category',
+            "dosage_form",
             'barcode',
             'manufacturer',
             'purchase_price',
@@ -19,7 +21,6 @@ class MedicineForm(forms.ModelForm):
             'production_date',
             'expiry_date',
             'description',
-            'status',
         ]
 
         labels = {
@@ -34,7 +35,8 @@ class MedicineForm(forms.ModelForm):
             'production_date': 'تاريخ الإنتاج',
             'expiry_date': 'تاريخ الانتهاء',
             'description': 'الوصف',
-            'status': 'الحالة',
+            "dosage_form": "الشكل الدوائي",
+            "product_type": "نوع المنتج",
         }
 
         widgets = {
@@ -87,7 +89,11 @@ class MedicineForm(forms.ModelForm):
                 'rows': 3
             }),
 
-            'status': forms.Select(attrs={
-                'class': 'form-select'
+            "dosage_form": forms.TextInput(attrs={
+                    "class": "form-control"
             }),
+
+            "product_type": forms.Select(attrs={
+                "class": "form-select"
+                }),
         }

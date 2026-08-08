@@ -946,9 +946,9 @@ FLOATING SIDEBAR BUTTON
     align-items:center;
     justify-content:center;
 
-    min-width:120px;
+    min-width:90 px;
 
-    padding:7px 14px;
+    padding:5px 10px;
 
     background:#fff3cd;
 
@@ -969,9 +969,9 @@ FLOATING SIDEBAR BUTTON
     align-items:center;
     justify-content:center;
 
-    min-width:90px;
+    min-width:75 px;
 
-    padding:7px 14px;
+    padding:5px 10px;
 
     background:#d1fae5;
 
@@ -998,7 +998,7 @@ FLOATING SIDEBAR BUTTON
 
     min-width:100px;
 
-    padding:7px 14px;
+    padding:5px 10px;
 
     background:#d1fae5;
 
@@ -1019,9 +1019,9 @@ FLOATING SIDEBAR BUTTON
     align-items:center;
     justify-content:center;
 
-    min-width:130px;
+    min-width:110px;
 
-    padding:7px 14px;
+    padding:5px 10px;
 
     background:#fff3cd;
 
@@ -1042,9 +1042,9 @@ FLOATING SIDEBAR BUTTON
     align-items:center;
     justify-content:center;
 
-    min-width:140px;
+    min-width:115px;
 
-    padding:7px 14px;
+    padding:5px 10px;
 
     background:#f8d7da;
 
@@ -1058,3 +1058,4 @@ FLOATING SIDEBAR BUTTON
 
     font-weight:600;
 }
+
