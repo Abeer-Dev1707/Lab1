@@ -1,0 +1,418 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+
+{% block title %}
+{{ page_title }}
+{% endblock %}
+
+
+{% block dashboard_content %}
+
+
+<div class="card shadow-sm border-0">
+
+
+    <!-- ================================================= -->
+    <!-- رأس الصفحة -->
+    <!-- ================================================= -->
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-pills"></i>
+
+            {{ page_title }}
+
+        </h3>
+
+
+        <a
+            href="{% url 'inventory_list' %}"
+            class="btn btn-secondary">
+
+            <i class="fas fa-arrow-right"></i>
+
+            رجوع
+
+        </a>
+
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- ================================================= -->
+            <!-- عرض الأخطاء -->
+            <!-- ================================================= -->
+
+            {% if form.non_field_errors %}
+
+                <div class="alert alert-danger">
+
+                    {{ form.non_field_errors }}
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- ================================================= -->
+            <!-- اسم الدواء -->
+            <!-- ================================================= -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    اسم الدواء
+
+                </label>
+
+                {{ form.name }}
+
+                {{ form.name.errors }}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- نوع المنتج -->
+            <!-- ================================================= -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    نوع المنتج
+
+                </label>
+
+                {{ form.product_type }}
+
+                {{ form.product_type.errors }}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- المورد -->
+            <!-- ================================================= -->
+
+            {% if form.supplier %}
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        المورد
+
+                    </label>
+
+                    {{ form.supplier }}
+
+                    {{ form.supplier.errors }}
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- ================================================= -->
+            <!-- الفئة -->
+            <!-- ================================================= -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    الفئة
+
+                </label>
+
+                {{ form.category }}
+
+                {{ form.category.errors }}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الشكل الدوائي -->
+            <!-- ================================================= -->
+
+            {% if form.dosage_form %}
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        الشكل الدوائي
+
+                    </label>
+
+                    {{ form.dosage_form }}
+
+                    {{ form.dosage_form.errors }}
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- ================================================= -->
+            <!-- الباركود -->
+            <!-- ================================================= -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    الباركود
+
+                </label>
+
+                {{ form.barcode }}
+
+                {{ form.barcode.errors }}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الشركة المصنعة -->
+            <!-- ================================================= -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    الشركة المصنعة
+
+                </label>
+
+                {{ form.manufacturer }}
+
+                {{ form.manufacturer.errors }}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الأسعار -->
+            <!-- ================================================= -->
+
+            <div class="row">
+
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            سعر الشراء
+
+                        </label>
+
+                        {{ form.purchase_price }}
+
+                        {{ form.purchase_price.errors }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            سعر البيع
+
+                        </label>
+
+                        {{ form.selling_price }}
+
+                        {{ form.selling_price.errors }}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- المخزون -->
+            <!-- ================================================= -->
+
+            <div class="row">
+
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            الكمية
+
+                        </label>
+
+                        {{ form.quantity }}
+
+                        {{ form.quantity.errors }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            الحد الأدنى للمخزون
+
+                        </label>
+
+                        {{ form.minimum_stock }}
+
+                        {{ form.minimum_stock.errors }}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- التواريخ -->
+            <!-- ================================================= -->
+
+            <div class="row">
+
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            تاريخ الإنتاج
+
+                        </label>
+
+                        {{ form.production_date }}
+
+                        {{ form.production_date.errors }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            تاريخ الانتهاء
+
+                        </label>
+
+                        {{ form.expiry_date }}
+
+                        {{ form.expiry_date.errors }}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الوصف -->
+            <!-- ================================================= -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    الوصف
+
+                </label>
+
+                {{ form.description }}
+
+                {{ form.description.errors }}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الأزرار -->
+            <!-- ================================================= -->
+
+            <button
+                type="submit"
+                class="btn btn-success">
+
+                <i class="fas fa-save"></i>
+
+                حفظ
+
+            </button>
+
+
+            <a
+                href="{% url 'inventory_list' %}"
+                class="btn btn-secondary">
+
+                إلغاء
+
+            </a>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

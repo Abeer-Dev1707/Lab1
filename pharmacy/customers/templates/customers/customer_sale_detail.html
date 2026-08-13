@@ -1,0 +1,356 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+فاتورة البيع
+{% endblock %}
+
+{% block dashboard_content %}
+
+<style>
+
+.customer-sale-card {
+    border: 0;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.customer-sale-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.customer-sale-info {
+    padding: 10px 0;
+}
+
+.customer-sale-info-row {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.customer-sale-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: #20b486;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.customer-sale-table th,
+.customer-sale-table td {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.customer-sale-total {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+</style>
+
+
+<div class="card shadow-sm border-0 customer-sale-card">
+
+
+    <!-- ============================================== -->
+    <!-- الرأس -->
+    <!-- ============================================== -->
+
+    <div class="card-header customer-sale-header">
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-receipt"></i>
+
+            فاتورة البيع #{{ sale.id }}
+
+        </h3>
+
+
+        <a
+            href="{% url 'customer_order_detail' sale.customer_order.id %}"
+            class="btn btn-secondary">
+
+            <i class="fas fa-arrow-right"></i>
+
+            رجوع
+
+        </a>
+
+    </div>
+
+
+    <div class="card-body">
+
+
+        <!-- ============================================== -->
+        <!-- معلومات الفاتورة -->
+        <!-- ============================================== -->
+
+        <div class="row mb-4 customer-sale-info">
+
+
+            <div class="col-md-4 mb-3">
+
+                <div class="customer-sale-info-row">
+
+                    <strong>
+                        رقم الفاتورة:
+                    </strong>
+
+                    #{{ sale.id }}
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3">
+
+                <div class="customer-sale-info-row">
+
+                    <strong>
+                        العميل:
+                    </strong>
+
+                    {{ sale.customer.full_name }}
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3">
+
+                <div class="customer-sale-info-row">
+
+                    <strong>
+                        تاريخ البيع:
+                    </strong>
+
+                    {{ sale.created_at|date:"Y-m-d H:i" }}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="row mb-4 customer-sale-info">
+
+
+            <div class="col-md-4 mb-3">
+
+                <div class="customer-sale-info-row">
+
+                    <strong>
+                        الحالة:
+                    </strong>
+
+                    <span class="customer-sale-status">
+
+                        مكتملة
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3">
+
+                <div class="customer-sale-info-row">
+
+                    <strong>
+                        عدد المنتجات:
+                    </strong>
+
+                    {{ sale.items.count }}
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3">
+
+                <div class="customer-sale-info-row">
+
+                    <strong>
+                        الإجمالي:
+                    </strong>
+
+                    {{ sale.total_amount }}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ============================================== -->
+        <!-- المنتجات -->
+        <!-- ============================================== -->
+
+        <h5 class="mb-3">
+
+            <i class="fas fa-pills"></i>
+
+            المنتجات
+
+        </h5>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-hover customer-sale-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>الدواء</th>
+
+                        <th>الباركود</th>
+
+                        <th>الكمية</th>
+
+                        <th>سعر البيع</th>
+
+                        <th>الإجمالي</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in sale.items.all %}
+
+                    <tr>
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+                        <td>
+                            {{ item.medicine.name }}
+                        </td>
+
+                        <td>
+                            {{ item.medicine.barcode }}
+                        </td>
+
+                        <td>
+                            {{ item.quantity }}
+                        </td>
+
+                        <td>
+                            {{ item.selling_price }}
+                        </td>
+
+                        <td>
+                            {{ item.subtotal }}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="text-center py-4">
+
+                            لا توجد منتجات في هذه الفاتورة.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+
+                <tfoot>
+
+                    <tr>
+
+                        <th
+                            colspan="5"
+                            class="text-end">
+
+                            الإجمالي الكلي:
+
+                        </th>
+
+                        <th class="customer-sale-total">
+
+                            {{ sale.total_amount }}
+
+                        </th>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+
+        <!-- ============================================== -->
+        <!-- الملاحظات -->
+        <!-- ============================================== -->
+
+        <div class="mt-4">
+
+            <h5>
+
+                <i class="fas fa-note-sticky"></i>
+
+                الملاحظات
+
+            </h5>
+
+
+            {% if sale.notes %}
+
+                <p class="text-muted">
+                    {{ sale.notes }}
+                </p>
+
+            {% else %}
+
+                <p class="text-muted">
+                    لا توجد ملاحظات.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

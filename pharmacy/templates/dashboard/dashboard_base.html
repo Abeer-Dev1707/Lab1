@@ -28,9 +28,54 @@
         <!-- Top Navbar -->
         {% include "layouts/dashboard_navbar.html" %}
 
-        <!-- Dashboard Content -->
+        <!-- Dashboard Page -->
         <div class="dashboard-page">
 
+            <!-- رسائل النظام -->
+            {% if messages %}
+
+    {% for message in messages %}
+
+        <div class="alert 
+            {% if message.tags == 'success' %}
+                alert-success
+            {% elif message.tags == 'error' %}
+                alert-danger
+            {% elif message.tags == 'warning' %}
+                alert-warning
+            {% else %}
+                alert-info
+            {% endif %}
+            alert-dismissible fade show shadow-sm mb-3"
+            role="alert"
+            style="font-size: 17px; font-weight: 600;">
+
+            {% if message.tags == 'success' %}
+                <i class="fas fa-check-circle me-2"></i>
+            {% elif message.tags == 'error' %}
+                <i class="fas fa-ban me-2"></i>
+            {% elif message.tags == 'warning' %}
+                <i class="fas fa-exclamation-triangle me-2"></i>
+            {% else %}
+                <i class="fas fa-info-circle me-2"></i>
+            {% endif %}
+
+            {{ message }}
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="إغلاق">
+            </button>
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+            <!-- محتوى الصفحة -->
             {% block dashboard_content %}
             {% endblock %}
 
@@ -39,8 +84,6 @@
     </main>
 
 </div>
-
-<!-- Floating Button -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

@@ -1,7 +1,12 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
+
+    # ==========================================
+    # إدارة المستخدمين - المدير
+    # ==========================================
 
     path(
         "",
@@ -25,6 +30,46 @@ urlpatterns = [
         "delete/<int:pk>/",
         views.user_delete,
         name="user_delete"
+    ),
+
+    # ==========================================
+    # التسجيل العام
+    # ==========================================
+
+    path(
+        "register/",
+        views.register,
+        name="register"
+    ),
+
+    # ==========================================
+    # طلبات إنشاء الحسابات - المدير
+    # ==========================================
+
+    path(
+        "requests/",
+        views.account_requests,
+        name="account_requests"
+    ),
+
+    # ==========================================
+    # الموافقة على الحساب
+    # ==========================================
+
+    path(
+        "requests/approve/<int:pk>/",
+        views.approve_account,
+        name="approve_account"
+    ),
+
+    # ==========================================
+    # رفض الحساب
+    # ==========================================
+
+    path(
+        "requests/reject/<int:pk>/",
+        views.reject_account,
+        name="reject_account"
     ),
 
 ]

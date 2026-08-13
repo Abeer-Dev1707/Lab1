@@ -107,19 +107,31 @@
 
         <div class="login-links">
 
-            <a href="{% url 'about' %}">
-                <i class="fa-solid fa-circle-info"></i>
-                حول النظام
-            </a>
+    <!-- إنشاء حساب جديد -->
+    <a href="{% url 'register' %}">
+        <i class="fa-solid fa-user-plus"></i>
+        إنشاء حساب جديد
+    </a>
 
-            <a href="{% url 'contact' %}">
-                <i class="fa-solid fa-envelope"></i>
-                تواصل معنا
-            </a>
+    <!-- حول النظام -->
+    <a href="{% url 'about' %}">
+        <i class="fa-solid fa-circle-info"></i>
+        حول النظام
+    </a>
 
-            <a href="{% url 'forgot_password' %}">نسيت كلمة المرور؟</a>
+    <!-- تواصل معنا -->
+    <a href="{% url 'contact' %}">
+        <i class="fa-solid fa-envelope"></i>
+        تواصل معنا
+    </a>
 
-        </div>
+    <!-- نسيت كلمة المرور -->
+    <a href="{% url 'forgot_password' %}">
+        <i class="fa-solid fa-key"></i>
+        نسيت كلمة المرور؟
+    </a>
+
+</div>
 
     </div>
 

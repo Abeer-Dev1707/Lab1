@@ -1,0 +1,343 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+إدارة الموردين
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="card">
+
+    <!-- رأس الإطار -->
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-truck"></i>
+
+            إدارة الموردين
+
+        </h3>
+
+
+        <a
+            href="{% url 'supplier_create' %}"
+            class="btn btn-primary">
+
+            <i class="fas fa-plus"></i>
+
+            إضافة مورد
+
+        </a>
+
+    </div>
+
+
+    <!-- محتوى الإطار -->
+
+    <div class="card-body">
+
+
+        <!-- البحث -->
+
+        <form method="GET" class="mb-4">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="input-group">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="ابحث بالاسم أو الشركة أو البريد أو الهاتف..."
+                            value="{{ search }}">
+
+                        <button
+                            class="btn btn-primary"
+                            type="submit">
+
+                            <i class="fas fa-search"></i>
+
+                            بحث
+
+                        </button>
+
+
+                        {% if search %}
+
+                        <a
+                            href="{% url 'supplier_list' %}"
+                            class="btn btn-secondary">
+
+                            <i class="fas fa-times"></i>
+
+                            مسح
+
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+
+        <!-- جدول الموردين -->
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-hover align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>اسم المورد</th>
+
+                        <th>اسم الشركة</th>
+
+                        <th>رقم الهاتف</th>
+
+                        <th>البريد الإلكتروني</th>
+
+                        <th>العنوان</th>
+
+                        <th>تاريخ الإضافة</th>
+
+                        <th>الإجراءات</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for supplier in suppliers %}
+
+                    <tr>
+
+                        <!-- الرقم -->
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+
+                        <!-- اسم المورد -->
+
+                        <td>
+                            {{ supplier.full_name }}
+                        </td>
+
+
+                        <!-- اسم الشركة -->
+
+                        <td>
+                            {{ supplier.company_name }}
+                        </td>
+
+
+                        <!-- الهاتف -->
+
+                        <td>
+                            {{ supplier.phone }}
+                        </td>
+
+
+                        <!-- البريد -->
+
+                        <td>
+                            {{ supplier.email }}
+                        </td>
+
+
+                        <!-- العنوان -->
+
+                        <td>
+                            {{ supplier.address }}
+                        </td>
+
+
+                        <!-- تاريخ الإضافة -->
+
+                        <td>
+                            {{ supplier.created_at|date:"Y-m-d H:i" }}
+                        </td>
+
+
+                        <!-- الإجراءات -->
+
+                        <td>
+
+                            <a
+                                href="{% url 'supplier_update' supplier.id %}"
+                                class="btn btn-warning btn-sm">
+
+                                <i class="fas fa-edit"></i>
+
+                                تعديل
+
+                            </a>
+
+
+                            <a
+                                href="{% url 'supplier_delete' supplier.id %}"
+                                class="btn btn-danger btn-sm">
+
+                                <i class="fas fa-trash"></i>
+
+                                حذف
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="text-center">
+
+                            لا يوجد موردون
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Pagination -->
+
+        {% if suppliers.has_other_pages %}
+
+        <nav class="mt-4">
+
+            <ul class="pagination justify-content-center">
+
+
+                {% if suppliers.has_previous %}
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="?page={{ suppliers.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">
+
+                        السابق
+
+                    </a>
+
+                </li>
+
+                {% else %}
+
+                <li class="page-item disabled">
+
+                    <span class="page-link">
+
+                        السابق
+
+                    </span>
+
+                </li>
+
+                {% endif %}
+
+
+                {% for num in suppliers.paginator.page_range %}
+
+                    {% if suppliers.number == num %}
+
+                    <li class="page-item active">
+
+                        <span class="page-link">
+
+                            {{ num }}
+
+                        </span>
+
+                    </li>
+
+                    {% else %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}">
+
+                            {{ num }}
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                {% endfor %}
+
+
+                {% if suppliers.has_next %}
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="?page={{ suppliers.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
+
+                        التالي
+
+                    </a>
+
+                </li>
+
+                {% else %}
+
+                <li class="page-item disabled">
+
+                    <span class="page-link">
+
+                        التالي
+
+                    </span>
+
+                </li>
+
+                {% endif %}
+
+
+            </ul>
+
+        </nav>
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+{% endblock %}

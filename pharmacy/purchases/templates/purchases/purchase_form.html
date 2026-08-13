@@ -1,0 +1,547 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+
+{% block title %}
+إنشاء طلب توريد
+{% endblock %}
+
+
+{% block dashboard_content %}
+
+<div class="card shadow-sm border-0">
+
+
+    <!-- ================================================= -->
+    <!-- رأس الصفحة -->
+    <!-- ================================================= -->
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-file-invoice"></i>
+
+            إنشاء طلب توريد
+
+        </h3>
+
+
+        <a
+            href="{% url 'purchase_list' %}"
+            class="btn btn-secondary">
+
+            رجوع
+
+        </a>
+
+    </div>
+
+
+    <div class="card-body">
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- ================================================= -->
+            <!-- بيانات التوريد -->
+            <!-- ================================================= -->
+
+            <div class="mb-4">
+
+                <h5 class="mb-3">
+
+                    <i class="fas fa-truck"></i>
+
+                    بيانات التوريد
+
+                </h5>
+
+
+                <label class="form-label">
+
+                    {{ order_form.supplier.label }}
+
+                </label>
+
+
+                {{ order_form.supplier }}
+
+
+                {% if order_form.supplier.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ order_form.supplier.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- المنتجات -->
+            <!-- ================================================= -->
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-boxes-stacked"></i>
+
+                    المنتجات المطلوبة
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    id="add-product"
+                    class="btn btn-primary btn-sm">
+
+                    <i class="fas fa-plus"></i>
+
+                    إضافة منتج
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- Management Form -->
+            <!-- ================================================= -->
+
+            {{ item_formset.management_form }}
+
+
+
+            <!-- ================================================= -->
+            <!-- حاوية المنتجات -->
+            <!-- ================================================= -->
+
+            <div id="products-container">
+
+
+                {% for form in item_formset %}
+
+                    <div class="product-row border rounded p-3 mb-3">
+
+
+                        <div class="row align-items-end">
+
+
+                            <!-- ============================== -->
+                            <!-- الدواء -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-5">
+
+                                <label class="form-label">
+
+                                    الدواء
+
+                                </label>
+
+
+                                {{ form.medicine }}
+
+
+                                {% if form.medicine.errors %}
+
+                                    <div class="text-danger mt-1">
+
+                                        {{ form.medicine.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- ============================== -->
+                            <!-- الكمية -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-3">
+
+                                <label class="form-label">
+
+                                    الكمية
+
+                                </label>
+
+
+                                {{ form.quantity }}
+
+
+                                {% if form.quantity.errors %}
+
+                                    <div class="text-danger mt-1">
+
+                                        {{ form.quantity.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- ============================== -->
+                            <!-- سعر الشراء -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-3">
+
+                                <label class="form-label">
+
+                                    سعر الشراء
+
+                                </label>
+
+
+                                {{ form.purchase_price }}
+
+
+                                {% if form.purchase_price.errors %}
+
+                                    <div class="text-danger mt-1">
+
+                                        {{ form.purchase_price.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- ============================== -->
+                            <!-- حذف -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-1">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-danger remove-product"
+                                    title="حذف المنتج">
+
+                                    <i class="fas fa-trash"></i>
+
+                                </button>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- القالب المخفي لإضافة منتج جديد -->
+            <!-- ================================================= -->
+
+            <div
+                id="empty-product-form"
+                style="display: none;">
+
+                <div class="product-row border rounded p-3 mb-3">
+
+
+                    <div class="row align-items-end">
+
+
+                        <!-- الدواء -->
+
+                        <div class="col-md-5">
+
+                            <label class="form-label">
+
+                                الدواء
+
+                            </label>
+
+
+                            {{ item_formset.empty_form.medicine }}
+
+                        </div>
+
+
+
+                        <!-- الكمية -->
+
+                        <div class="col-md-3">
+
+                            <label class="form-label">
+
+                                الكمية
+
+                            </label>
+
+
+                            {{ item_formset.empty_form.quantity }}
+
+                        </div>
+
+
+
+                        <!-- سعر الشراء -->
+
+                        <div class="col-md-3">
+
+                            <label class="form-label">
+
+                                سعر الشراء
+
+                            </label>
+
+
+                            {{ item_formset.empty_form.purchase_price }}
+
+                        </div>
+
+
+
+                        <!-- حذف -->
+
+                        <div class="col-md-1">
+
+                            <button
+                                type="button"
+                                class="btn btn-danger remove-product"
+                                title="حذف المنتج">
+
+                                <i class="fas fa-trash"></i>
+
+                            </button>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الملاحظات -->
+            <!-- ================================================= -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    {{ order_form.notes.label }}
+
+                </label>
+
+
+                {{ order_form.notes }}
+
+
+                {% if order_form.notes.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ order_form.notes.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الأزرار -->
+            <!-- ================================================= -->
+
+            <button
+                type="submit"
+                class="btn btn-success">
+
+                <i class="fas fa-save"></i>
+
+                إنشاء طلب التوريد
+
+            </button>
+
+
+            <a
+                href="{% url 'purchase_list' %}"
+                class="btn btn-secondary">
+
+                إلغاء
+
+            </a>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- JavaScript -->
+<!-- ===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    // =====================================================
+    // العناصر
+    // =====================================================
+
+    const container =
+        document.getElementById("products-container");
+
+
+    const addButton =
+        document.getElementById("add-product");
+
+
+    const totalForms =
+        document.getElementById(
+            "id_{{ item_formset.prefix }}-TOTAL_FORMS"
+        );
+
+
+    const emptyFormTemplate =
+        document.getElementById(
+            "empty-product-form"
+        ).innerHTML;
+
+
+
+    // =====================================================
+    // إضافة منتج
+    // =====================================================
+
+    addButton.addEventListener(
+        "click",
+        function () {
+
+
+            // العدد الحالي للنماذج
+
+            const formCount =
+                parseInt(totalForms.value);
+
+
+            // إنشاء نسخة من النموذج الفارغ
+
+            let newForm =
+                emptyFormTemplate.replace(
+                    /__prefix__/g,
+                    formCount
+                );
+
+
+            // إضافة المنتج إلى الصفحة
+
+            container.insertAdjacentHTML(
+                "beforeend",
+                newForm
+            );
+
+
+            // زيادة عدد النماذج
+
+            totalForms.value =
+                formCount + 1;
+
+        }
+    );
+
+
+
+    // =====================================================
+    // حذف منتج
+    // =====================================================
+
+    container.addEventListener(
+        "click",
+        function (event) {
+
+
+            const button =
+                event.target.closest(
+                    ".remove-product"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const rows =
+                container.querySelectorAll(
+                    ".product-row"
+                );
+
+
+            // ---------------------------------------------
+            // لا نسمح بحذف المنتج الوحيد
+            // ---------------------------------------------
+
+            if (rows.length === 1) {
+
+                alert(
+                    "يجب أن يحتوي الطلب على منتج واحد على الأقل."
+                );
+
+                return;
+
+            }
+
+
+            // حذف الصف
+
+            const row =
+                button.closest(
+                    ".product-row"
+                );
+
+
+            row.remove();
+
+        }
+    );
+
+});
+
+</script>
+
+
+{% endblock %}

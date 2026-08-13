@@ -6,7 +6,10 @@ from django.core.paginator import Paginator
 from .models import ProductType
 from .forms import ProductTypeForm
 
+from accounts.decorators import pharmacist_required
 
+
+@pharmacist_required
 def product_type_list(request):
 
     search = request.GET.get("search", "")
@@ -37,6 +40,7 @@ def product_type_list(request):
     })
 
 
+@pharmacist_required
 def product_type_create(request):
 
     if request.method == "POST":
@@ -47,7 +51,10 @@ def product_type_create(request):
 
             form.save()
 
-            messages.success(request, "تمت إضافة نوع المنتج بنجاح.")
+            messages.success(
+                request,
+                "تمت إضافة نوع المنتج بنجاح."
+            )
 
             return redirect("product_type_list")
 
@@ -64,49 +71,76 @@ def product_type_create(request):
     })
 
 
+@pharmacist_required
 def product_type_update(request, pk):
 
-    product_type = get_object_or_404(ProductType, pk=pk)
+    product_type = get_object_or_404(
+        ProductType,
+        pk=pk
+    )
 
     if request.method == "POST":
 
-        form = ProductTypeForm(request.POST, instance=product_type)
+        form = ProductTypeForm(
+            request.POST,
+            instance=product_type
+        )
 
         if form.is_valid():
 
             form.save()
 
-            messages.success(request, "تم تعديل نوع المنتج بنجاح.")
+            messages.success(
+                request,
+                "تم تعديل نوع المنتج بنجاح."
+            )
 
             return redirect("product_type_list")
 
     else:
 
-        form = ProductTypeForm(instance=product_type)
+        form = ProductTypeForm(
+            instance=product_type
+        )
 
-    return render(request, "product_types/product_type_form.html", {
+    return render(
+        request,
+        "product_types/product_type_form.html",
+        {
 
-        "form": form,
+            "form": form,
 
-        "page_title": "تعديل نوع المنتج",
+            "page_title": "تعديل نوع المنتج",
 
-    })
+        }
+    )
 
 
+@pharmacist_required
 def product_type_delete(request, pk):
 
-    product_type = get_object_or_404(ProductType, pk=pk)
+    product_type = get_object_or_404(
+        ProductType,
+        pk=pk
+    )
 
     if request.method == "POST":
 
         product_type.delete()
 
-        messages.success(request, "تم حذف نوع المنتج بنجاح.")
+        messages.success(
+            request,
+            "تم حذف نوع المنتج بنجاح."
+        )
 
         return redirect("product_type_list")
 
-    return render(request, "product_types/product_type_delete.html", {
+    return render(
+        request,
+        "product_types/product_type_delete.html",
+        {
 
-        "product_type": product_type
+            "product_type": product_type
 
-    })
+        }
+    )

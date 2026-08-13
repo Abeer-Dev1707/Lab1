@@ -1,0 +1,511 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+تفاصيل فاتورة البيع
+{% endblock %}
+
+{% block dashboard_content %}
+
+<style>
+
+/* =====================================================
+   صفحة تفاصيل الفاتورة
+   ===================================================== */
+
+.sale-detail-card {
+    position: relative;
+}
+
+
+/* =====================================================
+   رأس الفاتورة
+   ===================================================== */
+
+.sale-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+/* =====================================================
+   زر الرجوع
+   ===================================================== */
+
+.sale-back-btn {
+    position: static !important;
+
+    display: inline-flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    width: auto !important;
+    height: auto !important;
+
+    padding: 8px 16px;
+
+    white-space: nowrap;
+
+    transform: none !important;
+}
+
+
+/* =====================================================
+   معلومات الفاتورة
+   ===================================================== */
+
+.sale-info {
+    padding: 10px 0;
+}
+
+.sale-info strong {
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   حالة الفاتورة
+   ===================================================== */
+
+.sale-status {
+    display: inline-flex !important;
+
+    position: static !important;
+
+    align-items: center;
+    justify-content: center;
+
+    width: auto !important;
+    height: auto !important;
+
+    min-width: 80px;
+
+    padding: 6px 14px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    white-space: nowrap;
+
+    vertical-align: middle;
+
+    transform: none !important;
+
+    float: none !important;
+}
+
+
+/* مكتملة */
+
+.sale-status-completed {
+    background-color: #20b486;
+    color: white;
+}
+
+
+/* ملغاة */
+
+.sale-status-cancelled {
+    background-color: #dc3545;
+    color: white;
+}
+
+
+/* حالة غير معروفة */
+
+.sale-status-unknown {
+    background-color: #6c757d;
+    color: white;
+}
+
+
+/* =====================================================
+   الجدول
+   ===================================================== */
+
+.sale-table th,
+.sale-table td {
+    vertical-align: middle;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   الإجمالي
+   ===================================================== */
+
+.sale-total {
+    font-size: 18px;
+
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   منع العناصر من الظهور خارج البطاقة
+   ===================================================== */
+
+.sale-detail-card * {
+    box-sizing: border-box;
+}
+
+</style>
+
+
+<div class="card shadow-sm border-0 sale-detail-card">
+
+
+    <!-- ================================================= -->
+    <!-- رأس الصفحة -->
+    <!-- ================================================= -->
+
+    <div class="card-header sale-card-header">
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-receipt"></i>
+
+            فاتورة بيع #{{ sale.id }}
+
+        </h3>
+
+
+        <a
+            href="{% url 'sale_list' %}"
+            class="btn btn-secondary sale-back-btn">
+
+            <i class="fas fa-arrow-right"></i>
+
+            رجوع
+
+        </a>
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+        <!-- ================================================= -->
+        <!-- بيانات الفاتورة -->
+        <!-- ================================================= -->
+
+        <div class="row mb-4 sale-info">
+
+
+            <!-- رقم الفاتورة -->
+
+            <div class="col-md-4 mb-3">
+
+                <strong>
+                    رقم الفاتورة:
+                </strong>
+
+                #{{ sale.id }}
+
+            </div>
+
+
+            <!-- العميل -->
+
+            <div class="col-md-4 mb-3">
+
+                <strong>
+                    العميل:
+                </strong>
+
+                {% if sale.customer %}
+
+                    {{ sale.customer.full_name }}
+
+                {% else %}
+
+                    عميل نقدي
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- موظف البيع -->
+
+            <div class="col-md-4 mb-3">
+
+                <strong>
+                    موظف البيع:
+                </strong>
+
+                {% if sale.cashier %}
+
+                    {{ sale.cashier.full_name|default:sale.cashier.username }}
+
+                {% else %}
+
+                    غير محدد
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="row mb-4 sale-info">
+
+
+            <!-- تاريخ البيع -->
+
+            <div class="col-md-4 mb-3">
+
+                <strong>
+                    تاريخ البيع:
+                </strong>
+
+                {{ sale.created_at|date:"Y-m-d H:i" }}
+
+            </div>
+
+
+            <!-- حالة الفاتورة -->
+
+            <div class="col-md-4 mb-3">
+
+                <strong>
+                    الحالة:
+                </strong>
+
+
+                {% if sale.status == "completed" %}
+
+                    <span class="sale-status sale-status-completed">
+
+                        مكتملة
+
+                    </span>
+
+
+                {% elif sale.status == "cancelled" %}
+
+                    <span class="sale-status sale-status-cancelled">
+
+                        ملغاة
+
+                    </span>
+
+
+                {% else %}
+
+                    <span class="sale-status sale-status-unknown">
+
+                        {{ sale.status }}
+
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- عدد المنتجات -->
+
+            <div class="col-md-4 mb-3">
+
+                <strong>
+                    عدد المنتجات:
+                </strong>
+
+                {{ sale.items.count }}
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- المنتجات -->
+        <!-- ================================================= -->
+
+        <h5 class="mb-3">
+
+            <i class="fas fa-pills"></i>
+
+            المنتجات
+
+        </h5>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-hover align-middle sale-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>الدواء</th>
+
+                        <th>الباركود</th>
+
+                        <th>الكمية</th>
+
+                        <th>سعر البيع</th>
+
+                        <th>الإجمالي</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for item in sale.items.all %}
+
+                    <tr>
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+
+                        <td>
+                            {{ item.medicine.name }}
+                        </td>
+
+
+                        <td>
+                            {{ item.medicine.barcode }}
+                        </td>
+
+
+                        <td>
+                            {{ item.quantity }}
+                        </td>
+
+
+                        <td>
+                            {{ item.selling_price }}
+                        </td>
+
+
+                        <td>
+                            {{ item.subtotal }}
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="text-center py-4">
+
+                            <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+
+                            <br>
+
+                            لا توجد منتجات في هذه الفاتورة.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+                <!-- ================================================= -->
+                <!-- الإجمالي -->
+                <!-- ================================================= -->
+
+                <tfoot>
+
+                    <tr>
+
+                        <th
+                            colspan="5"
+                            class="text-end">
+
+                            الإجمالي الكلي:
+
+                        </th>
+
+                        <th class="sale-total">
+
+                            {{ sale.total_amount }}
+
+                        </th>
+
+                    </tr>
+
+                </tfoot>
+
+
+            </table>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- الملاحظات -->
+        <!-- ================================================= -->
+
+        <div class="mt-4">
+
+            <h5>
+
+                <i class="fas fa-note-sticky"></i>
+
+                الملاحظات
+
+            </h5>
+
+
+            {% if sale.notes %}
+
+                <p class="text-muted">
+
+                    {{ sale.notes }}
+
+                </p>
+
+            {% else %}
+
+                <p class="text-muted">
+
+                    لا توجد ملاحظات.
+
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

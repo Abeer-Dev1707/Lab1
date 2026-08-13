@@ -1,0 +1,538 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+
+{% block title %}
+تفاصيل المخزون
+{% endblock %}
+
+
+{% block dashboard_content %}
+
+
+<style>
+
+    .inventory-detail-header {
+
+        position: relative;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+    }
+
+
+    .inventory-detail-btn {
+
+        position: static !important;
+
+        display: inline-flex !important;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 6px;
+
+        white-space: nowrap;
+    }
+
+
+    .inventory-status {
+
+        display: inline-flex !important;
+
+        align-items: center;
+
+        justify-content: center;
+
+        position: static !important;
+
+        width: auto !important;
+
+        height: auto !important;
+
+        padding: 6px 12px;
+
+        border-radius: 20px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+        line-height: 1.4;
+
+        transform: none !important;
+    }
+
+
+    .inventory-available {
+
+        background-color: #20b486;
+
+        color: white;
+    }
+
+
+    .inventory-low {
+
+        background-color: #ffc107;
+
+        color: #212529;
+    }
+
+
+    .inventory-out {
+
+        background-color: #dc3545;
+
+        color: white;
+    }
+
+
+    .inventory-valid {
+
+        background-color: #20b486;
+
+        color: white;
+    }
+
+
+    .inventory-warning {
+
+        background-color: #ffc107;
+
+        color: #212529;
+    }
+
+
+    .inventory-expired {
+
+        background-color: #dc3545;
+
+        color: white;
+    }
+
+
+    .inventory-info-row {
+
+        padding: 12px 0;
+
+        border-bottom: 1px solid #eee;
+    }
+
+
+    .inventory-info-row:last-child {
+
+        border-bottom: none;
+    }
+
+
+</style>
+
+
+<div class="card shadow-sm border-0">
+
+
+    <!-- ================================================= -->
+    <!-- رأس الصفحة -->
+    <!-- ================================================= -->
+
+    <div class="card-header inventory-detail-header">
+
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-pills"></i>
+
+            تفاصيل الدواء
+
+        </h3>
+
+
+        <div>
+
+    <a
+        href="{% url 'inventory_list' %}"
+        class="btn btn-secondary inventory-detail-btn">
+
+        <i class="fas fa-arrow-right"></i>
+
+        رجوع
+
+    </a>
+
+</div>
+
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+        <!-- ================================================= -->
+        <!-- اسم الدواء -->
+        <!-- ================================================= -->
+
+        <div class="mb-4">
+
+            <h4>
+
+                {{ medicine.name }}
+
+            </h4>
+
+            <span class="text-muted">
+
+                {{ medicine.barcode }}
+
+            </span>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- بيانات الدواء -->
+        <!-- ================================================= -->
+
+        <div class="row">
+
+
+            <div class="col-md-6">
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        نوع المنتج:
+                    </strong>
+
+                    {% if medicine.product_type %}
+
+                        {{ medicine.product_type }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        الفئة:
+                    </strong>
+
+                    {{ medicine.category.name }}
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        الشكل الدوائي:
+                    </strong>
+
+                    {% if medicine.dosage_form %}
+
+                        {{ medicine.dosage_form }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        الشركة المصنعة:
+                    </strong>
+
+                    {{ medicine.manufacturer }}
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        المورد:
+                    </strong>
+
+                    {% if medicine.supplier %}
+
+                        {{ medicine.supplier.full_name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="col-md-6">
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        الكمية الحالية:
+                    </strong>
+
+                    <strong>
+
+                        {{ medicine.quantity }}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        الحد الأدنى للمخزون:
+                    </strong>
+
+                    {{ medicine.minimum_stock }}
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        حالة المخزون:
+                    </strong>
+
+
+                    {% if medicine.stock_status == "available" %}
+
+                        <span class="inventory-status inventory-available">
+
+                            متوفر
+
+                        </span>
+
+
+                    {% elif medicine.stock_status == "low" %}
+
+                        <span class="inventory-status inventory-low">
+
+                            مخزون منخفض
+
+                        </span>
+
+
+                    {% else %}
+
+                        <span class="inventory-status inventory-out">
+
+                            نفد المخزون
+
+                        </span>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        تاريخ الإنتاج:
+                    </strong>
+
+                    {% if medicine.production_date %}
+
+                        {{ medicine.production_date|date:"Y-m-d" }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        تاريخ الانتهاء:
+                    </strong>
+
+                    {{ medicine.expiry_date|date:"Y-m-d" }}
+
+                </div>
+
+
+                <div class="inventory-info-row">
+
+                    <strong>
+                        حالة الصلاحية:
+                    </strong>
+
+
+                    {% if medicine.expiry_status == "valid" %}
+
+                        <span class="inventory-status inventory-valid">
+
+                            ساري
+
+                        </span>
+
+
+                    {% elif medicine.expiry_status == "warning" %}
+
+                        <span class="inventory-status inventory-warning">
+
+                            قريب الانتهاء
+
+                        </span>
+
+
+                    {% else %}
+
+                        <span class="inventory-status inventory-expired">
+
+                            منتهي
+
+                        </span>
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- الأسعار -->
+        <!-- ================================================= -->
+
+        <div class="row mt-4">
+
+
+            <div class="col-md-6">
+
+
+                <div class="card border-0 bg-light">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+
+                            سعر الشراء
+
+                        </h6>
+
+                        <h4>
+
+                            {{ medicine.purchase_price }}
+
+                        </h4>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="col-md-6">
+
+
+                <div class="card border-0 bg-light">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+
+                            سعر البيع
+
+                        </h6>
+
+                        <h4>
+
+                            {{ medicine.selling_price }}
+
+                        </h4>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- الوصف -->
+        <!-- ================================================= -->
+
+        {% if medicine.description %}
+
+            <div class="mt-4">
+
+                <h5>
+
+                    <i class="fas fa-note-sticky"></i>
+
+                    الوصف
+
+                </h5>
+
+                <p class="text-muted">
+
+                    {{ medicine.description }}
+
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

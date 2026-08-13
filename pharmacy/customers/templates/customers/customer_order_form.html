@@ -1,0 +1,421 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+إنشاء طلب جديد
+{% endblock %}
+
+{% block dashboard_content %}
+
+<style>
+
+.customer-order-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.customer-order-btn {
+    position: static !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.product-row {
+    position: relative;
+}
+
+.remove-product {
+    margin-top: 32px;
+}
+
+</style>
+
+
+<div class="card shadow-sm border-0">
+
+    <!-- ================================================= -->
+    <!-- رأس الصفحة -->
+    <!-- ================================================= -->
+
+    <div class="card-header customer-order-header">
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-cart-plus"></i>
+
+            إنشاء طلب جديد
+
+        </h3>
+
+
+        <a
+            href="{% url 'customer_products' %}"
+            class="btn btn-secondary customer-order-btn">
+
+            <i class="fas fa-arrow-right"></i>
+
+            رجوع
+
+        </a>
+
+    </div>
+
+
+    <div class="card-body">
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- ================================================= -->
+            <!-- المنتجات -->
+            <!-- ================================================= -->
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-pills"></i>
+
+                    المنتجات المطلوبة
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    id="add-product"
+                    class="btn btn-primary btn-sm">
+
+                    <i class="fas fa-plus"></i>
+
+                    إضافة منتج
+
+                </button>
+
+            </div>
+
+
+            {{ item_formset.management_form }}
+
+
+            <div id="products-container">
+
+
+                {% for form in item_formset %}
+
+                    <div class="product-row border rounded p-3 mb-3">
+
+
+                        <div class="row align-items-end">
+
+
+                            <!-- الدواء -->
+
+                            <div class="col-md-7">
+
+                                <label class="form-label">
+
+                                    الدواء
+
+                                </label>
+
+                                {{ form.medicine }}
+
+
+                                {% if form.medicine.errors %}
+
+                                    <div class="text-danger">
+
+                                        {{ form.medicine.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- الكمية -->
+
+                            <div class="col-md-3">
+
+                                <label class="form-label">
+
+                                    الكمية
+
+                                </label>
+
+                                {{ form.quantity }}
+
+
+                                {% if form.quantity.errors %}
+
+                                    <div class="text-danger">
+
+                                        {{ form.quantity.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- حذف -->
+
+                            <div class="col-md-2">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-danger remove-product">
+
+                                    <i class="fas fa-trash"></i>
+
+                                    حذف
+
+                                </button>
+
+                            </div>
+
+
+                        </div>
+
+
+                        {% if form.DELETE %}
+
+                            <div style="display:none;">
+
+                                {{ form.DELETE }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- الملاحظات -->
+            <!-- ================================================= -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    {{ order_form.notes.label }}
+
+                </label>
+
+                {{ order_form.notes }}
+
+
+                {% if order_form.notes.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ order_form.notes.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- إرسال الطلب -->
+            <!-- ================================================= -->
+
+            <button
+                type="submit"
+                class="btn btn-success">
+
+                <i class="fas fa-paper-plane"></i>
+
+                إرسال الطلب
+
+            </button>
+
+
+            <a
+                href="{% url 'customer_products' %}"
+                class="btn btn-secondary">
+
+                إلغاء
+
+            </a>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- JavaScript -->
+<!-- ===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    const container =
+        document.getElementById("products-container");
+
+
+    const addButton =
+        document.getElementById("add-product");
+
+
+    const totalForms =
+        document.getElementById(
+            "id_{{ item_formset.prefix }}-TOTAL_FORMS"
+        );
+
+
+    const prefix =
+        "{{ item_formset.prefix }}";
+
+
+    // =====================================================
+    // إضافة منتج
+    // =====================================================
+
+    addButton.addEventListener("click", function () {
+
+
+        const formCount =
+            parseInt(totalForms.value);
+
+
+        const firstRow =
+            container.querySelector(".product-row");
+
+
+        const newRow =
+            firstRow.cloneNode(true);
+
+
+        const regex =
+            new RegExp(
+                prefix + "-\\d+-",
+                "g"
+            );
+
+
+        newRow.innerHTML =
+            newRow.innerHTML.replace(
+                regex,
+                prefix + "-" + formCount + "-"
+            );
+
+
+        // تنظيف الحقول
+
+        newRow.querySelectorAll(
+            "input, select, textarea"
+        ).forEach(function (field) {
+
+
+            if (field.type === "hidden") {
+
+                return;
+
+            }
+
+
+            if (field.tagName === "SELECT") {
+
+                field.selectedIndex = 0;
+
+            } else {
+
+                field.value = "";
+
+            }
+
+        });
+
+
+        container.appendChild(newRow);
+
+
+        totalForms.value =
+            formCount + 1;
+
+    });
+
+
+    // =====================================================
+    // حذف منتج
+    // =====================================================
+
+    container.addEventListener(
+        "click",
+        function (event) {
+
+
+            const button =
+                event.target.closest(
+                    ".remove-product"
+                );
+
+
+            if (!button) {
+
+                return;
+
+            }
+
+
+            const rows =
+                container.querySelectorAll(
+                    ".product-row"
+                );
+
+
+            if (rows.length === 1) {
+
+                alert(
+                    "يجب إضافة منتج واحد على الأقل."
+                );
+
+                return;
+
+            }
+
+
+            const row =
+                button.closest(
+                    ".product-row"
+                );
+
+
+            row.remove();
+
+    });
+
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,311 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>إنشاء حساب | صيدلية الحياة</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.rtl.min.css"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}">
+
+    <style>
+
+        /* صفحة إنشاء الحساب */
+        .register-page {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: flex-start;
+
+            padding: 30px 20px;
+
+            background: linear-gradient(
+                135deg,
+                #f8fbfa,
+                #eef7f3
+            );
+
+        }
+
+        /* بطاقة إنشاء الحساب */
+        .register-page .login-card {
+
+            width: 450px;
+
+            max-width: 100%;
+
+            margin: 0 auto;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="register-page">
+
+    <div class="login-card">
+
+        <!-- الشعار -->
+
+        <img
+            src="{% static 'images/logo/logo.png' %}"
+            class="login-logo"
+            alt="صيدلية الحياة">
+
+
+        <h2>إنشاء حساب جديد</h2>
+
+        <p>صيدلية الحياة</p>
+
+
+        <!-- رسائل النظام -->
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert alert-{{ message.tags }} mt-3">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        <!-- أخطاء النموذج -->
+
+        {% if form.non_field_errors %}
+
+            <div class="alert alert-danger">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- نموذج التسجيل -->
+
+        <form method="POST" autocomplete="off">
+
+            {% csrf_token %}
+
+
+            <!-- الاسم الكامل -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    الاسم الكامل
+                </label>
+
+                {{ form.full_name }}
+
+                {% if form.full_name.errors %}
+
+                    <div class="text-danger mt-1">
+                        {{ form.full_name.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- اسم المستخدم -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    اسم المستخدم
+                </label>
+
+                {{ form.username }}
+
+                {% if form.username.errors %}
+
+                    <div class="text-danger mt-1">
+                        {{ form.username.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- البريد الإلكتروني -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    البريد الإلكتروني
+                </label>
+
+                {{ form.email }}
+
+                {% if form.email.errors %}
+
+                    <div class="text-danger mt-1">
+                        {{ form.email.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- رقم الهاتف -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    رقم الهاتف
+                </label>
+
+                {{ form.phone }}
+
+                {% if form.phone.errors %}
+
+                    <div class="text-danger mt-1">
+                        {{ form.phone.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- نوع الحساب -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    نوع الحساب
+                </label>
+
+                {{ form.role }}
+
+                {% if form.role.errors %}
+
+                    <div class="text-danger mt-1">
+                        {{ form.role.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- كلمة المرور -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    كلمة المرور
+                </label>
+
+                {{ form.password }}
+
+                {% if form.password.errors %}
+
+                    <div class="text-danger mt-1">
+                        {{ form.password.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- تأكيد كلمة المرور -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    تأكيد كلمة المرور
+                </label>
+
+                {{ form.password_confirm }}
+
+                {% if form.password_confirm.errors %}
+
+                    <div class="text-danger mt-1">
+                        {{ form.password_confirm.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- إرسال طلب التسجيل -->
+
+            <button
+                type="submit"
+                class="btn btn-success w-100">
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                إرسال طلب إنشاء الحساب
+
+            </button>
+
+        </form>
+
+
+        <hr>
+
+
+        <!-- العودة لتسجيل الدخول -->
+
+        <div class="login-links">
+
+            <a href="{% url 'login' %}">
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+
+                العودة إلى تسجيل الدخول
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+
+</html>

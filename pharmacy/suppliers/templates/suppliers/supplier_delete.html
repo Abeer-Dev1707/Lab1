@@ -1,0 +1,98 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+حذف المورد | صيدلية الحياة
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="card">
+
+    <!-- رأس الإطار -->
+
+    <div class="card-header">
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-trash"></i>
+
+            حذف المورد
+
+        </h3>
+
+    </div>
+
+
+    <!-- محتوى الإطار -->
+
+    <div class="card-body text-center">
+
+        <div class="mb-4">
+
+            <i
+                class="fas fa-triangle-exclamation text-danger"
+                style="font-size: 60px;">
+            </i>
+
+        </div>
+
+
+        <h4 class="mb-3">
+
+            هل أنت متأكد من حذف هذا المورد؟
+
+        </h4>
+
+
+        <p class="mb-4">
+
+            سيتم حذف المورد:
+
+            <strong>
+                {{ supplier.full_name }}
+            </strong>
+
+        </p>
+
+
+        <div class="alert alert-warning">
+
+            <i class="fas fa-exclamation-triangle"></i>
+
+            لا يمكن التراجع عن عملية الحذف بعد تنفيذها.
+
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-danger">
+
+                <i class="fas fa-trash"></i>
+
+                نعم، حذف المورد
+
+            </button>
+
+
+            <a
+                href="{% url 'supplier_list' %}"
+                class="btn btn-secondary">
+
+                <i class="fas fa-times"></i>
+
+                إلغاء
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

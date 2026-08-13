@@ -1,0 +1,670 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+
+{% block title %}
+المخزون
+{% endblock %}
+
+
+{% block dashboard_content %}
+
+
+<style>
+
+    /* =====================================================
+       رأس الصفحة
+       ===================================================== */
+
+    .inventory-card-header {
+
+        position: relative;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+    }
+
+
+    /* =====================================================
+       مقدمة المخزون
+       ===================================================== */
+
+    .inventory-info {
+
+        background: #f8f9fa;
+
+        border-right: 4px solid #20b486;
+
+        padding: 15px 20px;
+
+        border-radius: 8px;
+
+        margin-bottom: 20px;
+    }
+
+
+    .inventory-info i {
+
+        color: #20b486;
+
+        margin-left: 8px;
+    }
+
+
+    /* =====================================================
+       حالات المخزون
+       ===================================================== */
+
+    .stock-status {
+
+        display: inline-flex !important;
+
+        align-items: center;
+
+        justify-content: center;
+
+        position: static !important;
+
+        width: auto !important;
+
+        height: auto !important;
+
+        padding: 6px 12px;
+
+        border-radius: 20px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+        line-height: 1.4;
+
+        vertical-align: middle;
+
+        transform: none !important;
+    }
+
+
+    .stock-status-available {
+
+        background-color: #20b486;
+
+        color: white;
+    }
+
+
+    .stock-status-low {
+
+        background-color: #ffc107;
+
+        color: #212529;
+    }
+
+
+    .stock-status-out {
+
+        background-color: #dc3545;
+
+        color: white;
+    }
+
+
+    /* =====================================================
+       حالات الصلاحية
+       ===================================================== */
+
+    .expiry-status {
+
+        display: inline-flex !important;
+
+        align-items: center;
+
+        justify-content: center;
+
+        position: static !important;
+
+        width: auto !important;
+
+        height: auto !important;
+
+        padding: 6px 12px;
+
+        border-radius: 20px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+        line-height: 1.4;
+
+        vertical-align: middle;
+
+        transform: none !important;
+    }
+
+
+    .expiry-valid {
+
+        background-color: #20b486;
+
+        color: white;
+    }
+
+
+    .expiry-warning {
+
+        background-color: #ffc107;
+
+        color: #212529;
+    }
+
+
+    .expiry-expired {
+
+        background-color: #dc3545;
+
+        color: white;
+    }
+
+
+    /* =====================================================
+       جدول المخزون
+       ===================================================== */
+
+    .inventory-table th,
+    .inventory-table td {
+
+        vertical-align: middle;
+
+        white-space: nowrap;
+
+        text-align: center;
+    }
+
+
+    .inventory-table th {
+
+        font-weight: 600;
+    }
+
+
+    /* =====================================================
+       الكمية
+       ===================================================== */
+
+    .quantity-value {
+
+        font-size: 16px;
+
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       اسم الدواء
+       ===================================================== */
+
+    .medicine-name {
+
+        font-weight: 600;
+    }
+
+
+    /* =====================================================
+       زر التفاصيل
+       ===================================================== */
+
+    .inventory-detail-btn {
+
+        position: static !important;
+
+        display: inline-flex !important;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 5px;
+
+        white-space: nowrap;
+    }
+
+
+</style>
+
+
+
+<div class="card shadow-sm border-0">
+
+
+    <!-- ================================================= -->
+    <!-- رأس الصفحة -->
+    <!-- ================================================= -->
+
+    <div class="card-header inventory-card-header">
+
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-boxes-stacked"></i>
+
+            المخزون
+
+        </h3>
+
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+        <!-- ================================================= -->
+        <!-- توضيح الصفحة -->
+        <!-- ================================================= -->
+
+        <div class="inventory-info">
+
+            <i class="fas fa-circle-info"></i>
+
+            <strong>
+                متابعة المخزون:
+            </strong>
+
+            من هنا يمكنك متابعة الكميات الحالية والحد الأدنى
+            وحالة المخزون وصلاحية الأدوية.
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- جدول المخزون -->
+        <!-- ================================================= -->
+
+        <div class="table-responsive">
+
+
+            <table
+                class="table table-striped table-hover align-middle inventory-table">
+
+
+                <!-- ================================================= -->
+                <!-- رأس الجدول -->
+                <!-- ================================================= -->
+
+                <thead>
+
+                    <tr>
+
+
+                        <th>
+                            #
+                        </th>
+
+
+                        <th>
+                            اسم الدواء
+                        </th>
+
+
+                        <th>
+                            الباركود
+                        </th>
+
+
+                        <th>
+                            المورد
+                        </th>
+
+
+                        <th>
+                            الكمية الحالية
+                        </th>
+
+
+                        <th>
+                            الحد الأدنى
+                        </th>
+
+
+                        <th>
+                            حالة المخزون
+                        </th>
+
+
+                        <th>
+                            تاريخ الانتهاء
+                        </th>
+
+
+                        <th>
+                            حالة الصلاحية
+                        </th>
+
+
+                        <th>
+                            الإجراءات
+                        </th>
+
+
+                    </tr>
+
+                </thead>
+
+
+
+                <!-- ================================================= -->
+                <!-- بيانات المخزون -->
+                <!-- ================================================= -->
+
+                <tbody>
+
+
+                {% for medicine in medicines %}
+
+
+                    <tr>
+
+
+                        <!-- ================================================= -->
+                        <!-- الرقم -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+                            {{ forloop.counter }}
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- اسم الدواء -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+                            <span class="medicine-name">
+
+                                {{ medicine.name }}
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- الباركود -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+                            {{ medicine.barcode }}
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- المورد -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+                            {% if medicine.supplier %}
+
+                                {{ medicine.supplier.full_name }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- الكمية الحالية -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+                            <span class="quantity-value">
+
+                                {{ medicine.quantity }}
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- الحد الأدنى -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+                            {{ medicine.minimum_stock }}
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- حالة المخزون -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+
+                            {% if medicine.stock_status == "available" %}
+
+
+                                <span class="stock-status stock-status-available">
+
+                                    <i class="fas fa-check"></i>
+
+                                    متوفر
+
+                                </span>
+
+
+                            {% elif medicine.stock_status == "low" %}
+
+
+                                <span class="stock-status stock-status-low">
+
+                                    <i class="fas fa-triangle-exclamation"></i>
+
+                                    مخزون منخفض
+
+                                </span>
+
+
+                            {% else %}
+
+
+                                <span class="stock-status stock-status-out">
+
+                                    <i class="fas fa-times"></i>
+
+                                    نفد المخزون
+
+                                </span>
+
+
+                            {% endif %}
+
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- تاريخ الانتهاء -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+                            {{ medicine.expiry_date|date:"Y-m-d" }}
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- حالة الصلاحية -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+
+                            {% if medicine.expiry_status == "valid" %}
+
+
+                                <span class="expiry-status expiry-valid">
+
+                                    <i class="fas fa-check"></i>
+
+                                    ساري
+
+                                </span>
+
+
+                            {% elif medicine.expiry_status == "warning" %}
+
+
+                                <span class="expiry-status expiry-warning">
+
+                                    <i class="fas fa-clock"></i>
+
+                                    قريب الانتهاء
+
+                                </span>
+
+
+                            {% else %}
+
+
+                                <span class="expiry-status expiry-expired">
+
+                                    <i class="fas fa-times"></i>
+
+                                    منتهي
+
+                                </span>
+
+
+                            {% endif %}
+
+
+                        </td>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- الإجراءات -->
+                        <!-- ================================================= -->
+
+                        <td>
+
+
+                            <a
+                                href="{% url 'inventory_detail' medicine.id %}"
+                                class="btn btn-primary btn-sm inventory-detail-btn">
+
+
+                                <i class="fas fa-eye"></i>
+
+
+                                التفاصيل
+
+
+                            </a>
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% empty %}
+
+
+                    <!-- ================================================= -->
+                    <!-- لا يوجد مخزون -->
+                    <!-- ================================================= -->
+
+                    <tr>
+
+
+                        <td
+                            colspan="10"
+                            class="text-center py-5">
+
+
+                            <div class="mb-3">
+
+                                <i
+                                    class="fas fa-box-open fa-3x text-muted">
+                                </i>
+
+                            </div>
+
+
+                            <h4>
+
+                                لا يوجد مخزون
+
+                            </h4>
+
+
+                            <p class="text-muted">
+
+                                لا توجد أدوية مسجلة في المخزون حاليًا.
+
+                            </p>
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

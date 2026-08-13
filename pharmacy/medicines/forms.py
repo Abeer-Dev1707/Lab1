@@ -5,11 +5,13 @@ from .models import Medicine
 class MedicineForm(forms.ModelForm):
 
     class Meta:
+
         model = Medicine
 
         fields = [
             'name',
             "product_type",
+            'supplier',
             'category',
             "dosage_form",
             'barcode',
@@ -25,6 +27,8 @@ class MedicineForm(forms.ModelForm):
 
         labels = {
             'name': 'اسم الدواء',
+            'product_type': 'نوع المنتج',
+            'supplier': 'المورد',
             'category': 'الفئة',
             'barcode': 'الباركود',
             'manufacturer': 'الشركة المصنعة',
@@ -36,12 +40,20 @@ class MedicineForm(forms.ModelForm):
             'expiry_date': 'تاريخ الانتهاء',
             'description': 'الوصف',
             "dosage_form": "الشكل الدوائي",
-            "product_type": "نوع المنتج",
         }
 
         widgets = {
+
             'name': forms.TextInput(attrs={
                 'class': 'form-control'
+            }),
+
+            'product_type': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+
+            'supplier': forms.Select(attrs={
+                'class': 'form-select'
             }),
 
             'category': forms.Select(attrs={
@@ -90,10 +102,6 @@ class MedicineForm(forms.ModelForm):
             }),
 
             "dosage_form": forms.TextInput(attrs={
-                    "class": "form-control"
+                "class": "form-control"
             }),
-
-            "product_type": forms.Select(attrs={
-                "class": "form-select"
-                }),
         }

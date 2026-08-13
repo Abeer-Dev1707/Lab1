@@ -2,6 +2,8 @@ from django.db import models
 from categories.models import Category
 from product_types.models import ProductType
 
+from suppliers.models import Supplier
+
 
 class Medicine(models.Model):
 
@@ -18,6 +20,15 @@ class Medicine(models.Model):
     null=True,
     blank=True
     )
+
+    supplier = models.ForeignKey(
+    Supplier,
+    on_delete=models.SET_NULL,
+    related_name="medicines",
+    verbose_name="المورد",
+    null=True,
+    blank=True
+)
 
     name = models.CharField(max_length=200, verbose_name="اسم الدواء")
 

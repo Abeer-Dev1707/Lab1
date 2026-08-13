@@ -1,0 +1,214 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+بياناتي | صيدلية الحياة
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="card">
+
+    <!-- رأس الإطار -->
+
+    <div class="card-header">
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-user"></i>
+
+            بياناتي
+
+        </h3>
+
+    </div>
+
+
+    <!-- محتوى الإطار -->
+
+    <div class="card-body">
+
+        {% if form.non_field_errors %}
+
+            <div class="alert alert-danger">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- اسم المورد -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    {{ form.full_name.label }}
+
+                </label>
+
+                {{ form.full_name }}
+
+                {% if form.full_name.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ form.full_name.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- رقم الهاتف -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    {{ form.phone.label }}
+
+                </label>
+
+                {{ form.phone }}
+
+                {% if form.phone.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ form.phone.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- البريد الإلكتروني -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    {{ form.email.label }}
+
+                </label>
+
+                {{ form.email }}
+
+                {% if form.email.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ form.email.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- اسم الشركة -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    {{ form.company_name.label }}
+
+                </label>
+
+                {{ form.company_name }}
+
+                {% if form.company_name.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ form.company_name.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- العنوان -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    {{ form.address.label }}
+
+                </label>
+
+                {{ form.address }}
+
+                {% if form.address.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ form.address.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- الملاحظات -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    {{ form.notes.label }}
+
+                </label>
+
+                {{ form.notes }}
+
+                {% if form.notes.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ form.notes.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- حفظ -->
+
+            <button
+                type="submit"
+                class="btn btn-primary">
+
+                <i class="fas fa-save"></i>
+
+                حفظ التعديلات
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

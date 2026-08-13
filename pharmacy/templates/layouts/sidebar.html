@@ -23,79 +23,312 @@
 
     <!-- Menu -->
 
-    <ul class="sidebar-menu">
+<ul class="sidebar-menu">
 
-        <li>
-            <a href="{% url 'dashboard' %}" class="active">
-                <span>الرئيسية</span>
-                <i class="fa-solid fa-house"></i>
-            </a>
-        </li>
+    <!-- الرئيسية: جميع المستخدمين -->
 
-        <li>
-            <a href="{% url 'medicine_list' %}">
-                <span>الأدوية</span>
-                <i class="fa-solid fa-capsules"></i>
-            </a>
-        </li>
+    <li>
+        <a href="{% url 'dashboard' %}" class="active">
 
-        <li>
-          <a href="{% url 'product_type_list' %}">
-            <span>أنواع المنتجات</span>
+            <span>الرئيسية</span>
+
+            <i class="fa-solid fa-house"></i>
+
+        </a>
+    </li>
+
+    {% if user.is_authenticated and user.role == "supplier" %}
+
+    <li>
+
+        <a href="{% url 'supplier_profile' %}">
+
+            <span>بياناتي</span>
+
+            <i class="fa-solid fa-user"></i>
+
+        </a>
+
+    </li>
+
+{% endif %}
+
+{% if user.is_authenticated and user.role == "supplier" %}
+
+    <li>
+
+        <a href="{% url 'supplier_medicines' %}">
+
+            <span>منتجاتي</span>
+
             <i class="fa-solid fa-boxes-stacked"></i>
-          </a>
-        </li>
+
+        </a>
+
+    </li>
+
+{% endif %}
+
+{% if user.is_authenticated and user.role == "supplier" %}
+
+    <li>
+
+        <a href="{% url 'supplier_orders' %}">
+
+            <span>طلبات التوريد</span>
+
+            <i class="fa-solid fa-file-invoice"></i>
+
+        </a>
+
+    </li>
+
+{% endif %}
+
+{% if user.is_authenticated and user.role == "customer" %}
+
+    <li>
+
+        <a href="{% url 'customer_products' %}">
+
+            <span>منتجات الصيدلية</span>
+
+            <i class="fa-solid fa-pills"></i>
+
+        </a>
+
+    </li>
+
+    <li>
+
+        <a href="{% url 'customer_orders' %}">
+
+            <span>طلباتي</span>
+
+            <i class="fa-solid fa-file-invoice"></i>
+
+        </a>
+
+    </li>
+
+{% endif %}
+
+
+{% if user.role == "admin" or user.role == "pharmacist" %}
+
+    <li>
+
+        <a href="{% url 'inventory_list' %}">
+
+            <span>المخزون</span>
+
+            <i class="fa-solid fa-boxes-stacked"></i>
+
+        </a>
+
+    </li>
+
+{% endif %}
+
+
+    <!-- ========================================= -->
+    <!-- صلاحيات المدير -->
+    <!-- ========================================= -->
+
+    {% if user.is_authenticated and user.role == "admin" %}
+
+        <!-- طلبات الحسابات -->
 
         <li>
-          <a href="{% url 'category_list' %}">
-            <span>الفئات</span>
-            <i class="fa-solid fa-layer-group"></i>
-          </a>
-        </li>
 
-        <li>
-            <a href="#">
-                <span>المبيعات</span>
-                <i class="fa-solid fa-cart-shopping"></i>
+            <a href="{% url 'account_requests' %}">
+
+                <span>طلبات الحسابات</span>
+
+                <i class="fa-solid fa-user-clock"></i>
+
             </a>
+
         </li>
 
+
+        <!-- المستخدمون -->
+
         <li>
-            <a href="#">
-                <span>المشتريات</span>
-                <i class="fa-solid fa-bag-shopping"></i>
+
+            <a href="{% url 'user_list' %}">
+
+                <span>المستخدمون</span>
+
+                <i class="fa-solid fa-user-gear"></i>
+
             </a>
+
         </li>
 
+    {% endif %}
+
+
+    <!-- ========================================= -->
+    <!-- الصيدلي والمدير -->
+    <!-- ========================================= -->
+
+    {% if user.is_authenticated and user.role == "admin" or user.is_authenticated and user.role == "pharmacist" %}
+
+
+        <!-- الأدوية -->
+
         <li>
-            <a href="#">
+
+            <a href="{% url 'medicine_list' %}">
+
+                <span>الأدوية</span>
+
+                <i class="fa-solid fa-capsules"></i>
+
+            </a>
+
+        </li>
+
+
+        <!-- أنواع المنتجات -->
+
+        <li>
+
+            <a href="{% url 'product_type_list' %}">
+
+                <span>أنواع المنتجات</span>
+
+                <i class="fa-solid fa-boxes-stacked"></i>
+
+            </a>
+
+        </li>
+
+
+        <!-- الفئات -->
+
+        <li>
+
+            <a href="{% url 'category_list' %}">
+
+                <span>الفئات</span>
+
+                <i class="fa-solid fa-layer-group"></i>
+
+            </a>
+
+        </li>
+
+
+        <!-- المبيعات -->
+
+      {% if user.role == "admin" or user.role == "pharmacist" %}
+
+<li>
+    <a href="{% url 'sale_list' %}">
+        <span>المبيعات</span>
+        <i class="fa-solid fa-cart-shopping"></i>
+    </a>
+</li>
+
+{% endif %}
+
+<!-- طلبات العملاء -->
+
+<li>
+
+    <a href="{% url 'customer_order_manage' %}">
+
+        <span>طلبات العملاء</span>
+
+        <i class="fa-solid fa-file-invoice"></i>
+
+    </a>
+
+</li>
+
+        <!-- المشتريات -->
+
+        <li>
+
+    <a href="{% url 'purchase_list' %}">
+        <span>المشتريات</span>
+        <i class="fa-solid fa-bag-shopping"></i>
+    </a>
+
+
+        </li>
+
+
+        <!-- العملاء -->
+
+        <li>
+
+            <a href="{% url 'customer_list' %}">
+
                 <span>العملاء</span>
+
                 <i class="fa-solid fa-users"></i>
+
             </a>
+
         </li>
 
+
+        <!-- الموردون -->
+
         <li>
-            <a href="#">
+
+            <a href="{% url 'supplier_list' %}">
+
                 <span>الموردين</span>
+
                 <i class="fa-solid fa-truck"></i>
+
             </a>
+
         </li>
 
+
+        <!-- التقارير -->
+
         <li>
+
             <a href="#">
+
                 <span>التقارير</span>
+
                 <i class="fa-solid fa-chart-column"></i>
+
             </a>
+
         </li>
+
+    {% endif %}
+
+
+    <!-- ========================================= -->
+    <!-- الإعدادات للمدير فقط -->
+    <!-- ========================================= -->
+
+    {% if user.is_authenticated and user.role == "admin" %}
 
         <li>
+
             <a href="#">
+
                 <span>الإعدادات</span>
+
                 <i class="fa-solid fa-gear"></i>
+
             </a>
+
         </li>
 
-    </ul>
+    {% endif %}
+
+</ul>
 
     <!-- Logout -->
 

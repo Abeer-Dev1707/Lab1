@@ -1,0 +1,665 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+
+{% block title %}
+إنشاء فاتورة بيع
+{% endblock %}
+
+
+{% block dashboard_content %}
+
+<style>
+
+    .sale-product-row {
+        background: #fff;
+        transition: 0.2s;
+    }
+
+    .sale-product-row:hover {
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .sale-total-box {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+</style>
+
+
+<div class="card shadow-sm border-0">
+
+
+    <!-- ================================================= -->
+    <!-- رأس الصفحة -->
+    <!-- ================================================= -->
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h3 class="mb-0">
+
+            <i class="fas fa-cash-register"></i>
+
+            إنشاء فاتورة بيع
+
+        </h3>
+
+
+        <a
+            href="{% url 'sale_list' %}"
+            class="btn btn-secondary">
+
+            <i class="fas fa-arrow-right"></i>
+
+            رجوع
+
+        </a>
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- ================================================= -->
+            <!-- بيانات الفاتورة -->
+            <!-- ================================================= -->
+
+            <div class="mb-4">
+
+                <h5 class="mb-3">
+
+                    <i class="fas fa-user"></i>
+
+                    بيانات العميل
+
+                </h5>
+
+
+                <label class="form-label">
+
+                    {{ sale_form.customer.label }}
+
+                </label>
+
+
+                {{ sale_form.customer }}
+
+
+                {% if sale_form.customer.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ sale_form.customer.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- المنتجات -->
+            <!-- ================================================= -->
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-pills"></i>
+
+                    الأدوية
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    id="add-product"
+                    class="btn btn-primary btn-sm">
+
+                    <i class="fas fa-plus"></i>
+
+                    إضافة دواء
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- Django Formset Management Form -->
+            <!-- ================================================= -->
+
+            {{ item_formset.management_form }}
+
+
+
+            <!-- ================================================= -->
+            <!-- المنتجات -->
+            <!-- ================================================= -->
+
+            <div id="products-container">
+
+
+                {% for form in item_formset %}
+
+                    <div class="sale-product-row border rounded p-3 mb-3">
+
+
+                        <div class="row align-items-end">
+
+
+                            <!-- ============================== -->
+                            <!-- الدواء -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-5">
+
+                                <label class="form-label">
+
+                                    الدواء
+
+                                </label>
+
+
+                                {{ form.medicine }}
+
+
+                                {% if form.medicine.errors %}
+
+                                    <div class="text-danger mt-1">
+
+                                        {{ form.medicine.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- ============================== -->
+                            <!-- الكمية -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-3">
+
+                                <label class="form-label">
+
+                                    الكمية
+
+                                </label>
+
+
+                                {{ form.quantity }}
+
+
+                                {% if form.quantity.errors %}
+
+                                    <div class="text-danger mt-1">
+
+                                        {{ form.quantity.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- ============================== -->
+                            <!-- سعر البيع -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-3">
+
+                                <label class="form-label">
+
+                                    سعر البيع
+
+                                </label>
+
+
+                                {{ form.selling_price }}
+
+
+                                {% if form.selling_price.errors %}
+
+                                    <div class="text-danger mt-1">
+
+                                        {{ form.selling_price.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- ============================== -->
+                            <!-- حذف -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-1">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-danger remove-product"
+                                    title="حذف الدواء">
+
+                                    <i class="fas fa-trash"></i>
+
+                                </button>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- النموذج الفارغ لإضافة دواء جديد -->
+            <!-- ================================================= -->
+
+            <div
+                id="empty-product-form"
+                style="display:none;">
+
+                <div class="sale-product-row border rounded p-3 mb-3">
+
+
+                    <div class="row align-items-end">
+
+
+                        <!-- الدواء -->
+
+                        <div class="col-md-5">
+
+                            <label class="form-label">
+
+                                الدواء
+
+                            </label>
+
+
+                            {{ item_formset.empty_form.medicine }}
+
+                        </div>
+
+
+
+                        <!-- الكمية -->
+
+                        <div class="col-md-3">
+
+                            <label class="form-label">
+
+                                الكمية
+
+                            </label>
+
+
+                            {{ item_formset.empty_form.quantity }}
+
+                        </div>
+
+
+
+                        <!-- سعر البيع -->
+
+                        <div class="col-md-3">
+
+                            <label class="form-label">
+
+                                سعر البيع
+
+                            </label>
+
+
+                            {{ item_formset.empty_form.selling_price }}
+
+                        </div>
+
+
+
+                        <!-- حذف -->
+
+                        <div class="col-md-1">
+
+                            <button
+                                type="button"
+                                class="btn btn-danger remove-product"
+                                title="حذف الدواء">
+
+                                <i class="fas fa-trash"></i>
+
+                            </button>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الملاحظات -->
+            <!-- ================================================= -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    {{ sale_form.notes.label }}
+
+                </label>
+
+
+                {{ sale_form.notes }}
+
+
+                {% if sale_form.notes.errors %}
+
+                    <div class="text-danger mt-1">
+
+                        {{ sale_form.notes.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الإجمالي -->
+            <!-- ================================================= -->
+
+            <div class="alert alert-info sale-total-box mb-4">
+
+                <i class="fas fa-calculator"></i>
+
+                إجمالي الفاتورة:
+
+                <span id="grand-total">
+
+                    0.00
+
+                </span>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- الأزرار -->
+            <!-- ================================================= -->
+
+            <button
+                type="submit"
+                class="btn btn-success">
+
+                <i class="fas fa-check"></i>
+
+                تأكيد البيع
+
+            </button>
+
+
+            <a
+                href="{% url 'sale_list' %}"
+                class="btn btn-secondary">
+
+                إلغاء
+
+            </a>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- JavaScript -->
+<!-- ===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    const container =
+        document.getElementById("products-container");
+
+
+    const addButton =
+        document.getElementById("add-product");
+
+
+    const totalForms =
+        document.getElementById(
+            "id_{{ item_formset.prefix }}-TOTAL_FORMS"
+        );
+
+
+    const emptyFormTemplate =
+        document.getElementById(
+            "empty-product-form"
+        ).innerHTML;
+
+
+    const grandTotal =
+        document.getElementById("grand-total");
+
+
+
+    // =====================================================
+    // حساب الإجمالي
+    // =====================================================
+
+    function calculateTotal() {
+
+        let total = 0;
+
+
+        const rows =
+            container.querySelectorAll(
+                ".sale-product-row"
+            );
+
+
+        rows.forEach(function (row) {
+
+            const quantityInput =
+                row.querySelector(
+                    ".quantity-input"
+                );
+
+
+            const priceInput =
+                row.querySelector(
+                    ".selling-price-input"
+                );
+
+
+            if (!quantityInput || !priceInput) {
+                return;
+            }
+
+
+            const quantity =
+                parseFloat(
+                    quantityInput.value
+                ) || 0;
+
+
+            const price =
+                parseFloat(
+                    priceInput.value
+                ) || 0;
+
+
+            total += quantity * price;
+
+        });
+
+
+        grandTotal.textContent =
+            total.toFixed(2);
+
+    }
+
+
+
+    // =====================================================
+    // إضافة دواء
+    // =====================================================
+
+    addButton.addEventListener(
+        "click",
+        function () {
+
+
+            const formCount =
+                parseInt(
+                    totalForms.value
+                );
+
+
+            let newForm =
+                emptyFormTemplate.replace(
+                    /__prefix__/g,
+                    formCount
+                );
+
+
+            container.insertAdjacentHTML(
+                "beforeend",
+                newForm
+            );
+
+
+            totalForms.value =
+                formCount + 1;
+
+
+            calculateTotal();
+
+        }
+    );
+
+
+
+    // =====================================================
+    // حذف دواء
+    // =====================================================
+
+    container.addEventListener(
+        "click",
+        function (event) {
+
+
+            const button =
+                event.target.closest(
+                    ".remove-product"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const rows =
+                container.querySelectorAll(
+                    ".sale-product-row"
+                );
+
+
+            if (rows.length === 1) {
+
+                alert(
+                    "يجب أن تحتوي الفاتورة على دواء واحد على الأقل."
+                );
+
+                return;
+
+            }
+
+
+            const row =
+                button.closest(
+                    ".sale-product-row"
+                );
+
+
+            row.remove();
+
+
+            calculateTotal();
+
+        }
+    );
+
+
+
+    // =====================================================
+    // تحديث الإجمالي عند تغيير الكمية أو السعر
+    // =====================================================
+
+    container.addEventListener(
+        "input",
+        function () {
+
+            calculateTotal();
+
+        }
+    );
+
+
+
+    // =====================================================
+    // الحساب الأولي
+    // =====================================================
+
+    calculateTotal();
+
+});
+
+</script>
+
+
+{% endblock %}
