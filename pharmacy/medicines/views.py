@@ -1,16 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Sum, Max
 from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import timedelta
 
 from .models import Medicine
-from .forms import MedicineForm
+from .forms import MedicineForm, SearchMedicineForm
 
 from accounts.decorators import pharmacist_required
 from suppliers.models import Supplier
+from purchases.models import PurchaseItem
 
 
 # =========================================================
@@ -21,12 +22,24 @@ from suppliers.models import Supplier
 @pharmacist_required
 def medicine_list(request):
 
-    search = request.GET.get('search', '')
+    search = request.GET.get("search", "")
+
+    # =====================================================
+    # QuerySet 1
+    # all()
+    # =====================================================
 
     medicines = Medicine.objects.select_related(
-        'category',
-        'supplier'
+        "category",
+        "supplier",
+        "product_type"
     ).all()
+
+
+    # =====================================================
+    # QuerySet 2
+    # filter()
+    # =====================================================
 
     if search:
 
@@ -39,9 +52,18 @@ def medicine_list(request):
 
         )
 
-    # -------------------------
+
+    # =====================================================
+    # QuerySet 3
+    # count()
+    # =====================================================
+
+    medicine_count = medicines.count()
+
+
+    # -----------------------------------------------------
     # حالة الصلاحية
-    # -------------------------
+    # -----------------------------------------------------
 
     today = timezone.now().date()
 
@@ -59,35 +81,44 @@ def medicine_list(request):
 
             medicine.expiry_status = "valid"
 
-    # -------------------------
-    # Pagination
-    # -------------------------
 
-    paginator = Paginator(medicines, 10)
+    # -----------------------------------------------------
+    # Pagination
+    # -----------------------------------------------------
+
+    paginator = Paginator(
+        medicines,
+        10
+    )
 
     page_number = request.GET.get("page")
 
-    medicines = paginator.get_page(page_number)
+    medicines = paginator.get_page(
+        page_number
+    )
+
 
     return render(
         request,
-        'medicines/medicine_list.html',
+        "medicines/medicine_list.html",
         {
-            'medicines': medicines,
-            'search': search,
+            "medicines": medicines,
+            "search": search,
+            "medicine_count": medicine_count,
         }
     )
 
 
 # =========================================================
 # إضافة دواء
+# ModelForm
 # المدير + الصيدلي
 # =========================================================
 
 @pharmacist_required
 def medicine_create(request):
 
-    if request.method == 'POST':
+    if request.method == "POST":
 
         form = MedicineForm(request.POST)
 
@@ -100,7 +131,7 @@ def medicine_create(request):
                 "تمت إضافة الدواء بنجاح."
             )
 
-            return redirect('medicine_list')
+            return redirect("medicine_list")
 
     else:
 
@@ -108,16 +139,17 @@ def medicine_create(request):
 
     return render(
         request,
-        'medicines/medicine_form.html',
+        "medicines/medicine_form.html",
         {
-            'form': form,
-            'page_title': 'إضافة دواء'
+            "form": form,
+            "page_title": "إضافة دواء"
         }
     )
 
 
 # =========================================================
 # تعديل الدواء
+# ModelForm
 # المدير + الصيدلي
 # =========================================================
 
@@ -158,7 +190,7 @@ def medicine_update(request, pk):
         "medicines/medicine_form.html",
         {
             "form": form,
-            "page_title": "تعديل الدواء"
+            "page_title": "تعديل دواء"
         }
     )
 
@@ -219,7 +251,7 @@ def supplier_medicines(request):
 
 
     # -----------------------------------------------------
-    # الحصول على ملف المورد المرتبط بالحساب
+    # الحصول على المورد المرتبط بالحساب
     # -----------------------------------------------------
 
     supplier = get_object_or_404(
@@ -229,36 +261,109 @@ def supplier_medicines(request):
 
 
     # -----------------------------------------------------
-    # جلب منتجات هذا المورد فقط
+    # البحث
     # -----------------------------------------------------
 
     search = request.GET.get(
         "search",
         ""
-    )
+    ).strip()
+
+
+    # =====================================================
+    # المنتجات التي قام هذا المورد بتوريدها فعليًا
+    # =====================================================
 
     medicines = Medicine.objects.filter(
-        supplier=supplier
+
+        purchase_items__order__supplier=supplier,
+
+        purchase_items__order__status="completed"
+
     ).select_related(
+
         "category",
-        "product_type"
-    )
+        "product_type",
+        "supplier"
+
+    ).annotate(
+
+        supplied_quantity=Sum(
+            "purchase_items__quantity",
+            filter=Q(
+                purchase_items__order__supplier=supplier,
+                purchase_items__order__status="completed"
+            )
+        ),
+
+        last_supply_date=Max(
+            "purchase_items__order__created_at",
+            filter=Q(
+                purchase_items__order__supplier=supplier,
+                purchase_items__order__status="completed"
+            )
+        )
+
+    ).distinct()
 
 
-    # -----------------------------------------------------
-    # البحث
-    # -----------------------------------------------------
+    # =====================================================
+    # QuerySet 4
+    # filter()
+    # =====================================================
 
     if search:
 
         medicines = medicines.filter(
 
             Q(name__icontains=search) |
+
             Q(barcode__icontains=search) |
+
             Q(manufacturer__icontains=search) |
+
             Q(category__name__icontains=search)
 
         )
+
+
+    # =====================================================
+    # QuerySet 5
+    # order_by()
+    # =====================================================
+
+    medicines = medicines.order_by(
+        "-last_supply_date",
+        "name"
+    )
+
+
+    # =====================================================
+    # QuerySet 6
+    # distinct()
+    # =====================================================
+
+
+    # =====================================================
+    # QuerySet 7
+    # count()
+    # =====================================================
+
+    supplier_medicine_count = medicines.count()
+
+
+    # =====================================================
+    # QuerySet 8
+    # aggregate()
+    # =====================================================
+
+    supplier_totals = medicines.aggregate(
+        total_quantity=Sum("supplied_quantity")
+    )
+
+    supplier_total_quantity = (
+        supplier_totals["total_quantity"] or 0
+    )
 
 
     # -----------------------------------------------------
@@ -300,11 +405,98 @@ def supplier_medicines(request):
     )
 
 
+    # -----------------------------------------------------
+    # عرض الصفحة
+    # -----------------------------------------------------
+
     return render(
         request,
         "medicines/supplier_medicines.html",
         {
             "medicines": medicines,
+            "search": search,
+            "supplier": supplier,
+
+            "supplier_medicine_count": supplier_medicine_count,
+            "supplier_total_quantity": supplier_total_quantity,
+        }
+    )
+
+
+# =========================================================
+# الطريقة الثانية للفورم
+# forms.Form
+# =========================================================
+
+@pharmacist_required
+def django_form(request):
+
+    form = SearchMedicineForm(
+        request.GET or None
+    )
+
+    results = Medicine.objects.all()
+
+    if form.is_valid():
+
+        search = form.cleaned_data.get(
+            "search"
+        )
+
+        if search:
+
+            results = results.filter(
+
+                Q(name__icontains=search) |
+
+                Q(barcode__icontains=search)
+
+            )
+
+    return render(
+        request,
+        "medicines/django_form.html",
+        {
+            "form": form,
+            "results": results,
+        }
+    )
+
+
+# =========================================================
+# الطريقة الأولى للفورم
+# HTML Form عادي
+# =========================================================
+
+@pharmacist_required
+def simple_html_form(request):
+
+    results = Medicine.objects.all()
+
+    search = ""
+
+    if request.method == "POST":
+
+        search = request.POST.get(
+            "search",
+            ""
+        ).strip()
+
+        if search:
+
+            results = results.filter(
+
+                Q(name__icontains=search) |
+
+                Q(barcode__icontains=search)
+
+            )
+
+    return render(
+        request,
+        "medicines/simple_html_form.html",
+        {
+            "results": results,
             "search": search,
         }
     )

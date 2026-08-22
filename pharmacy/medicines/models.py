@@ -1,9 +1,43 @@
 from django.db import models
 from categories.models import Category
 from product_types.models import ProductType
-
 from suppliers.models import Supplier
 
+
+# =========================================================
+# المادة الفعالة
+# =========================================================
+
+class ActiveIngredient(models.Model):
+
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        verbose_name="اسم المادة الفعالة"
+    )
+
+    description = models.TextField(
+        blank=True,
+        verbose_name="الوصف"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاريخ الإضافة"
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "مادة فعالة"
+        verbose_name_plural = "المواد الفعالة"
+        ordering = ["name"]
+
+
+# =========================================================
+# الدواء
+# =========================================================
 
 class Medicine(models.Model):
 
@@ -13,30 +47,44 @@ class Medicine(models.Model):
     ]
 
     product_type = models.ForeignKey(
-    ProductType,
-    on_delete=models.CASCADE,
-    related_name="medicines",
-    verbose_name="نوع المنتج",
-    null=True,
-    blank=True
+        ProductType,
+        on_delete=models.CASCADE,
+        related_name="medicines",
+        verbose_name="نوع المنتج",
+        null=True,
+        blank=True
     )
 
     supplier = models.ForeignKey(
-    Supplier,
-    on_delete=models.SET_NULL,
-    related_name="medicines",
-    verbose_name="المورد",
-    null=True,
-    blank=True
-)
+        Supplier,
+        on_delete=models.SET_NULL,
+        related_name="medicines",
+        verbose_name="المورد",
+        null=True,
+        blank=True
+    )
 
-    name = models.CharField(max_length=200, verbose_name="اسم الدواء")
+    name = models.CharField(
+        max_length=200,
+        verbose_name="اسم الدواء"
+    )
 
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
         related_name="medicines",
         verbose_name="الفئة"
+    )
+
+    # =====================================================
+    # علاقة Many-to-Many
+    # =====================================================
+
+    active_ingredients = models.ManyToManyField(
+        ActiveIngredient,
+        related_name="medicines",
+        blank=True,
+        verbose_name="المواد الفعالة"
     )
 
     barcode = models.CharField(
@@ -95,14 +143,18 @@ class Medicine(models.Model):
     )
 
     dosage_form = models.CharField(
-    max_length=100,
-    blank=True,
-    verbose_name="الشكل الدوائي"
-)
+        max_length=100,
+        blank=True,
+        verbose_name="الشكل الدوائي"
+    )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
 
     def __str__(self):
         return self.name

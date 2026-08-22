@@ -44,6 +44,12 @@ class PurchaseOrderForm(forms.ModelForm):
 
 # =========================================================
 # نموذج المنتج داخل طلب التوريد
+#
+# الصيدلية تحدد:
+#   - الدواء
+#   - الكمية
+#
+# أما سعر الشراء فيحدده المورد لاحقًا.
 # =========================================================
 
 class PurchaseItemForm(forms.ModelForm):
@@ -55,13 +61,11 @@ class PurchaseItemForm(forms.ModelForm):
         fields = [
             "medicine",
             "quantity",
-            "purchase_price",
         ]
 
         labels = {
             "medicine": "الدواء",
             "quantity": "الكمية المطلوبة",
-            "purchase_price": "سعر الشراء",
         }
 
         widgets = {
@@ -76,14 +80,6 @@ class PurchaseItemForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "min": 1,
-                }
-            ),
-
-            "purchase_price": forms.NumberInput(
-                attrs={
-                    "class": "form-control",
-                    "step": "0.01",
-                    "min": 0,
                 }
             ),
         }

@@ -104,3 +104,64 @@ class User(AbstractUser):
         verbose_name = "مستخدم"
         verbose_name_plural = "المستخدمون"
         ordering = ["full_name"]
+
+
+# =========================================================
+# ملف المدير
+# =========================================================
+# علاقة One-to-One:
+#
+# User 1 -------- 1 ManagerProfile
+#
+# كل مستخدم مدير يمكن أن يمتلك ملف مدير واحد فقط.
+# =========================================================
+
+class ManagerProfile(models.Model):
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="manager_profile",
+        verbose_name="المستخدم"
+    )
+
+    job_title = models.CharField(
+        max_length=100,
+        default="مدير الصيدلية",
+        verbose_name="المسمى الوظيفي"
+    )
+
+    employee_number = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name="الرقم الوظيفي"
+    )
+
+    address = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="العنوان"
+    )
+
+    notes = models.TextField(
+        blank=True,
+        verbose_name="ملاحظات"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاريخ إنشاء الملف"
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="آخر تحديث"
+    )
+
+    def __str__(self):
+        return f"ملف المدير: {self.user.full_name}"
+
+    class Meta:
+        verbose_name = "ملف مدير"
+        verbose_name_plural = "ملفات المديرين"
+        ordering = ["id"]

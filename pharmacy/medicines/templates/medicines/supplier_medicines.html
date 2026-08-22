@@ -1,341 +1,1392 @@
 {% extends "dashboard/dashboard_base.html" %}
 
+
 {% block title %}
 منتجاتي
 {% endblock %}
 
+
 {% block dashboard_content %}
 
-<div class="card shadow-sm border-0">
+<style>
 
-    <!-- رأس الصفحة -->
+/* =========================================================
+   صفحة منتجات المورد
+   ========================================================= */
 
-    <div class="card-header d-flex justify-content-between align-items-center">
-
-        <h3 class="mb-0">
-
-            <i class="fas fa-boxes-stacked"></i>
-
-            منتجاتي
-
-        </h3>
-
-    </div>
+.supplier-products-page {
+    width: 100%;
+}
 
 
-    <div class="card-body">
+/* =========================================================
+   الأيقونات SVG
+   ========================================================= */
 
-        <!-- البحث -->
+.supplier-svg-icon {
+    width: 24px;
+    height: 24px;
 
-        <form method="GET" class="mb-4">
+    display: block;
 
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <div class="input-group">
-
-                        <input
-                            type="text"
-                            name="search"
-                            class="form-control"
-                            placeholder="ابحث باسم الدواء أو الباركود أو الشركة..."
-                            value="{{ search }}"
-                        >
-
-                        <button
-                            class="btn btn-primary"
-                            type="submit">
-
-                            <i class="fas fa-search"></i>
-
-                            بحث
-
-                        </button>
+    flex-shrink: 0;
+}
 
 
-                        {% if search %}
+/* =========================================================
+   رأس الصفحة
+   ========================================================= */
 
-                            <a
-                                href="{% url 'supplier_medicines' %}"
-                                class="btn btn-secondary">
+.supplier-products-header {
+    display: flex;
 
-                                <i class="fas fa-times"></i>
+    align-items: center;
 
-                                مسح
+    justify-content: space-between;
 
-                            </a>
+    gap: 20px;
 
-                        {% endif %}
+    flex-wrap: wrap;
+}
 
-                    </div>
+
+.supplier-products-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 0;
+
+    color: #182b3a;
+
+    font-weight: 700;
+}
+
+
+.supplier-products-title-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 15px;
+
+    background: #edf4f7;
+
+    color: #527d92;
+
+    box-shadow:
+        0 5px 15px rgba(82, 125, 146, 0.10);
+}
+
+
+.supplier-products-title-icon svg {
+    width: 29px;
+    height: 29px;
+
+    display: block;
+}
+
+
+/* =========================================================
+   وصف الصفحة
+   ========================================================= */
+
+.supplier-products-description {
+    color: #6c757d;
+
+    margin-top: 8px;
+
+    margin-bottom: 0;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   مربع البحث
+   ========================================================= */
+
+.supplier-products-search {
+    max-width: 700px;
+
+    margin-bottom: 25px;
+}
+
+
+.supplier-products-search .form-control {
+    min-height: 48px;
+
+    border-radius: 10px 0 0 10px;
+}
+
+
+.supplier-products-search .btn {
+    min-height: 48px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+}
+
+
+/* =========================================================
+   جدول المنتجات
+   ========================================================= */
+
+.supplier-products-table {
+    vertical-align: middle;
+
+    margin-bottom: 0;
+}
+
+
+.supplier-products-table thead th {
+    white-space: nowrap;
+
+    color: #182b3a;
+
+    font-weight: 700;
+
+    padding: 16px 12px;
+
+    border-bottom: 2px solid #e9eef2;
+}
+
+
+.supplier-products-table tbody td {
+    padding: 16px 12px;
+
+    color: #253746;
+}
+
+
+.supplier-products-table tbody tr {
+    transition: 0.2s;
+}
+
+
+.supplier-products-table tbody tr:hover {
+    background: #f7fafb;
+}
+
+
+/* =========================================================
+   اسم الدواء
+   ========================================================= */
+
+.supplier-medicine-name {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    font-weight: 700;
+
+    color: #182b3a;
+}
+
+
+.supplier-medicine-name svg {
+    width: 20px;
+    height: 20px;
+
+    color: #527d92;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   الكمية
+   ========================================================= */
+
+.supplier-supplied-quantity {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    background: #edf8f5;
+
+    color: #087f5b;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.supplier-supplied-quantity svg {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* =========================================================
+   تاريخ آخر توريد
+   ========================================================= */
+
+.supplier-last-date {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    white-space: nowrap;
+
+    color: #526575;
+
+    font-size: 13px;
+}
+
+
+.supplier-last-date svg {
+    width: 18px;
+    height: 18px;
+
+    color: #527d92;
+}
+
+
+/* =========================================================
+   حالة الصلاحية
+   ========================================================= */
+
+.supplier-expiry-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+.supplier-expiry-status svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+.supplier-expiry-valid {
+    background: #d1f2e7;
+
+    color: #087f5b;
+}
+
+
+.supplier-expiry-warning {
+    background: #fff3cd;
+
+    color: #856404;
+}
+
+
+.supplier-expiry-expired {
+    background: #fde2e2;
+
+    color: #b42318;
+}
+
+
+/* =========================================================
+   لا توجد منتجات
+   ========================================================= */
+
+.supplier-products-empty {
+    text-align: center;
+
+    padding: 60px 20px;
+}
+
+
+.supplier-products-empty-icon {
+    width: 80px;
+
+    height: 80px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #edf4f7;
+
+    color: #527d92;
+
+    font-size: 35px;
+}
+
+
+.supplier-products-empty-icon svg {
+    width: 38px;
+    height: 38px;
+}
+
+
+.supplier-products-empty h4 {
+    color: #182b3a;
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+}
+
+
+.supplier-products-empty p {
+    color: #6c757d;
+
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   Pagination
+   ========================================================= */
+
+.supplier-products-pagination {
+    margin-top: 25px;
+}
+
+
+.supplier-products-pagination .page-link {
+    color: #527d92;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.supplier-products-pagination .page-item.active .page-link {
+    background: #527d92;
+
+    border-color: #527d92;
+
+    color: white;
+}
+
+
+.supplier-products-pagination svg {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* =========================================================
+   الجوال
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .supplier-products-header {
+        align-items: flex-start;
+    }
+
+
+    .supplier-products-search {
+        max-width: 100%;
+    }
+
+
+    .supplier-products-table {
+        font-size: 13px;
+    }
+
+
+    .supplier-products-table thead th,
+    .supplier-products-table tbody td {
+        padding: 12px 8px;
+    }
+
+
+    .supplier-products-title {
+        gap: 10px;
+    }
+
+
+    .supplier-products-title-icon {
+        width: 46px;
+        height: 46px;
+    }
+
+
+    .supplier-products-title-icon svg {
+        width: 25px;
+        height: 25px;
+    }
+
+}
+
+</style>
+
+
+<div class="supplier-products-page">
+
+
+    <div class="card shadow-sm border-0">
+
+
+        <!-- =====================================================
+             رأس الصفحة
+             ===================================================== -->
+
+        <div class="card-header py-4">
+
+
+            <div class="supplier-products-header">
+
+
+                <div>
+
+                    <h3 class="supplier-products-title">
+
+
+                        <!-- أيقونة المنتجات -->
+
+                        <span class="supplier-products-title-icon">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true">
+
+                                <path
+                                    d="M21 8.5L12 4L3 8.5V17.5L12 22L21 17.5V8.5Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M3 8.5L12 13L21 8.5"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M12 13V22"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M7.5 6.25L16.5 10.75"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                            </svg>
+
+                        </span>
+
+
+                        منتجاتي
+
+
+                    </h3>
+
+
+                    <p class="supplier-products-description">
+
+                        المنتجات التي قمت بتوريدها إلى الصيدلية
+
+                    </p>
 
                 </div>
 
+
             </div>
-
-        </form>
-
-
-        <!-- جدول المنتجات -->
-
-        <div class="table-responsive">
-
-            <table class="table table-striped table-hover align-middle">
-
-                <thead>
-
-                    <tr>
-
-                        <th>#</th>
-
-                        <th>اسم الدواء</th>
-
-                        <th>نوع المنتج</th>
-
-                        <th>الفئة</th>
-
-                        <th>الباركود</th>
-
-                        <th>الشركة المصنعة</th>
-
-                        <th>الكمية</th>
-
-                        <th>الحالة</th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                {% for medicine in medicines %}
-
-                    <tr>
-
-                        <td>
-                            {{ medicines.start_index|add:forloop.counter0 }}
-                        </td>
-
-
-                        <td>
-                            {{ medicine.name }}
-                        </td>
-
-
-                        <td>
-
-                            {% if medicine.product_type %}
-
-                                {{ medicine.product_type.name }}
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <td>
-                            {{ medicine.category.name }}
-                        </td>
-
-
-                        <td>
-                            {{ medicine.barcode }}
-                        </td>
-
-
-                        <td>
-                            {{ medicine.manufacturer }}
-                        </td>
-
-
-                        <td>
-                            {{ medicine.quantity }}
-                        </td>
-
-
-                        <td>
-
-                            {% if medicine.expiry_status == "expired" %}
-
-                                <span
-                                    class="btn btn-danger btn-sm rounded-pill"
-                                    style="pointer-events:none;">
-
-                                    منتهي
-
-                                </span>
-
-                            {% elif medicine.expiry_status == "warning" %}
-
-                                <span
-                                    class="btn btn-warning btn-sm rounded-pill"
-                                    style="pointer-events:none;">
-
-                                    قريب الانتهاء
-
-                                </span>
-
-                            {% else %}
-
-                                <span
-                                    class="btn btn-success btn-sm rounded-pill"
-                                    style="pointer-events:none;">
-
-                                    صالح
-
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-
-                {% empty %}
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            class="text-center py-5">
-
-                            <i
-                                class="fas fa-box-open"
-                                style="font-size:50px;">
-                            </i>
-
-                            <h4 class="mt-3">
-                                لا توجد منتجات
-                            </h4>
-
-                            <p class="text-muted">
-                                لا توجد منتجات مرتبطة بحسابك حاليًا.
-                            </p>
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
 
         </div>
 
 
-        <!-- Pagination -->
-
-        {% if medicines.has_other_pages %}
-
-            <nav class="mt-4">
-
-                <ul class="pagination justify-content-center">
+        <div class="card-body">
 
 
-                    {% if medicines.has_previous %}
+            <!-- =================================================
+                 البحث
+                 ================================================= -->
 
-                        <li class="page-item">
+            <form
+                method="GET"
+                class="supplier-products-search">
 
-                            <a
-                                class="page-link"
-                                href="?page={{ medicines.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">
 
-                                السابق
+                <div class="input-group">
 
-                            </a>
 
-                        </li>
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="ابحث باسم الدواء أو الباركود أو الشركة..."
+                        value="{{ search }}"
+                    >
 
-                    {% else %}
 
-                        <li class="page-item disabled">
+                    <!-- زر البحث -->
 
-                            <span class="page-link">
-                                السابق
-                            </span>
+                    <button
+                        class="btn btn-primary"
+                        type="submit">
 
-                        </li>
+
+                        <svg
+                            class="supplier-svg-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+
+                            <circle
+                                cx="11"
+                                cy="11"
+                                r="7"
+                                stroke="currentColor"
+                                stroke-width="2"/>
+
+                            <path
+                                d="M16.5 16.5L21 21"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"/>
+
+                        </svg>
+
+
+                        بحث
+
+
+                    </button>
+
+
+                    {% if search %}
+
+
+                        <!-- زر مسح البحث -->
+
+                        <a
+                            href="{% url 'supplier_medicines' %}"
+                            class="btn btn-secondary">
+
+
+                            <svg
+                                class="supplier-svg-icon"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+
+                                <path
+                                    d="M6 6L18 18"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"/>
+
+                                <path
+                                    d="M18 6L6 18"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"/>
+
+                            </svg>
+
+
+                            مسح
+
+
+                        </a>
+
 
                     {% endif %}
 
 
-                    {% for num in medicines.paginator.page_range %}
+                </div>
 
-                        {% if medicines.number == num %}
 
-                            <li class="page-item active">
+            </form>
 
-                                <span class="page-link">
 
-                                    {{ num }}
+
+            <!-- =================================================
+                 جدول المنتجات
+                 ================================================= -->
+
+            <div class="table-responsive">
+
+
+                <table class="table supplier-products-table">
+
+
+                    <thead>
+
+                        <tr>
+
+
+                            <th>
+                                #
+                            </th>
+
+
+                            <th>
+                                الدواء
+                            </th>
+
+
+                            <th>
+                                نوع المنتج
+                            </th>
+
+
+                            <th>
+                                الفئة
+                            </th>
+
+
+                            <th>
+                                الباركود
+                            </th>
+
+
+                            <th>
+                                الشركة المصنعة
+                            </th>
+
+
+                            <th>
+                                الكمية الموردة
+                            </th>
+
+
+                            <th>
+                                آخر توريد
+                            </th>
+
+
+                            <th>
+                                الحالة
+                            </th>
+
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    {% for medicine in medicines %}
+
+
+                        <tr>
+
+
+                            <!-- الرقم -->
+
+                            <td>
+
+                                {{ medicines.start_index|add:forloop.counter0 }}
+
+                            </td>
+
+
+                            <!-- اسم الدواء -->
+
+                            <td>
+
+                                <div class="supplier-medicine-name">
+
+
+                                    <!-- أيقونة الدواء -->
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+
+                                        <path
+                                            d="M8 4C6.343 4 5 5.343 5 7V17C5 18.657 6.343 20 8 20H16C17.657 20 19 18.657 19 17V7C19 5.343 17.657 4 16 4H8Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"/>
+
+                                        <path
+                                            d="M8 4C8 2.895 8.895 2 10 2H14C15.105 2 16 2.895 16 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"/>
+
+                                        <path
+                                            d="M8 9H16"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"/>
+
+                                        <path
+                                            d="M8 13H16"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"/>
+
+                                    </svg>
+
+
+                                    {{ medicine.name }}
+
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- نوع المنتج -->
+
+                            <td>
+
+
+                                {% if medicine.product_type %}
+
+                                    {{ medicine.product_type.name }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                            <!-- الفئة -->
+
+                            <td>
+
+
+                                {% if medicine.category %}
+
+                                    {{ medicine.category.name }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                            <!-- الباركود -->
+
+                            <td>
+
+                                {{ medicine.barcode }}
+
+                            </td>
+
+
+                            <!-- الشركة المصنعة -->
+
+                            <td>
+
+                                {{ medicine.manufacturer|default:"-" }}
+
+                            </td>
+
+
+                            <!-- الكمية الموردة -->
+
+                            <td>
+
+
+                                <span class="supplier-supplied-quantity">
+
+
+                                    <!-- أيقونة صندوق -->
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+
+                                        <path
+                                            d="M21 8.5L12 4L3 8.5V17.5L12 22L21 17.5V8.5Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linejoin="round"/>
+
+                                        <path
+                                            d="M3 8.5L12 13L21 8.5"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linejoin="round"/>
+
+                                        <path
+                                            d="M12 13V22"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"/>
+
+                                    </svg>
+
+
+                                    {{ medicine.supplied_quantity }}
+
 
                                 </span>
 
-                            </li>
 
-                        {% else %}
+                            </td>
 
-                            <li class="page-item">
 
-                                <a
-                                    class="page-link"
-                                    href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}">
+                            <!-- آخر توريد -->
 
-                                    {{ num }}
+                            <td>
 
-                                </a>
 
-                            </li>
+                                {% if medicine.last_supply_date %}
 
-                        {% endif %}
+
+                                    <div class="supplier-last-date">
+
+
+                                        <!-- أيقونة التقويم -->
+
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+
+                                            <rect
+                                                x="3"
+                                                y="5"
+                                                width="18"
+                                                height="16"
+                                                rx="2"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"/>
+
+                                            <path
+                                                d="M7 3V7"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"/>
+
+                                            <path
+                                                d="M17 3V7"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"/>
+
+                                            <path
+                                                d="M3 10H21"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"/>
+
+                                            <path
+                                                d="M8 14L10 16L16 12"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+
+                                        </svg>
+
+
+                                        {{ medicine.last_supply_date|date:"Y-m-d H:i" }}
+
+
+                                    </div>
+
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                            <!-- حالة الصلاحية -->
+
+                            <td>
+
+
+                                {% if medicine.expiry_status == "expired" %}
+
+
+                                    <span
+                                        class="supplier-expiry-status supplier-expiry-expired">
+
+
+                                        <!-- أيقونة منتهي -->
+
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+
+                                            <circle
+                                                cx="12"
+                                                cy="12"
+                                                r="9"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"/>
+
+                                            <path
+                                                d="M8.5 8.5L15.5 15.5"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"/>
+
+                                            <path
+                                                d="M15.5 8.5L8.5 15.5"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"/>
+
+                                        </svg>
+
+
+                                        منتهي
+
+
+                                    </span>
+
+
+                                {% elif medicine.expiry_status == "warning" %}
+
+
+                                    <span
+                                        class="supplier-expiry-status supplier-expiry-warning">
+
+
+                                        <!-- أيقونة تحذير -->
+
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+
+                                            <path
+                                                d="M12 3L22 20H2L12 3Z"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linejoin="round"/>
+
+                                            <path
+                                                d="M12 9V13"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"/>
+
+                                            <circle
+                                                cx="12"
+                                                cy="16.5"
+                                                r="0.8"
+                                                fill="currentColor"/>
+
+                                        </svg>
+
+
+                                        قريب الانتهاء
+
+
+                                    </span>
+
+
+                                {% else %}
+
+
+                                    <span
+                                        class="supplier-expiry-status supplier-expiry-valid">
+
+
+                                        <!-- أيقونة صالح -->
+
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+
+                                            <circle
+                                                cx="12"
+                                                cy="12"
+                                                r="9"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"/>
+
+                                            <path
+                                                d="M8 12L10.8 14.8L16 9.5"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+
+                                        </svg>
+
+
+                                        صالح
+
+
+                                    </span>
+
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                    {% empty %}
+
+
+                        <tr>
+
+
+                            <td
+                                colspan="9"
+                                class="p-0">
+
+
+                                <div class="supplier-products-empty">
+
+
+                                    <div class="supplier-products-empty-icon">
+
+
+                                        <!-- أيقونة عدم وجود منتجات -->
+
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+
+                                            <path
+                                                d="M21 8.5L12 4L3 8.5V17.5L12 22L21 17.5V8.5Z"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linejoin="round"/>
+
+                                            <path
+                                                d="M3 8.5L12 13L21 8.5"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linejoin="round"/>
+
+                                            <path
+                                                d="M12 13V22"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"/>
+
+                                        </svg>
+
+
+                                    </div>
+
+
+                                    <h4>
+
+                                        لا توجد منتجات موردة حتى الآن
+
+                                    </h4>
+
+
+                                    <p>
+
+                                        ستظهر هنا المنتجات التي قمت بتوريدها
+                                        إلى الصيدلية بعد اكتمال طلبات التوريد.
+
+                                    </p>
+
+
+                                </div>
+
+
+                            </td>
+
+
+                        </tr>
+
 
                     {% endfor %}
 
 
-                    {% if medicines.has_next %}
-
-                        <li class="page-item">
-
-                            <a
-                                class="page-link"
-                                href="?page={{ medicines.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
-
-                                التالي
-
-                            </a>
-
-                        </li>
-
-                    {% else %}
-
-                        <li class="page-item disabled">
-
-                            <span class="page-link">
-                                التالي
-                            </span>
-
-                        </li>
-
-                    {% endif %}
+                    </tbody>
 
 
-                </ul>
+                </table>
 
-            </nav>
+            </div>
 
-        {% endif %}
+
+
+            <!-- =================================================
+                 Pagination
+                 ================================================= -->
+
+            {% if medicines.has_other_pages %}
+
+
+                <nav class="supplier-products-pagination">
+
+
+                    <ul class="pagination justify-content-center">
+
+
+                        <!-- السابق -->
+
+                        {% if medicines.has_previous %}
+
+
+                            <li class="page-item">
+
+
+                                <a
+                                    class="page-link"
+                                    href="?page={{ medicines.previous_page_number }}{% if search %}&search={{ search|urlencode }}{% endif %}">
+
+
+                                    <!-- سهم يمين -->
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+
+                                        <path
+                                            d="M15 18L9 12L15 6"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"/>
+
+                                    </svg>
+
+
+                                    السابق
+
+
+                                </a>
+
+
+                            </li>
+
+
+                        {% else %}
+
+
+                            <li class="page-item disabled">
+
+
+                                <span class="page-link">
+
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+
+                                        <path
+                                            d="M15 18L9 12L15 6"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"/>
+
+                                    </svg>
+
+
+                                    السابق
+
+
+                                </span>
+
+
+                            </li>
+
+
+                        {% endif %}
+
+
+
+                        <!-- أرقام الصفحات -->
+
+                        {% for num in medicines.paginator.page_range %}
+
+
+                            {% if medicines.number == num %}
+
+
+                                <li class="page-item active">
+
+
+                                    <span class="page-link">
+
+                                        {{ num }}
+
+                                    </span>
+
+
+                                </li>
+
+
+                            {% else %}
+
+
+                                <li class="page-item">
+
+
+                                    <a
+                                        class="page-link"
+                                        href="?page={{ num }}{% if search %}&search={{ search|urlencode }}{% endif %}">
+
+                                        {{ num }}
+
+                                    </a>
+
+
+                                </li>
+
+
+                            {% endif %}
+
+
+                        {% endfor %}
+
+
+
+                        <!-- التالي -->
+
+                        {% if medicines.has_next %}
+
+
+                            <li class="page-item">
+
+
+                                <a
+                                    class="page-link"
+                                    href="?page={{ medicines.next_page_number }}{% if search %}&search={{ search|urlencode }}{% endif %}">
+
+
+                                    التالي
+
+
+                                    <!-- سهم يسار -->
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+
+                                        <path
+                                            d="M9 18L15 12L9 6"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"/>
+
+                                    </svg>
+
+
+                                </a>
+
+
+                            </li>
+
+
+                        {% else %}
+
+
+                            <li class="page-item disabled">
+
+
+                                <span class="page-link">
+
+
+                                    التالي
+
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+
+                                        <path
+                                            d="M9 18L15 12L9 6"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"/>
+
+                                    </svg>
+
+
+                                </span>
+
+
+                            </li>
+
+
+                        {% endif %}
+
+
+                    </ul>
+
+
+                </nav>
+
+
+            {% endif %}
+
+
+        </div>
+
 
     </div>
 
 </div>
+
 
 {% endblock %}

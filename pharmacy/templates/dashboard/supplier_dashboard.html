@@ -1,0 +1,1275 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+لوحة المورد
+{% endblock %}
+
+{% block dashboard_content %}
+
+<style>
+
+/* =========================================================
+   لوحة المورد
+   ========================================================= */
+
+.supplier-dashboard {
+    width: 100%;
+}
+
+
+/* =========================================================
+   الترحيب
+   ========================================================= */
+
+.supplier-welcome {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 40px;
+    margin-bottom: 30px;
+
+    background: linear-gradient(
+        135deg,
+        #6f8fa0,
+        #294d61
+    );
+
+    color: white;
+
+    box-shadow:
+        0 12px 35px rgba(41, 77, 97, 0.18);
+}
+
+
+.supplier-welcome::before {
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.10);
+
+    top: -130px;
+    left: -80px;
+}
+
+
+.supplier-welcome::after {
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.07);
+
+    right: -40px;
+    bottom: -90px;
+}
+
+
+.supplier-welcome-content {
+    position: relative;
+    z-index: 2;
+}
+
+
+.supplier-welcome-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 16px;
+
+    border-radius: 25px;
+
+    background: rgba(255,255,255,0.16);
+
+    font-size: 14px;
+
+    margin-bottom: 15px;
+}
+
+
+.supplier-welcome-icon {
+    font-size: 18px;
+}
+
+
+.supplier-welcome h1 {
+    font-size: 34px;
+
+    font-weight: 700;
+
+    margin-bottom: 12px;
+}
+
+
+.supplier-welcome p {
+    font-size: 17px;
+
+    line-height: 1.8;
+
+    max-width: 750px;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   الأزرار الرئيسية
+   ========================================================= */
+
+.supplier-main-buttons {
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+
+.supplier-main-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 12px 22px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    transition: 0.3s;
+}
+
+
+.supplier-main-btn-primary {
+    background: white;
+
+    color: #294d61;
+}
+
+
+.supplier-main-btn-primary:hover {
+    color: #294d61;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.15);
+}
+
+
+.supplier-main-btn-outline {
+    border: 1px solid rgba(255,255,255,0.7);
+
+    color: white;
+}
+
+
+.supplier-main-btn-outline:hover {
+    color: white;
+
+    background: rgba(255,255,255,0.12);
+
+    transform: translateY(-3px);
+}
+
+
+/* =========================================================
+   بطاقات الإحصائيات
+   ========================================================= */
+
+.supplier-stat-link {
+    display: block;
+
+    height: 100%;
+
+    text-decoration: none;
+
+    color: inherit;
+}
+
+
+.supplier-stat-link:hover {
+    color: inherit;
+}
+
+
+.supplier-stat-card {
+    position: relative;
+
+    overflow: hidden;
+
+    height: 100%;
+
+    min-height: 190px;
+
+    padding: 25px;
+
+    background: white;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.06);
+
+    transition: 0.3s;
+}
+
+
+.supplier-stat-card:hover {
+    transform: translateY(-7px);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.12);
+}
+
+
+/* =========================================================
+   أيقونات الإحصائيات
+   ========================================================= */
+
+.supplier-stat-icon {
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background: #edf4f7;
+
+    color: #527d92;
+
+    font-size: 30px;
+
+    margin-bottom: 16px;
+
+    line-height: 1;
+}
+
+
+.supplier-stat-title {
+    color: #687887;
+
+    font-size: 15px;
+
+    margin-bottom: 5px;
+}
+
+
+.supplier-stat-number {
+    font-size: 31px;
+
+    font-weight: 700;
+
+    color: #182b3a;
+}
+
+
+.supplier-stat-link-text {
+    margin-top: 10px;
+
+    color: #527d92;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   القسم العام
+   ========================================================= */
+
+.supplier-section {
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 25px;
+
+    height: 100%;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.06);
+}
+
+
+.supplier-section-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #182b3a;
+
+    margin-bottom: 20px;
+}
+
+
+.supplier-section-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #edf4f7;
+
+    color: #527d92;
+
+    font-size: 23px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   الإجراءات السريعة
+   ========================================================= */
+
+.supplier-action {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 17px;
+
+    margin-bottom: 12px;
+
+    border-radius: 17px;
+
+    background: #f8fafb;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    border: 1px solid transparent;
+
+    transition: 0.25s;
+}
+
+
+.supplier-action:last-child {
+    margin-bottom: 0;
+}
+
+
+.supplier-action:hover {
+    color: inherit;
+
+    background: white;
+
+    border-color: #c7d8e0;
+
+    transform: translateX(-5px);
+
+    box-shadow:
+        0 6px 18px rgba(82,125,146,0.10);
+}
+
+
+/* =========================================================
+   أيقونة الإجراء
+   ========================================================= */
+
+.supplier-action-icon {
+    width: 52px;
+    height: 52px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background: #edf4f7;
+
+    color: #527d92;
+
+    font-size: 25px;
+
+    line-height: 1;
+}
+
+
+.supplier-action-content {
+    flex: 1;
+}
+
+
+.supplier-action-content strong {
+    display: block;
+
+    color: #182b3a;
+
+    font-size: 16px;
+
+    margin-bottom: 4px;
+}
+
+
+.supplier-action-content span {
+    color: #6c757d;
+
+    font-size: 13px;
+}
+
+
+.supplier-action-arrow {
+    color: #527d92;
+
+    font-size: 22px;
+
+    transition: 0.25s;
+}
+
+
+.supplier-action:hover .supplier-action-arrow {
+    transform: translateX(-5px);
+}
+
+
+/* =========================================================
+   آخر طلبات التوريد
+   ========================================================= */
+
+.supplier-order-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 16px;
+
+    margin-bottom: 12px;
+
+    background: #f8fafb;
+
+    border-radius: 16px;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    border: 1px solid transparent;
+
+    transition: 0.25s;
+}
+
+
+.supplier-order-card:last-child {
+    margin-bottom: 0;
+}
+
+
+.supplier-order-card:hover {
+    color: inherit;
+
+    background: white;
+
+    border-color: #c7d8e0;
+
+    transform: translateX(-4px);
+}
+
+
+/* =========================================================
+   أيقونة الطلب
+   ========================================================= */
+
+.supplier-order-icon {
+    width: 50px;
+    height: 50px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #edf4f7;
+
+    color: #527d92;
+
+    font-size: 24px;
+
+    line-height: 1;
+}
+
+
+.supplier-order-content {
+    flex: 1;
+}
+
+
+.supplier-order-number {
+    font-weight: 700;
+
+    color: #182b3a;
+
+    margin-bottom: 4px;
+}
+
+
+.supplier-order-date {
+    color: #6c757d;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   حالات الطلب
+   ========================================================= */
+
+.supplier-order-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+.supplier-status-pending {
+    background: #fff3cd;
+
+    color: #856404;
+}
+
+
+.supplier-status-approved {
+    background: #d1f2e7;
+
+    color: #087f5b;
+}
+
+
+.supplier-status-completed {
+    background: #dbeafe;
+
+    color: #1d4ed8;
+}
+
+
+.supplier-status-rejected {
+    background: #fde2e2;
+
+    color: #b42318;
+}
+
+
+/* =========================================================
+   لا توجد طلبات
+   ========================================================= */
+
+.supplier-empty {
+    text-align: center;
+
+    padding: 35px 15px;
+}
+
+
+.supplier-empty-icon {
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    background: #edf4f7;
+
+    color: #527d92;
+
+    font-size: 30px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   الجوال
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .supplier-welcome {
+        padding: 30px 25px;
+    }
+
+
+    .supplier-welcome h1 {
+        font-size: 27px;
+    }
+
+
+    .supplier-welcome p {
+        font-size: 15px;
+    }
+
+
+    .supplier-stat-card {
+        min-height: 175px;
+    }
+
+
+    .supplier-order-card {
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+    }
+
+}
+
+</style>
+
+
+<div class="supplier-dashboard">
+
+
+    <!-- =====================================================
+         الترحيب
+         ===================================================== -->
+
+    <div class="supplier-welcome">
+
+        <div class="supplier-welcome-content">
+
+
+            <div class="supplier-welcome-badge">
+
+                <span class="supplier-welcome-icon">
+                    🚚
+                </span>
+
+                منطقة المورد
+
+            </div>
+
+
+            <h1>
+
+                أهلاً بك
+                {{ supplier.full_name }}
+
+            </h1>
+
+
+            <p>
+
+                مرحباً بك في صيدلية الحياة.
+                يمكنك هنا متابعة طلبات التوريد الخاصة بك،
+                مراجعة حالتها وإدارة بيانات المورد بسهولة.
+
+            </p>
+
+
+            <div class="supplier-main-buttons">
+
+
+                <a
+                    href="{% url 'supplier_orders' %}"
+                    class="supplier-main-btn supplier-main-btn-primary">
+
+                    📋
+
+                    طلبات التوريد
+
+                </a>
+
+
+                <a
+                    href="{% url 'supplier_profile' %}"
+                    class="supplier-main-btn supplier-main-btn-outline">
+
+                    👤
+
+                    بياناتي
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         الإحصائيات
+         ===================================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- إجمالي الطلبات -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'supplier_orders' %}"
+                class="supplier-stat-link">
+
+                <div class="supplier-stat-card">
+
+
+                    <div class="supplier-stat-icon">
+
+                        📋
+
+                    </div>
+
+
+                    <div class="supplier-stat-title">
+
+                        إجمالي طلبات التوريد
+
+                    </div>
+
+
+                    <div class="supplier-stat-number">
+
+                        {{ orders_count }}
+
+                    </div>
+
+
+                    <div class="supplier-stat-link-text">
+
+                        عرض الطلبات ←
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- قيد المراجعة -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'supplier_orders' %}"
+                class="supplier-stat-link">
+
+                <div class="supplier-stat-card">
+
+
+                    <div class="supplier-stat-icon">
+
+                        ⏳
+
+                    </div>
+
+
+                    <div class="supplier-stat-title">
+
+                        قيد المراجعة
+
+                    </div>
+
+
+                    <div class="supplier-stat-number">
+
+                        {{ pending_orders_count }}
+
+                    </div>
+
+
+                    <div class="supplier-stat-link-text">
+
+                        مراجعة الطلبات ←
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- تمت الموافقة -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'supplier_orders' %}"
+                class="supplier-stat-link">
+
+                <div class="supplier-stat-card">
+
+
+                    <div class="supplier-stat-icon">
+
+                        ✅
+
+                    </div>
+
+
+                    <div class="supplier-stat-title">
+
+                        تمت الموافقة
+
+                    </div>
+
+
+                    <div class="supplier-stat-number">
+
+                        {{ approved_orders_count }}
+
+                    </div>
+
+
+                    <div class="supplier-stat-link-text">
+
+                        متابعة الطلبات ←
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- المكتملة -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'supplier_orders' %}"
+                class="supplier-stat-link">
+
+                <div class="supplier-stat-card">
+
+
+                    <div class="supplier-stat-icon">
+
+                        📦
+
+                    </div>
+
+
+                    <div class="supplier-stat-title">
+
+                        الطلبات المكتملة
+
+                    </div>
+
+
+                    <div class="supplier-stat-number">
+
+                        {{ completed_orders_count }}
+
+                    </div>
+
+
+                    <div class="supplier-stat-link-text">
+
+                        عرض الطلبات ←
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         الإجراءات السريعة + آخر الطلبات
+         ===================================================== -->
+
+    <div class="row g-4">
+
+
+        <!-- الإجراءات السريعة -->
+
+        <div class="col-xl-5">
+
+            <div class="supplier-section">
+
+
+                <div class="supplier-section-title">
+
+                    <span class="supplier-section-icon">
+
+                        ⚡
+
+                    </span>
+
+                    الإجراءات السريعة
+
+                </div>
+
+
+
+                <!-- طلبات التوريد -->
+
+                <a
+                    href="{% url 'supplier_orders' %}"
+                    class="supplier-action">
+
+
+                    <div class="supplier-action-icon">
+
+                        📋
+
+                    </div>
+
+
+                    <div class="supplier-action-content">
+
+                        <strong>
+
+                            طلبات التوريد
+
+                        </strong>
+
+
+                        <span>
+
+                            عرض ومتابعة الطلبات المرسلة إليك
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="supplier-action-arrow">
+
+                        ←
+
+                    </div>
+
+                </a>
+
+
+
+                <!-- بياناتي -->
+
+                <a
+                    href="{% url 'supplier_profile' %}"
+                    class="supplier-action">
+
+
+                    <div class="supplier-action-icon">
+
+                        👤
+
+                    </div>
+
+
+                    <div class="supplier-action-content">
+
+                        <strong>
+
+                            بياناتي
+
+                        </strong>
+
+
+                        <span>
+
+                            عرض وتعديل بيانات المورد
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="supplier-action-arrow">
+
+                        ←
+
+                    </div>
+
+                </a>
+
+
+
+                <!-- الطلبات المكتملة -->
+
+                <a
+                    href="{% url 'supplier_orders' %}"
+                    class="supplier-action">
+
+
+                    <div class="supplier-action-icon">
+
+                        📦
+
+                    </div>
+
+
+                    <div class="supplier-action-content">
+
+                        <strong>
+
+                            الطلبات المكتملة
+
+                        </strong>
+
+
+                        <span>
+
+                            متابعة طلبات التوريد التي تم استلامها
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="supplier-action-arrow">
+
+                        ←
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             آخر الطلبات
+             ===================================================== -->
+
+        <div class="col-xl-7">
+
+            <div class="supplier-section">
+
+
+                <div class="supplier-section-title">
+
+                    <span class="supplier-section-icon">
+
+                        🕘
+
+                    </span>
+
+                    آخر طلبات التوريد
+
+                </div>
+
+
+                {% if latest_orders %}
+
+
+                    {% for order in latest_orders %}
+
+
+                        <a
+                            href="{% url 'purchase_detail' order.id %}"
+                            class="supplier-order-card">
+
+
+                            <div class="supplier-order-icon">
+
+                                🧾
+
+                            </div>
+
+
+                            <div class="supplier-order-content">
+
+
+                                <div class="supplier-order-number">
+
+                                    طلب توريد #{{ order.id }}
+
+                                </div>
+
+
+                                <div class="supplier-order-date">
+
+                                    📅
+                                    {{ order.created_at|date:"Y-m-d H:i" }}
+
+                                </div>
+
+                            </div>
+
+
+
+                            {% if order.status == "pending" %}
+
+                                <span class="supplier-order-status supplier-status-pending">
+
+                                    ⏳
+
+                                    قيد المراجعة
+
+                                </span>
+
+
+                            {% elif order.status == "approved" %}
+
+                                <span class="supplier-order-status supplier-status-approved">
+
+                                    ✅
+
+                                    تمت الموافقة
+
+                                </span>
+
+
+                            {% elif order.status == "completed" %}
+
+                                <span class="supplier-order-status supplier-status-completed">
+
+                                    ✔️
+
+                                    مكتمل
+
+                                </span>
+
+
+                            {% elif order.status == "rejected" %}
+
+                                <span class="supplier-order-status supplier-status-rejected">
+
+                                    ❌
+
+                                    مرفوض
+
+                                </span>
+
+                            {% endif %}
+
+
+                            <span class="supplier-action-arrow">
+
+                                ←
+
+                            </span>
+
+                        </a>
+
+
+                    {% endfor %}
+
+
+                {% else %}
+
+
+                    <div class="supplier-empty">
+
+
+                        <div class="supplier-empty-icon">
+
+                            📭
+
+                        </div>
+
+
+                        <h5>
+
+                            لا توجد طلبات توريد حتى الآن
+
+                        </h5>
+
+
+                        <p class="text-muted">
+
+                            ستظهر هنا طلبات التوريد الخاصة بك.
+
+                        </p>
+
+
+                    </div>
+
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

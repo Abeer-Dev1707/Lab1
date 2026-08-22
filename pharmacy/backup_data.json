@@ -1,0 +1,773 @@
+[
+{
+  "model": "sessions.session",
+  "pk": "fb8gehes2rbwxdiix04bd3rmf6w6hycb",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pApUAZcuvcMZBhQqgaS0q6Md7dNutDte-__twi0LiWsPc9hSuIstDj9skj8zHUX6UH13iS3usxTlHsiD9vltaX8uhzt30GhXra1dXiDIcE4WJOI0YBDg96yN-x8VhvLWYF3oCwb0GAiujQSYfROI4rPF8GVNvg:1wxmij:RQ1ZV2a-5mYsJRVC_34CML2oRQm0N3ZPtK_aarvs4-I",
+    "expire_date": "2026-09-05T14:29:17.475Z"
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$6aRPVtQ43rDVDRp83bVBWW$zvmhgRCQMIuCv6EQhviP7M/vx2lJdlZ8LnDZXENe/tM=",
+    "last_login": "2026-08-09T13:16:26.059Z",
+    "is_superuser": false,
+    "username": "Abdulmalik",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "date_joined": "2026-08-09T12:21:10.770Z",
+    "full_name": "عبدالملك إبراهيم",
+    "email": "almalik2022@gamil.com",
+    "phone": "771666156",
+    "role": "pharmacist",
+    "account_status": "pending",
+    "is_active": true,
+    "created_at": "2026-08-09T12:21:12.117Z",
+    "updated_at": "2026-08-09T12:23:03.353Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$G4KmJZEigvXSng2GzvZn2t$cIOV8fL/q/zSomPU7d5aWu88aQV2S1o220i0RC3hE7c=",
+    "last_login": "2026-08-22T14:29:17.469Z",
+    "is_superuser": false,
+    "username": "Abeer_Ahmed",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "date_joined": "2026-08-09T12:28:54.972Z",
+    "full_name": "Abeer AL-Mufti",
+    "email": "eng.abeer@gmail.com",
+    "phone": "771666156",
+    "role": "admin",
+    "account_status": "approved",
+    "is_active": true,
+    "created_at": "2026-08-09T12:28:56.327Z",
+    "updated_at": "2026-08-09T17:31:07.205Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$GaU5RDaz78WK1nvVry4xOC$ZqRvkyoiHVNZRW/rtLR7nzoP2rBoBnrPEjzvkdmysP8=",
+    "last_login": "2026-08-19T17:46:20.603Z",
+    "is_superuser": false,
+    "username": "Almalik",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "date_joined": "2026-08-09T17:28:03.988Z",
+    "full_name": "Abdulmalik_Ebrahim",
+    "email": "almalik2022@gmail.com",
+    "phone": "771666156",
+    "role": "pharmacist",
+    "account_status": "approved",
+    "is_active": true,
+    "created_at": "2026-08-09T17:28:04.855Z",
+    "updated_at": "2026-08-09T17:32:19.257Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$JK5mTEvXhIDLnJBWQ2jJJX$GDJ8xQ1FwA30s4h6EGwLz9c7/asJ5vdbBPvym+jurxY=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "mohammed",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "date_joined": "2026-08-09T18:19:35.783Z",
+    "full_name": "محمد أحمد",
+    "email": "mohammed2026@gmail.com",
+    "phone": "774545190",
+    "role": "customer",
+    "account_status": "rejected",
+    "is_active": false,
+    "created_at": "2026-08-09T18:19:36.668Z",
+    "updated_at": "2026-08-09T18:20:03.535Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$vxUGKqpThKMvBVixUfJTOA$19rLD2GvQ+JOpYrub68jE6ndIns4KWBtMdrS2AvAcVo=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Ahmed",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "date_joined": "2026-08-09T18:22:36.407Z",
+    "full_name": "أحمد علي",
+    "email": "ahmed2026@gmail.com",
+    "phone": "774545190",
+    "role": "customer",
+    "account_status": "approved",
+    "is_active": true,
+    "created_at": "2026-08-09T18:22:37.309Z",
+    "updated_at": "2026-08-09T19:00:10.621Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$ZNkSAnggMeFLHuGMUEpLyi$mGryda5lNdQxeKvhnkAupjXizltfBiL0pMtvG76JXB8=",
+    "last_login": "2026-08-19T17:49:00.390Z",
+    "is_superuser": false,
+    "username": "Marim",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "date_joined": "2026-08-09T19:05:22.560Z",
+    "full_name": "مريم محمد",
+    "email": "marim2026@gmail.com",
+    "phone": "785541322",
+    "role": "customer",
+    "account_status": "approved",
+    "is_active": true,
+    "created_at": "2026-08-09T19:05:23.491Z",
+    "updated_at": "2026-08-09T19:05:45.236Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$qZ3c7pO92K6UGu1WhFkZkJ$EQT+n/hROau7/Vf+Qe0Ezmtgy8vyAB2KAdz3ugnHsqA=",
+    "last_login": "2026-08-19T17:45:56.734Z",
+    "is_superuser": false,
+    "username": "Ali",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "date_joined": "2026-08-12T16:25:35.935Z",
+    "full_name": "علي محمد",
+    "email": "ali2026@gmail.com",
+    "phone": "772315677",
+    "role": "supplier",
+    "account_status": "approved",
+    "is_active": true,
+    "created_at": "2026-08-12T16:25:37.202Z",
+    "updated_at": "2026-08-12T16:26:01.496Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "medicines.medicine",
+  "pk": 1,
+  "fields": {
+    "product_type": 3,
+    "supplier": null,
+    "name": "Panadol Extra",
+    "category": 1,
+    "barcode": "6281001000001",
+    "manufacturer": "GSK",
+    "purchase_price": "800.00",
+    "selling_price": "1000.00",
+    "quantity": 138,
+    "minimum_stock": 20,
+    "production_date": "2025-12-01",
+    "expiry_date": "2028-12-01",
+    "description": "مسكن للآلام وخافض للحرارة، يحتوي على باراسيتامول مع الكافيين.",
+    "status": "available",
+    "dosage_form": "حبوب",
+    "created_at": "2026-07-31T14:56:20.582Z",
+    "updated_at": "2026-08-19T17:37:19.074Z"
+  }
+},
+{
+  "model": "medicines.medicine",
+  "pk": 2,
+  "fields": {
+    "product_type": 3,
+    "supplier": 1,
+    "name": "Augmentin 625 mg",
+    "category": 2,
+    "barcode": "6281001000002",
+    "manufacturer": "GSK",
+    "purchase_price": "3200.00",
+    "selling_price": "4000.00",
+    "quantity": 13,
+    "minimum_stock": 15,
+    "production_date": "2025-01-03",
+    "expiry_date": "2026-01-03",
+    "description": "مضاد حيوي يحتوي على أموكسيسيلين وحمض الكلافولانيك.",
+    "status": "available",
+    "dosage_form": "شراب",
+    "created_at": "2026-07-31T14:58:37.603Z",
+    "updated_at": "2026-08-19T17:59:55.589Z"
+  }
+},
+{
+  "model": "medicines.medicine",
+  "pk": 3,
+  "fields": {
+    "product_type": 2,
+    "supplier": null,
+    "name": "Photoderm SPF",
+    "category": 7,
+    "barcode": "8901234567895",
+    "manufacturer": "Bioderma",
+    "purchase_price": "7000.00",
+    "selling_price": "9000.00",
+    "quantity": 27,
+    "minimum_stock": 5,
+    "production_date": "2026-10-02",
+    "expiry_date": "2028-10-02",
+    "description": "كريم واقي شمس من شركة بيوديرما العالمية",
+    "status": "available",
+    "dosage_form": "سائل",
+    "created_at": "2026-08-08T14:01:30.593Z",
+    "updated_at": "2026-08-19T17:46:32.781Z"
+  }
+},
+{
+  "model": "medicines.medicine",
+  "pk": 4,
+  "fields": {
+    "product_type": 3,
+    "supplier": null,
+    "name": "Panadol Extra",
+    "category": 1,
+    "barcode": "3354656565",
+    "manufacturer": "GSK",
+    "purchase_price": "500.00",
+    "selling_price": "800.00",
+    "quantity": 5,
+    "minimum_stock": 5,
+    "production_date": "2026-12-01",
+    "expiry_date": "2027-01-01",
+    "description": "مسكن",
+    "status": "available",
+    "dosage_form": "حبوب",
+    "created_at": "2026-08-09T08:12:28.454Z",
+    "updated_at": "2026-08-12T20:13:20.819Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 1,
+  "fields": {
+    "name": "مسكنات",
+    "description": "لأدوية لتخفيف الألم",
+    "created_at": "2026-07-31T09:35:58.137Z",
+    "updated_at": "2026-08-07T19:46:31.564Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 2,
+  "fields": {
+    "name": "مضادات",
+    "description": "لعلاج العدوى البكتيرية",
+    "created_at": "2026-07-31T09:36:07.441Z",
+    "updated_at": "2026-08-09T07:47:14.409Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 3,
+  "fields": {
+    "name": "فيتامينات",
+    "description": "مكملات غذائية",
+    "created_at": "2026-07-31T09:36:20.632Z",
+    "updated_at": "2026-07-31T09:36:20.632Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 4,
+  "fields": {
+    "name": "أدوية الأطفال",
+    "description": "مخصصة للأطفال بجرعات مناسبة من قبل الطبيب المختص",
+    "created_at": "2026-07-31T09:36:36.606Z",
+    "updated_at": "2026-08-09T18:56:40.830Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 5,
+  "fields": {
+    "name": "مستلزمات طبية",
+    "description": "أدوات ومستلزمات",
+    "created_at": "2026-07-31T09:36:54.501Z",
+    "updated_at": "2026-07-31T09:36:54.501Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 6,
+  "fields": {
+    "name": "أدوية الحساسية",
+    "description": "أدوية لعلاج الحساسية والربو والاحتقان.",
+    "created_at": "2026-07-31T14:21:17.846Z",
+    "updated_at": "2026-07-31T14:21:17.846Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 7,
+  "fields": {
+    "name": "تجميل",
+    "description": "كل أنواع مستحضرات التجميل الطبية",
+    "created_at": "2026-08-08T13:55:22.198Z",
+    "updated_at": "2026-08-08T14:04:21.246Z"
+  }
+},
+{
+  "model": "suppliers.supplier",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "Ali"
+    ],
+    "full_name": "علي محمد",
+    "phone": "772315677",
+    "email": "ali2026@gmail.com",
+    "company_name": "",
+    "address": "صنعاء",
+    "notes": "",
+    "created_at": "2026-08-12T16:26:01.514Z",
+    "updated_at": "2026-08-12T16:48:48.732Z"
+  }
+},
+{
+  "model": "customers.customer",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "Marim"
+    ],
+    "full_name": "مريم محمد",
+    "phone": "785541322",
+    "email": "marim2026@gmail.com",
+    "address": "إب-شارع العدين",
+    "notes": "",
+    "created_at": "2026-08-09T19:05:45.247Z",
+    "updated_at": "2026-08-19T16:30:06.906Z"
+  }
+},
+{
+  "model": "customers.customerorder",
+  "pk": 1,
+  "fields": {
+    "customer": 1,
+    "status": "completed",
+    "total_amount": "1600.00",
+    "notes": "",
+    "created_at": "2026-08-12T19:59:05.413Z",
+    "updated_at": "2026-08-12T20:13:20.825Z"
+  }
+},
+{
+  "model": "customers.customerorder",
+  "pk": 2,
+  "fields": {
+    "customer": 1,
+    "status": "completed",
+    "total_amount": "9000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:14:55.501Z",
+    "updated_at": "2026-08-12T20:15:13.261Z"
+  }
+},
+{
+  "model": "customers.customerorder",
+  "pk": 3,
+  "fields": {
+    "customer": 1,
+    "status": "completed",
+    "total_amount": "10000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:21:43.899Z",
+    "updated_at": "2026-08-12T20:22:03.332Z"
+  }
+},
+{
+  "model": "customers.customerorder",
+  "pk": 4,
+  "fields": {
+    "customer": 1,
+    "status": "completed",
+    "total_amount": "2000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:29:54.373Z",
+    "updated_at": "2026-08-12T20:30:13.955Z"
+  }
+},
+{
+  "model": "customers.customerorder",
+  "pk": 5,
+  "fields": {
+    "customer": 1,
+    "status": "completed",
+    "total_amount": "9000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:34:02.901Z",
+    "updated_at": "2026-08-12T20:34:21.192Z"
+  }
+},
+{
+  "model": "customers.customerorder",
+  "pk": 6,
+  "fields": {
+    "customer": 1,
+    "status": "completed",
+    "total_amount": "9000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:40:42.747Z",
+    "updated_at": "2026-08-12T20:40:58.634Z"
+  }
+},
+{
+  "model": "customers.customerorder",
+  "pk": 7,
+  "fields": {
+    "customer": 1,
+    "status": "completed",
+    "total_amount": "1000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:53:36.299Z",
+    "updated_at": "2026-08-12T20:53:51.861Z"
+  }
+},
+{
+  "model": "customers.customerorderitem",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "medicine": 4,
+    "quantity": 2,
+    "selling_price": "800.00",
+    "subtotal": "1600.00"
+  }
+},
+{
+  "model": "customers.customerorderitem",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "medicine": 3,
+    "quantity": 1,
+    "selling_price": "9000.00",
+    "subtotal": "9000.00"
+  }
+},
+{
+  "model": "customers.customerorderitem",
+  "pk": 3,
+  "fields": {
+    "order": 3,
+    "medicine": 1,
+    "quantity": 10,
+    "selling_price": "1000.00",
+    "subtotal": "10000.00"
+  }
+},
+{
+  "model": "customers.customerorderitem",
+  "pk": 4,
+  "fields": {
+    "order": 4,
+    "medicine": 1,
+    "quantity": 2,
+    "selling_price": "1000.00",
+    "subtotal": "2000.00"
+  }
+},
+{
+  "model": "customers.customerorderitem",
+  "pk": 5,
+  "fields": {
+    "order": 5,
+    "medicine": 3,
+    "quantity": 1,
+    "selling_price": "9000.00",
+    "subtotal": "9000.00"
+  }
+},
+{
+  "model": "customers.customerorderitem",
+  "pk": 6,
+  "fields": {
+    "order": 6,
+    "medicine": 3,
+    "quantity": 1,
+    "selling_price": "9000.00",
+    "subtotal": "9000.00"
+  }
+},
+{
+  "model": "customers.customerorderitem",
+  "pk": 7,
+  "fields": {
+    "order": 7,
+    "medicine": 1,
+    "quantity": 1,
+    "selling_price": "1000.00",
+    "subtotal": "1000.00"
+  }
+},
+{
+  "model": "sales.sale",
+  "pk": 1,
+  "fields": {
+    "customer": 1,
+    "customer_order": null,
+    "cashier": [
+      "Abeer_Ahmed"
+    ],
+    "status": "completed",
+    "total_amount": "18000.00",
+    "notes": "لايوجد",
+    "created_at": "2026-08-12T18:22:29.197Z",
+    "updated_at": "2026-08-12T18:22:29.202Z"
+  }
+},
+{
+  "model": "sales.sale",
+  "pk": 2,
+  "fields": {
+    "customer": 1,
+    "customer_order": null,
+    "cashier": [
+      "Abeer_Ahmed"
+    ],
+    "status": "completed",
+    "total_amount": "36000.00",
+    "notes": "",
+    "created_at": "2026-08-12T19:04:52.887Z",
+    "updated_at": "2026-08-12T19:04:52.892Z"
+  }
+},
+{
+  "model": "sales.sale",
+  "pk": 3,
+  "fields": {
+    "customer": 1,
+    "customer_order": 5,
+    "cashier": [
+      "Abeer_Ahmed"
+    ],
+    "status": "completed",
+    "total_amount": "9000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:34:21.185Z",
+    "updated_at": "2026-08-12T20:34:21.185Z"
+  }
+},
+{
+  "model": "sales.sale",
+  "pk": 4,
+  "fields": {
+    "customer": 1,
+    "customer_order": 6,
+    "cashier": [
+      "Abeer_Ahmed"
+    ],
+    "status": "completed",
+    "total_amount": "9000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:40:58.626Z",
+    "updated_at": "2026-08-12T20:40:58.626Z"
+  }
+},
+{
+  "model": "sales.sale",
+  "pk": 5,
+  "fields": {
+    "customer": 1,
+    "customer_order": 7,
+    "cashier": [
+      "Abeer_Ahmed"
+    ],
+    "status": "completed",
+    "total_amount": "1000.00",
+    "notes": "",
+    "created_at": "2026-08-12T20:53:51.859Z",
+    "updated_at": "2026-08-12T20:53:51.859Z"
+  }
+},
+{
+  "model": "sales.saleitem",
+  "pk": 1,
+  "fields": {
+    "sale": 1,
+    "medicine": 3,
+    "quantity": 2,
+    "selling_price": "9000.00",
+    "subtotal": "18000.00"
+  }
+},
+{
+  "model": "sales.saleitem",
+  "pk": 2,
+  "fields": {
+    "sale": 2,
+    "medicine": 1,
+    "quantity": 30,
+    "selling_price": "1200.00",
+    "subtotal": "36000.00"
+  }
+},
+{
+  "model": "sales.saleitem",
+  "pk": 3,
+  "fields": {
+    "sale": 3,
+    "medicine": 3,
+    "quantity": 1,
+    "selling_price": "9000.00",
+    "subtotal": "9000.00"
+  }
+},
+{
+  "model": "sales.saleitem",
+  "pk": 4,
+  "fields": {
+    "sale": 4,
+    "medicine": 3,
+    "quantity": 1,
+    "selling_price": "9000.00",
+    "subtotal": "9000.00"
+  }
+},
+{
+  "model": "sales.saleitem",
+  "pk": 5,
+  "fields": {
+    "sale": 5,
+    "medicine": 1,
+    "quantity": 1,
+    "selling_price": "1000.00",
+    "subtotal": "1000.00"
+  }
+},
+{
+  "model": "purchases.purchaseorder",
+  "pk": 1,
+  "fields": {
+    "supplier": 1,
+    "status": "completed",
+    "notes": "لا يوجد",
+    "created_at": "2026-08-12T17:30:29.581Z",
+    "updated_at": "2026-08-12T17:41:17.107Z"
+  }
+},
+{
+  "model": "purchases.purchaseorder",
+  "pk": 2,
+  "fields": {
+    "supplier": 1,
+    "status": "completed",
+    "notes": "",
+    "created_at": "2026-08-19T17:25:31.742Z",
+    "updated_at": "2026-08-19T17:37:19.080Z"
+  }
+},
+{
+  "model": "purchases.purchaseorder",
+  "pk": 3,
+  "fields": {
+    "supplier": 1,
+    "status": "completed",
+    "notes": "",
+    "created_at": "2026-08-19T17:40:23.461Z",
+    "updated_at": "2026-08-19T17:41:10.533Z"
+  }
+},
+{
+  "model": "purchases.purchaseorder",
+  "pk": 4,
+  "fields": {
+    "supplier": 1,
+    "status": "completed",
+    "notes": "",
+    "created_at": "2026-08-19T17:45:48.601Z",
+    "updated_at": "2026-08-19T17:46:32.783Z"
+  }
+},
+{
+  "model": "purchases.purchaseitem",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "medicine": 1,
+    "quantity": 20,
+    "purchase_price": "799.97"
+  }
+},
+{
+  "model": "purchases.purchaseitem",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "medicine": 1,
+    "quantity": 11,
+    "purchase_price": "600.00"
+  }
+},
+{
+  "model": "purchases.purchaseitem",
+  "pk": 3,
+  "fields": {
+    "order": 3,
+    "medicine": 3,
+    "quantity": 10,
+    "purchase_price": "6000.00"
+  }
+},
+{
+  "model": "purchases.purchaseitem",
+  "pk": 4,
+  "fields": {
+    "order": 4,
+    "medicine": 3,
+    "quantity": 2,
+    "purchase_price": "6000.00"
+  }
+},
+{
+  "model": "product_types.producttype",
+  "pk": 1,
+  "fields": {
+    "name": "مستلزمات طبية",
+    "description": "شاش, قفازات, قطن, مطهر, لصقة جراحية",
+    "created_at": "2026-08-07T19:41:32.593Z"
+  }
+},
+{
+  "model": "product_types.producttype",
+  "pk": 2,
+  "fields": {
+    "name": "تجميل",
+    "description": "كريمات, شامبو, غسول, واقي شمس, مكياج طبي",
+    "created_at": "2026-08-07T19:42:45.065Z"
+  }
+},
+{
+  "model": "product_types.producttype",
+  "pk": 3,
+  "fields": {
+    "name": "دواء",
+    "description": "جميع الأدوية العلاجية التي تصرف بوصفة طبية, أو إشراف صيدلي خبير",
+    "created_at": "2026-08-07T19:44:56.346Z"
+  }
+}
+]

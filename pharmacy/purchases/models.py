@@ -17,7 +17,10 @@ class PurchaseOrder(models.Model):
         ("completed", "مكتمل"),
     ]
 
+    # -----------------------------------------------------
     # المورد
+    # -----------------------------------------------------
+
     supplier = models.ForeignKey(
         Supplier,
         on_delete=models.CASCADE,
@@ -25,7 +28,10 @@ class PurchaseOrder(models.Model):
         verbose_name="المورد"
     )
 
+    # -----------------------------------------------------
     # حالة الطلب
+    # -----------------------------------------------------
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -33,19 +39,28 @@ class PurchaseOrder(models.Model):
         verbose_name="حالة الطلب"
     )
 
+    # -----------------------------------------------------
     # ملاحظات
+    # -----------------------------------------------------
+
     notes = models.TextField(
         blank=True,
         verbose_name="ملاحظات"
     )
 
+    # -----------------------------------------------------
     # تاريخ إنشاء الطلب
+    # -----------------------------------------------------
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name="تاريخ الطلب"
     )
 
+    # -----------------------------------------------------
     # آخر تحديث
+    # -----------------------------------------------------
+
     updated_at = models.DateTimeField(
         auto_now=True,
         verbose_name="آخر تحديث"
@@ -69,7 +84,10 @@ class PurchaseOrder(models.Model):
 
 class PurchaseItem(models.Model):
 
+    # -----------------------------------------------------
     # طلب التوريد
+    # -----------------------------------------------------
+
     order = models.ForeignKey(
         PurchaseOrder,
         on_delete=models.CASCADE,
@@ -77,7 +95,10 @@ class PurchaseItem(models.Model):
         verbose_name="طلب التوريد"
     )
 
+    # -----------------------------------------------------
     # الدواء
+    # -----------------------------------------------------
+
     medicine = models.ForeignKey(
         Medicine,
         on_delete=models.CASCADE,
@@ -85,15 +106,26 @@ class PurchaseItem(models.Model):
         verbose_name="الدواء"
     )
 
+    # -----------------------------------------------------
     # الكمية المطلوبة
+    # -----------------------------------------------------
+
     quantity = models.PositiveIntegerField(
         verbose_name="الكمية المطلوبة"
     )
 
+    # -----------------------------------------------------
     # سعر الشراء
+    #
+    # يكون فارغًا عند إنشاء الطلب من الصيدلية.
+    # المورد هو الذي يحدد السعر لاحقًا.
+    # -----------------------------------------------------
+
     purchase_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
+        null=True,
+        blank=True,
         verbose_name="سعر الشراء"
     )
 

@@ -1,0 +1,71 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}
+Django Form | صيدلية الحياة
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-sm p-4">
+
+        <h3 class="mb-4">
+            الطريقة الثانية: forms.Form
+        </h3>
+
+        <form method="get">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+
+                {{ form.search.label_tag }}
+
+                {{ form.search }}
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                بحث
+            </button>
+
+        </form>
+
+
+        {% if results %}
+
+        <hr>
+
+        <h5 class="mb-3">
+            نتائج البحث
+        </h5>
+
+        <ul class="list-group">
+
+            {% for medicine in results %}
+
+            <li class="list-group-item">
+
+                {{ medicine.name }}
+
+                -
+
+                {{ medicine.barcode }}
+
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1100,3 +1100,70 @@ def customer_order_reject(request, pk):
         "customer_order_manage_detail",
         pk=pk
     )
+
+# =========================================================
+# بياناتي
+# العميل فقط
+# =========================================================
+
+@login_required(login_url="login")
+def customer_profile(request):
+
+    # -----------------------------------------------------
+    # التأكد أن المستخدم عميل
+    # -----------------------------------------------------
+
+    if request.user.role != "customer":
+
+        messages.error(
+            request,
+            "غير مسموح لك بالوصول إلى هذه الصفحة."
+        )
+
+        return redirect("dashboard")
+
+    # -----------------------------------------------------
+    # الحصول على ملف العميل المرتبط بالحساب
+    # -----------------------------------------------------
+
+    customer = get_object_or_404(
+        Customer,
+        user=request.user
+    )
+
+    # -----------------------------------------------------
+    # تعديل بيانات العميل
+    # -----------------------------------------------------
+
+    if request.method == "POST":
+
+        form = CustomerForm(
+            request.POST,
+            instance=customer
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                "تم تحديث بياناتك بنجاح."
+            )
+
+            return redirect("customer_profile")
+
+    else:
+
+        form = CustomerForm(
+            instance=customer
+        )
+
+    return render(
+        request,
+        "customers/customer_profile.html",
+        {
+            "form": form,
+            "customer": customer,
+        }
+    )

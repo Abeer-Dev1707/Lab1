@@ -1,0 +1,1163 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+لوحة العميل
+{% endblock %}
+
+{% block dashboard_content %}
+
+<style>
+
+/* =========================================================
+   لوحة العميل
+   ========================================================= */
+
+.customer-dashboard {
+    width: 100%;
+}
+
+
+/* =========================================================
+   الترحيب
+   ========================================================= */
+
+.customer-welcome {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 40px;
+    margin-bottom: 30px;
+
+    background: linear-gradient(
+        135deg,
+        #64b5a0,
+        #176b58
+    );
+
+    color: white;
+
+    box-shadow:
+        0 12px 35px rgba(23, 107, 88, 0.18);
+}
+
+
+.customer-welcome::before {
+    content: "";
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.10);
+
+    top: -130px;
+    left: -80px;
+}
+
+
+.customer-welcome::after {
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.07);
+
+    right: -40px;
+    bottom: -90px;
+}
+
+
+.customer-welcome-content {
+    position: relative;
+    z-index: 2;
+}
+
+
+.customer-welcome-badge {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 16px;
+
+    border-radius: 25px;
+
+    background: rgba(255,255,255,0.16);
+
+    font-size: 14px;
+
+    margin-bottom: 15px;
+}
+
+
+.customer-welcome h1 {
+    font-size: 34px;
+    font-weight: 700;
+
+    margin-bottom: 12px;
+}
+
+
+.customer-welcome p {
+    font-size: 17px;
+
+    line-height: 1.8;
+
+    max-width: 750px;
+
+    margin-bottom: 25px;
+}
+
+
+.customer-main-buttons {
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+
+.customer-main-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 12px 22px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    transition: 0.3s;
+}
+
+
+.customer-main-btn-primary {
+    background: white;
+
+    color: #176b58;
+}
+
+
+.customer-main-btn-primary:hover {
+    color: #176b58;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.15);
+}
+
+
+.customer-main-btn-outline {
+    border: 1px solid rgba(255,255,255,0.7);
+
+    color: white;
+}
+
+
+.customer-main-btn-outline:hover {
+    color: white;
+
+    background: rgba(255,255,255,0.12);
+
+    transform: translateY(-3px);
+}
+
+
+/* =========================================================
+   بطاقات الإحصائيات
+   ========================================================= */
+
+.customer-stat-link {
+    display: block;
+
+    height: 100%;
+
+    text-decoration: none;
+
+    color: inherit;
+}
+
+
+.customer-stat-link:hover {
+    color: inherit;
+}
+
+
+.customer-stat-card {
+    position: relative;
+
+    overflow: hidden;
+
+    height: 100%;
+
+    min-height: 190px;
+
+    padding: 25px;
+
+    background: white;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.06);
+
+    transition: 0.3s;
+}
+
+
+.customer-stat-card:hover {
+    transform: translateY(-7px);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.12);
+}
+
+
+.customer-stat-icon {
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background: #edf8f5;
+
+    color: #16a085;
+
+    font-size: 29px;
+
+    margin-bottom: 16px;
+}
+
+
+.customer-stat-title {
+    color: #687887;
+
+    font-size: 15px;
+
+    margin-bottom: 5px;
+}
+
+
+.customer-stat-number {
+    font-size: 31px;
+
+    font-weight: 700;
+
+    color: #182b3a;
+}
+
+
+.customer-stat-link-text {
+    margin-top: 10px;
+
+    color: #16a085;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   القسم العام
+   ========================================================= */
+
+.customer-section {
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 25px;
+
+    height: 100%;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.06);
+}
+
+
+.customer-section-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #182b3a;
+
+    margin-bottom: 20px;
+}
+
+
+.customer-section-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #edf8f5;
+
+    font-size: 23px;
+}
+
+
+/* =========================================================
+   الإجراءات السريعة
+   ========================================================= */
+
+.customer-action {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 17px;
+
+    margin-bottom: 12px;
+
+    border-radius: 17px;
+
+    background: #f8fafb;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    border: 1px solid transparent;
+
+    transition: 0.25s;
+}
+
+
+.customer-action:last-child {
+    margin-bottom: 0;
+}
+
+
+.customer-action:hover {
+    color: inherit;
+
+    background: white;
+
+    border-color: #b9e5d8;
+
+    transform: translateX(-5px);
+
+    box-shadow:
+        0 6px 18px rgba(22,160,133,0.10);
+}
+
+
+.customer-action-icon {
+    width: 52px;
+    height: 52px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background: #edf8f5;
+
+    font-size: 25px;
+}
+
+
+.customer-action-content {
+    flex: 1;
+}
+
+
+.customer-action-content strong {
+    display: block;
+
+    color: #182b3a;
+
+    font-size: 16px;
+
+    margin-bottom: 4px;
+}
+
+
+.customer-action-content span {
+    color: #6c757d;
+
+    font-size: 13px;
+}
+
+
+.customer-action-arrow {
+    color: #16a085;
+
+    font-size: 22px;
+
+    transition: 0.25s;
+}
+
+
+.customer-action:hover .customer-action-arrow {
+    transform: translateX(-5px);
+}
+
+
+/* =========================================================
+   آخر الطلبات
+   ========================================================= */
+
+.customer-order-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 16px;
+
+    margin-bottom: 12px;
+
+    background: #f8fafb;
+
+    border-radius: 16px;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    border: 1px solid transparent;
+
+    transition: 0.25s;
+}
+
+
+.customer-order-card:last-child {
+    margin-bottom: 0;
+}
+
+
+.customer-order-card:hover {
+    color: inherit;
+
+    background: white;
+
+    border-color: #b9e5d8;
+
+    transform: translateX(-4px);
+}
+
+
+.customer-order-icon {
+    width: 50px;
+    height: 50px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #edf8f5;
+
+    font-size: 23px;
+}
+
+
+.customer-order-content {
+    flex: 1;
+}
+
+
+.customer-order-number {
+    font-weight: 700;
+
+    color: #182b3a;
+
+    margin-bottom: 4px;
+}
+
+
+.customer-order-date {
+    color: #6c757d;
+
+    font-size: 12px;
+}
+
+
+.customer-order-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+.status-pending {
+    background: #fff3cd;
+
+    color: #856404;
+}
+
+
+.status-approved {
+    background: #d1f2e7;
+
+    color: #087f5b;
+}
+
+
+.status-completed {
+    background: #dbeafe;
+
+    color: #1d4ed8;
+}
+
+
+.status-rejected {
+    background: #fde2e2;
+
+    color: #b42318;
+}
+
+
+.status-cancelled {
+    background: #e9ecef;
+
+    color: #495057;
+}
+
+
+/* =========================================================
+   لا توجد طلبات
+   ========================================================= */
+
+.customer-empty {
+    text-align: center;
+
+    padding: 35px 15px;
+}
+
+
+.customer-empty-icon {
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    background: #edf8f5;
+
+    color: #16a085;
+
+    font-size: 29px;
+}
+
+
+/* =========================================================
+   الجوال
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .customer-welcome {
+        padding: 30px 25px;
+    }
+
+
+    .customer-welcome h1 {
+        font-size: 27px;
+    }
+
+
+    .customer-welcome p {
+        font-size: 15px;
+    }
+
+
+    .customer-stat-card {
+        min-height: 175px;
+    }
+
+
+    .customer-order-card {
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+    }
+
+}
+
+</style>
+
+
+<div class="customer-dashboard">
+
+
+    <!-- =====================================================
+         الترحيب
+         ===================================================== -->
+
+    <div class="customer-welcome">
+
+        <div class="customer-welcome-content">
+
+
+            <div class="customer-welcome-badge">
+
+                👤
+
+                منطقة العميل
+
+            </div>
+
+
+            <h1>
+
+                أهلاً بك
+                {{ customer.full_name }}
+
+            </h1>
+
+
+            <p>
+
+                مرحباً بك في صيدلية الحياة.
+                يمكنك تصفح المنتجات المتاحة،
+                إنشاء طلبات جديدة ومتابعة حالة طلباتك بسهولة.
+
+            </p>
+
+
+            <div class="customer-main-buttons">
+
+
+                <a
+                    href="{% url 'customer_products' %}"
+                    class="customer-main-btn customer-main-btn-primary">
+
+                    💊
+
+                    تصفح المنتجات
+
+                </a>
+
+
+                <a
+                    href="{% url 'customer_order_create' %}"
+                    class="customer-main-btn customer-main-btn-outline">
+
+                    🛒
+
+                    إنشاء طلب
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         الإحصائيات
+         ===================================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- المنتجات -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'customer_products' %}"
+                class="customer-stat-link">
+
+                <div class="customer-stat-card">
+
+
+                    <div class="customer-stat-icon">
+                        💊
+                    </div>
+
+
+                    <div class="customer-stat-title">
+                        المنتجات المتاحة
+                    </div>
+
+
+                    <div class="customer-stat-number">
+                        {{ medicines_count }}
+                    </div>
+
+
+                    <div class="customer-stat-link-text">
+                        تصفح المنتجات ←
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- الطلبات -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'customer_orders' %}"
+                class="customer-stat-link">
+
+                <div class="customer-stat-card">
+
+
+                    <div class="customer-stat-icon">
+                        📦
+                    </div>
+
+
+                    <div class="customer-stat-title">
+                        إجمالي طلباتي
+                    </div>
+
+
+                    <div class="customer-stat-number">
+                        {{ orders_count }}
+                    </div>
+
+
+                    <div class="customer-stat-link-text">
+                        عرض الطلبات ←
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- قيد المراجعة -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'customer_orders' %}"
+                class="customer-stat-link">
+
+                <div class="customer-stat-card">
+
+
+                    <div class="customer-stat-icon">
+                        ⏳
+                    </div>
+
+
+                    <div class="customer-stat-title">
+                        قيد المراجعة
+                    </div>
+
+
+                    <div class="customer-stat-number">
+                        {{ pending_orders_count }}
+                    </div>
+
+
+                    <div class="customer-stat-link-text">
+                        متابعة الطلبات ←
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- المكتملة -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'customer_orders' %}"
+                class="customer-stat-link">
+
+                <div class="customer-stat-card">
+
+
+                    <div class="customer-stat-icon">
+                        ✅
+                    </div>
+
+
+                    <div class="customer-stat-title">
+                        الطلبات المكتملة
+                    </div>
+
+
+                    <div class="customer-stat-number">
+                        {{ completed_orders_count }}
+                    </div>
+
+
+                    <div class="customer-stat-link-text">
+                        عرض الطلبات ←
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         الإجراءات + آخر الطلبات
+         ===================================================== -->
+
+    <div class="row g-4">
+
+
+        <!-- الإجراءات السريعة -->
+
+        <div class="col-xl-5">
+
+            <div class="customer-section">
+
+
+                <div class="customer-section-title">
+
+                    <span class="customer-section-icon">
+                        ⚡
+                    </span>
+
+                    الإجراءات السريعة
+
+                </div>
+
+
+                <a
+                    href="{% url 'customer_products' %}"
+                    class="customer-action">
+
+
+                    <div class="customer-action-icon">
+                        💊
+                    </div>
+
+
+                    <div class="customer-action-content">
+
+                        <strong>
+                            تصفح المنتجات
+                        </strong>
+
+                        <span>
+                            مشاهدة الأدوية المتاحة للطلب
+                        </span>
+
+                    </div>
+
+
+                    <div class="customer-action-arrow">
+                        ←
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="{% url 'customer_order_create' %}"
+                    class="customer-action">
+
+
+                    <div class="customer-action-icon">
+                        🛒
+                    </div>
+
+
+                    <div class="customer-action-content">
+
+                        <strong>
+                            إنشاء طلب جديد
+                        </strong>
+
+                        <span>
+                            اختر المنتجات والكميات المطلوبة
+                        </span>
+
+                    </div>
+
+
+                    <div class="customer-action-arrow">
+                        ←
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="{% url 'customer_orders' %}"
+                    class="customer-action">
+
+
+                    <div class="customer-action-icon">
+                        📦
+                    </div>
+
+
+                    <div class="customer-action-content">
+
+                        <strong>
+                            طلباتي
+                        </strong>
+
+                        <span>
+                            متابعة جميع الطلبات السابقة والحالية
+                        </span>
+
+                    </div>
+
+
+                    <div class="customer-action-arrow">
+                        ←
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="{% url 'customer_profile' %}"
+                    class="customer-action">
+
+
+                    <div class="customer-action-icon">
+                        👤
+                    </div>
+
+
+                    <div class="customer-action-content">
+
+                        <strong>
+                            بياناتي
+                        </strong>
+
+                        <span>
+                            عرض وتعديل بيانات حسابك
+                        </span>
+
+                    </div>
+
+
+                    <div class="customer-action-arrow">
+                        ←
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- آخر الطلبات -->
+
+        <div class="col-xl-7">
+
+            <div class="customer-section">
+
+
+                <div class="customer-section-title">
+
+                    <span class="customer-section-icon">
+                        🧾
+                    </span>
+
+                    آخر الطلبات
+
+                </div>
+
+
+                {% if latest_orders %}
+
+
+                    {% for order in latest_orders %}
+
+
+                        <a
+                            href="{% url 'customer_order_detail' order.id %}"
+                            class="customer-order-card">
+
+
+                            <div class="customer-order-icon">
+                                📦
+                            </div>
+
+
+                            <div class="customer-order-content">
+
+                                <div class="customer-order-number">
+
+                                    طلب #{{ order.id }}
+
+                                </div>
+
+
+                                <div class="customer-order-date">
+
+                                    {{ order.created_at|date:"Y-m-d H:i" }}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if order.status == "pending" %}
+
+                                <span class="customer-order-status status-pending">
+                                    قيد المراجعة
+                                </span>
+
+                            {% elif order.status == "approved" %}
+
+                                <span class="customer-order-status status-approved">
+                                    تمت الموافقة
+                                </span>
+
+                            {% elif order.status == "completed" %}
+
+                                <span class="customer-order-status status-completed">
+                                    مكتمل
+                                </span>
+
+                            {% elif order.status == "rejected" %}
+
+                                <span class="customer-order-status status-rejected">
+                                    مرفوض
+                                </span>
+
+                            {% elif order.status == "cancelled" %}
+
+                                <span class="customer-order-status status-cancelled">
+                                    ملغي
+                                </span>
+
+                            {% endif %}
+
+
+                            <span class="customer-action-arrow">
+                                ←
+                            </span>
+
+                        </a>
+
+
+                    {% endfor %}
+
+
+                {% else %}
+
+
+                    <div class="customer-empty">
+
+
+                        <div class="customer-empty-icon">
+                            📦
+                        </div>
+
+
+                        <h5>
+                            لا توجد طلبات حتى الآن
+                        </h5>
+
+
+                        <p class="text-muted">
+                            يمكنك إنشاء طلبك الأول من المنتجات المتاحة.
+                        </p>
+
+
+                        <a
+                            href="{% url 'customer_products' %}"
+                            class="btn btn-success">
+
+                            تصفح المنتجات
+
+                        </a>
+
+                    </div>
+
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

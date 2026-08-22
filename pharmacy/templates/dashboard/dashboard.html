@@ -7,9 +7,85 @@
 
 {% block dashboard_content %}
 
-<div class="container-fluid">
+<style>
 
-    <!-- Welcome Banner -->
+/* =========================================================
+   الصفحة الرئيسية
+   ========================================================= */
+
+.dashboard-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   الرسم البياني
+   ========================================================= */
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 360px;
+    min-height: 360px;
+    padding: 10px 0;
+}
+
+#salesChart {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+/* =========================================================
+   البطاقات
+   ========================================================= */
+
+.stat-card {
+    height: 100%;
+}
+
+
+/* =========================================================
+   المبيعات
+   ========================================================= */
+
+.sales-table td,
+.sales-table th {
+    vertical-align: middle;
+}
+
+
+/* =========================================================
+   المخزون
+   ========================================================= */
+
+.stock-progress {
+    min-width: 110px;
+}
+
+
+/* =========================================================
+   الجوال
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .chart-container {
+        height: 300px;
+        min-height: 300px;
+    }
+
+}
+
+</style>
+
+
+<div class="dashboard-page">
+
+    <!-- =====================================================
+         Welcome Banner
+         ===================================================== -->
 
     <div class="welcome-card mb-5">
 
@@ -33,24 +109,28 @@
 
                 <div class="welcome-buttons">
 
-                    <button class="btn btn-success">
-                        إضافة دواء
-                    </button>
+                    <a href="{% url 'medicine_list' %}" class="btn btn-success">
+                        <i class="fas fa-pills"></i>
+                        إدارة الأدوية
+                    </a>
 
-                    <button class="btn btn-outline-light">
-                        عرض التقارير
-                    </button>
+                    <a href="{% url 'sale_list' %}" class="btn btn-outline-light">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        عرض المبيعات
+                    </a>
 
                 </div>
 
             </div>
 
+
             <div class="col-lg-4 text-center">
 
                 <div class="welcome-icon">
 
-                    <img src="{% static 'images/logo/5.png' %}"
-                         alt="Pharmacy">
+                    <img
+                        src="{% static 'images/logo/5.png' %}"
+                        alt="Pharmacy">
 
                 </div>
 
@@ -60,11 +140,18 @@
 
     </div>
 
-    <!-- Statistics -->
+
+
+    <!-- =====================================================
+         Statistics
+         ===================================================== -->
 
     <div class="row g-4">
 
-              <div class="col-xl-3 col-md-6">
+
+        <!-- الأدوية -->
+
+        <div class="col-xl-3 col-md-6">
 
             <div class="stat-card">
 
@@ -76,24 +163,24 @@
                             إجمالي الأدوية
                         </span>
 
-                        <h2>{{ 125|add:"0" }}</h2>
+                        <h2>
+                            {{ medicines_count }}
+                        </h2>
 
                         <div class="stat-info">
-
-                            <span class="positive">
-                                ↑ +12
-                            </span>
-
-                            <small>هذا الشهر</small>
-
+                            <small>
+                                المسجل حاليًا في النظام
+                            </small>
                         </div>
 
                     </div>
 
+
                     <div class="stat-image">
 
-                        <img src="{% static 'images/logo/5.png' %}"
-                             alt="Medicine">
+                        <img
+                            src="{% static 'images/logo/5.png' %}"
+                            alt="Medicine">
 
                     </div>
 
@@ -103,7 +190,11 @@
 
         </div>
 
-                <div class="col-xl-3 col-md-6">
+
+
+        <!-- العملاء -->
+
+        <div class="col-xl-3 col-md-6">
 
             <div class="stat-card">
 
@@ -115,24 +206,24 @@
                             العملاء
                         </span>
 
-                        <h2>{{ 58|stringformat:"d" }}</h2>
+                        <h2>
+                            {{ customers_count }}
+                        </h2>
 
                         <div class="stat-info">
-
-                            <span class="positive">
-                                ↑ +8
-                            </span>
-
-                            <small>هذا الشهر</small>
-
+                            <small>
+                                العملاء المسجلون حاليًا
+                            </small>
                         </div>
 
                     </div>
 
+
                     <div class="stat-image">
 
-                        <img src="{% static 'images/logo/4.png' %}"
-                             alt="Customers">
+                        <img
+                            src="{% static 'images/logo/4.png' %}"
+                            alt="Customers">
 
                     </div>
 
@@ -142,7 +233,9 @@
 
         </div>
 
-                <!-- البطاقة الثالثة -->
+
+
+        <!-- الموردون -->
 
         <div class="col-xl-3 col-md-6">
 
@@ -156,24 +249,24 @@
                             الموردون
                         </span>
 
-                        <h2>17</h2>
+                        <h2>
+                            {{ suppliers_count }}
+                        </h2>
 
                         <div class="stat-info">
-
-                            <span class="negative">
-                                ↓ -2
-                            </span>
-
-                            <small>هذا الأسبوع</small>
-
+                            <small>
+                                الموردون المسجلون حاليًا
+                            </small>
                         </div>
 
                     </div>
 
+
                     <div class="stat-image">
 
-                        <img src="{% static 'images/logo/3.png' %}"
-                             alt="Supplier">
+                        <img
+                            src="{% static 'images/logo/3.png' %}"
+                            alt="Supplier">
 
                     </div>
 
@@ -184,7 +277,8 @@
         </div>
 
 
-        <!-- البطاقة الرابعة -->
+
+        <!-- المبيعات -->
 
         <div class="col-xl-3 col-md-6">
 
@@ -198,24 +292,24 @@
                             إجمالي المبيعات
                         </span>
 
-                        <h2>326</h2>
+                        <h2>
+                            {{ sales_count }}
+                        </h2>
 
                         <div class="stat-info">
-
-                            <span class="positive">
-                                ↑ +21
-                            </span>
-
-                            <small>هذا الأسبوع</small>
-
+                            <small>
+                                عمليات البيع المكتملة
+                            </small>
                         </div>
 
                     </div>
 
+
                     <div class="stat-image">
 
-                        <img src="{% static 'images/logo/2.png' %}"
-                             alt="Sales">
+                        <img
+                            src="{% static 'images/logo/2.png' %}"
+                            alt="Sales">
 
                     </div>
 
@@ -227,11 +321,18 @@
 
     </div>
 
-    <!-- Charts & Stock -->
+
+
+    <!-- =====================================================
+         Charts & Stock
+         ===================================================== -->
 
     <div class="row mt-5 g-4">
 
-        <!-- Sales Chart -->
+
+        <!-- =================================================
+             Sales Chart
+             ================================================= -->
 
         <div class="col-lg-8">
 
@@ -251,13 +352,15 @@
 
                     </div>
 
-                    <button class="btn btn-light btn-sm">
 
+                    <button
+                        type="button"
+                        class="btn btn-light btn-sm">
                         هذا العام
-
                     </button>
 
                 </div>
+
 
                 <div class="chart-container">
 
@@ -269,7 +372,11 @@
 
         </div>
 
-        <!-- Low Stock -->
+
+
+        <!-- =================================================
+             Low Stock
+             ================================================= -->
 
         <div class="col-lg-4">
 
@@ -278,527 +385,1008 @@
                 <div class="box-header">
 
                     <h4>
-
                         تنبيه المخزون
-
                     </h4>
 
                 </div>
+
 
                 <div class="stock-items">
 
-                  <!-- العنصر الأول -->
+                    {% if low_stock_medicines %}
 
-<div class="stock-row">
+                        {% for medicine in low_stock_medicines %}
 
-    <div>
+                            <div class="stock-row">
 
-        <strong>Paracetamol</strong>
+                                <div>
 
-        <small>باقي 5 علب</small>
+                                    <strong>
+                                        {{ medicine.name }}
+                                    </strong>
 
-    </div>
+                                    <small>
 
-    <div class="stock-progress">
+                                        {% if medicine.quantity == 0 %}
 
-        <div class="progress">
+                                            نفد المخزون
 
-            <div class="progress-bar bg-danger"
-                 style="width:20%">
-            </div>
+                                        {% else %}
 
-        </div>
+                                            المتبقي
+                                            {{ medicine.quantity }}
+                                            وحدة
 
-    </div>
+                                        {% endif %}
 
-</div>
+                                    </small>
 
-<!-- العنصر الثاني -->
+                                </div>
 
-<div class="stock-row">
 
-    <div>
+                                <div class="stock-progress">
 
-        <strong>Vitamin C</strong>
+                                    <div class="progress">
 
-        <small>باقي 3 علب</small>
+                                        <div
+                                            class="progress-bar
+                                            {% if medicine.quantity == 0 or medicine.quantity <= 2 %}
+                                                bg-danger
+                                            {% else %}
+                                                bg-warning
+                                            {% endif %}"
+                                            style="width:
+                                            {% if medicine.quantity >= 5 %}
+                                                50%
+                                            {% else %}
+                                                {{ medicine.quantity|add:'0' }}0%
+                                            {% endif %};">
 
-    </div>
+                                        </div>
 
-    <div class="stock-progress">
+                                    </div>
 
-        <div class="progress">
+                                </div>
 
-            <div class="progress-bar bg-danger"
-                 style="width:12%">
-            </div>
+                            </div>
 
-        </div>
+                        {% endfor %}
 
-    </div>
 
-</div>
+                    {% else %}
 
-<!-- العنصر الثالث -->
+                        <div class="text-center py-4 text-muted">
 
-<div class="stock-row">
+                            <i class="fas fa-circle-check fa-2x mb-2"></i>
 
-    <div>
+                            <p class="mb-0">
+                                لا توجد أدوية منخفضة المخزون حاليًا.
+                            </p>
 
-        <strong>Ibuprofen</strong>
+                        </div>
 
-        <small>باقي 9 علب</small>
-
-    </div>
-
-    <div class="stock-progress">
-
-        <div class="progress">
-
-            <div class="progress-bar bg-warning"
-                 style="width:38%">
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- العنصر الرابع -->
-
-<div class="stock-row">
-
-    <div>
-
-        <strong>Omeprazole</strong>
-
-        <small>باقي 2 علبة</small>
-
-    </div>
-
-    <div class="stock-progress">
-
-        <div class="progress">
-
-            <div class="progress-bar bg-danger"
-                 style="width:8%">
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- العنصر الخامس -->
-
-<div class="stock-row">
-
-    <div>
-
-        <strong>Amoxicillin</strong>
-
-        <small>باقي 8 علب</small>
-
-    </div>
-
-    <div class="stock-progress">
-
-        <div class="progress">
-
-            <div class="progress-bar bg-warning"
-                 style="width:32%">
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- آخر المبيعات -->
-
-<div class="row mt-5">
-
-    <div class="col-12">
-
-        <div class="dashboard-box">
-
-            <div class="box-header">
-
-                <div>
-
-                    <h4>
-                        آخر المبيعات
-                    </h4>
-
-                    <small>
-                        آخر العمليات التي تمت داخل النظام
-                    </small>
+                    {% endif %}
 
                 </div>
 
-                <button class="btn btn-success btn-sm">
+            </div>
 
-                    عرض جميع المبيعات
+        </div>
 
-                </button>
+    </div>
+
+
+
+    <!-- =====================================================
+         آخر المبيعات
+         ===================================================== -->
+
+    <div class="row mt-5">
+
+        <div class="col-12">
+
+            <div class="dashboard-box">
+
+                <div class="box-header">
+
+                    <div>
+
+                        <h4>
+                            آخر المبيعات
+                        </h4>
+
+                        <small>
+                            آخر العمليات التي تمت داخل النظام
+                        </small>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'sale_list' %}"
+                        class="btn btn-success btn-sm">
+
+                        <i class="fas fa-list"></i>
+
+                        عرض جميع المبيعات
+
+                    </a>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="table sales-table align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    #
+                                </th>
+
+                                <th>
+                                    رقم الفاتورة
+                                </th>
+
+                                <th>
+                                    العميل
+                                </th>
+
+                                <th>
+                                    التاريخ
+                                </th>
+
+                                <th>
+                                    المبلغ
+                                </th>
+
+                                <th>
+                                    الحالة
+                                </th>
+
+                                <th>
+                                    الإجراء
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        {% for sale in latest_sales %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <td>
+
+                                    <strong>
+                                        #{{ sale.id }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if sale.customer %}
+
+                                        {{ sale.customer.full_name }}
+
+                                    {% else %}
+
+                                        عميل نقدي
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ sale.created_at|date:"Y-m-d H:i" }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ sale.total_amount }}
+                                    ريال
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if sale.status == "completed" %}
+
+                                        <span class="status-badge bg-success">
+                                            مكتملة
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status-badge bg-danger">
+                                            ملغاة
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'sale_detail' sale.id %}"
+                                        class="btn btn-light btn-sm">
+
+                                        <i class="fas fa-eye"></i>
+
+                                        عرض
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="text-center py-5">
+
+                                    <i class="fas fa-receipt fa-2x text-muted mb-2"></i>
+
+                                    <p class="mb-0 text-muted">
+                                        لا توجد مبيعات مسجلة حتى الآن.
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
-            <div class="table-responsive">
+        </div>
 
-                <table class="table sales-table align-middle">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>#</th>
-
-                            <th>رقم الفاتورة</th>
-
-                            <th>العميل</th>
-
-                            <th>التاريخ</th>
-
-                            <th>المبلغ</th>
-
-                            <th>الحالة</th>
-
-                            <th>الإجراء</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                      <tr>
-
-    <td>1</td>
-
-    <td><strong>INV-1001</strong></td>
-
-    <td>أحمد محمد</td>
-
-    <td>29/07/2026</td>
-
-    <td>4,500 ريال</td>
-
-    <td>
-
-        <span class="status-badge bg-success">
-
-            مكتملة
-
-        </span>
-
-    </td>
-
-    <td>
-
-        <button class="btn btn-light btn-sm">
-
-            عرض
-
-        </button>
-
-    </td>
-
-</tr>
-
-<tr>
-
-    <td>2</td>
-
-    <td><strong>INV-1002</strong></td>
-
-    <td>محمد علي</td>
-
-    <td>29/07/2026</td>
-
-    <td>2,700 ريال</td>
-
-    <td>
-
-        <span class="status-badge bg-warning text-dark">
-
-            قيد التنفيذ
-
-        </span>
-
-    </td>
-
-    <td>
-
-        <button class="btn btn-light btn-sm">
-
-            عرض
-
-        </button>
-
-    </td>
-
-</tr>
-
-<tr>
-
-    <td>3</td>
-
-    <td><strong>INV-1003</strong></td>
-
-    <td>سارة حسن</td>
-
-    <td>28/07/2026</td>
-
-    <td>1,950 ريال</td>
-
-    <td>
-
-        <span class="status-badge bg-success">
-
-            مكتملة
-
-        </span>
-
-    </td>
-
-    <td>
-
-        <button class="btn btn-light btn-sm">
-
-            عرض
-
-        </button>
-
-    </td>
-
-</tr>
-
-<tr>
-
-    <td>4</td>
-
-    <td><strong>INV-1004</strong></td>
-
-    <td>خالد عبدالله</td>
-
-    <td>28/07/2026</td>
-
-    <td>6,250 ريال</td>
-
-    <td>
-
-        <span class="status-badge bg-danger">
-
-            ملغاة
-
-        </span>
-
-    </td>
-
-    <td>
-
-        <button class="btn btn-light btn-sm">
-
-            عرض
-
-        </button>
-
-    </td>
-
-</tr>
-
-<tr>
-
-    <td>5</td>
-
-    <td><strong>INV-1005</strong></td>
-
-    <td>عبدالله صالح</td>
-
-    <td>27/07/2026</td>
-
-    <td>3,800 ريال</td>
-
-    <td>
-
-        <span class="status-badge bg-success">
-
-            مكتملة
-
-        </span>
-
-    </td>
-
-    <td>
-
-        <button class="btn btn-light btn-sm">
-
-            عرض
-
-        </button>
-
-    </td>
-
-</tr>
-
-</tbody>
-
-</table>
+    </div>
 
 </div>
 
-</div>
 
-</div>
+<!-- =========================================================
+     بيانات الرسم البياني
+     ========================================================= -->
 
-</div>
+{{ sales_chart_labels|json_script:"sales-chart-labels" }}
 
-{% endblock %}
+{{ sales_chart_data|json_script:"sales-chart-data" }}
+
+
 
 {% block extra_js %}
 
 <script>
 
-const ctx = document.getElementById("salesChart");
+document.addEventListener("DOMContentLoaded", function () {
 
-new Chart(ctx, {
+    const canvas = document.getElementById("salesChart");
 
-    type: "line",
+    if (!canvas) {
+        return;
+    }
 
-    data: {
 
-        labels: [
+    const labelsElement =
+        document.getElementById("sales-chart-labels");
 
-            "يناير",
+    const dataElement =
+        document.getElementById("sales-chart-data");
 
-            "فبراير",
 
-            "مارس",
+    let salesLabels = [];
+    let salesData = [];
 
-            "أبريل",
 
-            "مايو",
+    /* =====================================================
+       قراءة البيانات القادمة من Django
+       ===================================================== */
 
-            "يونيو",
+    try {
 
-            "يوليو"
+        if (labelsElement) {
 
-        ],
-
-        datasets: [
-
-            {
-
-                label: "المبيعات",
-
-                data: [
-
-                    12,
-
-                    18,
-
-                    15,
-
-                    25,
-
-                    21,
-
-                    30,
-
-                    38
-
-                ],
-
-                borderColor:"#10b981",
-
-                backgroundColor:"rgba(16,185,129,.15)",
-
-                fill:true,
-
-                tension:.45,
-
-                borderWidth:4,
-
-                pointRadius:5,
-
-                pointHoverRadius:8,
-
-                pointBackgroundColor:"#10b981"
-
-            }
-
-        ]
-
-    },
-
-    options:{
-
-        responsive:true,
-
-        maintainAspectRatio:false,
-
-        plugins:{
-
-            legend:{
-
-                display:true,
-
-                position:"top"
-
-            }
-
-        },
-
-        interaction:{
-
-            intersect:false,
-
-            mode:"index"
-
-        },
-
-        scales:{
-
-            y:{
-
-                beginAtZero:true,
-
-                grid:{
-
-                    color:"#edf2f7"
-
-                }
-
-            },
-
-            x:{
-
-                grid:{
-
-                    display:false
-
-                }
-
-            }
+            salesLabels =
+                JSON.parse(labelsElement.textContent) || [];
 
         }
 
+
+        if (dataElement) {
+
+            salesData =
+                JSON.parse(dataElement.textContent) || [];
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "خطأ في قراءة بيانات المبيعات:",
+            error
+        );
+
     }
+
+
+    /* =====================================================
+       تحويل القيم إلى أرقام
+       ===================================================== */
+
+    salesData = salesData.map(function (value) {
+
+        const number = Number(value);
+
+        return Number.isFinite(number)
+            ? number
+            : 0;
+
+    });
+
+
+    /* =====================================================
+       التأكد من وجود البيانات
+       ===================================================== */
+
+    if (
+        !Array.isArray(salesLabels) ||
+        !Array.isArray(salesData) ||
+        salesLabels.length === 0
+    ) {
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.font = "16px Arial";
+
+        ctx.fillStyle = "#71808c";
+
+        ctx.textAlign = "center";
+
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+            "لا توجد بيانات مبيعات لعرضها حاليًا",
+            canvas.width / 2,
+            canvas.height / 2
+        );
+
+        return;
+    }
+
+
+    /* =====================================================
+       تجهيز الرسم
+       ===================================================== */
+
+    const ctx = canvas.getContext("2d");
+
+    const container =
+        canvas.parentElement;
+
+
+    function resizeCanvas() {
+
+        const width =
+            container.clientWidth;
+
+        const height =
+            container.clientHeight;
+
+
+        const ratio =
+            window.devicePixelRatio || 1;
+
+
+        canvas.width =
+            width * ratio;
+
+        canvas.height =
+            height * ratio;
+
+
+        canvas.style.width =
+            width + "px";
+
+        canvas.style.height =
+            height + "px";
+
+
+        ctx.setTransform(
+            ratio,
+            0,
+            0,
+            ratio,
+            0,
+            0
+        );
+
+
+        drawChart(
+            width,
+            height
+        );
+    }
+
+
+
+    /* =====================================================
+       رسم المخطط
+       ===================================================== */
+
+    function drawChart(width, height) {
+
+        ctx.clearRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+        /* -----------------------------------------------
+           الإعدادات
+           ----------------------------------------------- */
+
+        const padding = {
+
+            top: 30,
+
+            right: 35,
+
+            bottom: 65,
+
+            left: 80
+
+        };
+
+
+        const chartWidth =
+            width -
+            padding.left -
+            padding.right;
+
+
+        const chartHeight =
+            height -
+            padding.top -
+            padding.bottom;
+
+
+        const values =
+            salesData.slice();
+
+
+        let maxValue =
+            Math.max(...values, 0);
+
+
+        /*
+         * إذا كانت جميع القيم صفرًا
+         */
+
+        if (maxValue <= 0) {
+
+            maxValue = 100;
+
+        } else {
+
+            /*
+             * إضافة مساحة فوق أعلى قيمة
+             */
+
+            maxValue =
+                maxValue * 1.15;
+
+        }
+
+
+        /* -----------------------------------------------
+           الخلفية
+           ----------------------------------------------- */
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.fillRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+        /* -----------------------------------------------
+           خطوط الشبكة
+           ----------------------------------------------- */
+
+        const gridLines = 4;
+
+
+        ctx.lineWidth = 1;
+
+        ctx.strokeStyle =
+            "#e5edf1";
+
+
+        ctx.fillStyle =
+            "#527d92";
+
+
+        ctx.font =
+            "600 13px Arial";
+
+
+        ctx.textAlign =
+            "right";
+
+        ctx.textBaseline =
+            "middle";
+
+
+        for (
+            let i = 0;
+            i <= gridLines;
+            i++
+        ) {
+
+            const ratio =
+                i / gridLines;
+
+
+            const y =
+                padding.top +
+                chartHeight -
+                (
+                    ratio *
+                    chartHeight
+                );
+
+
+            /* الخط */
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                padding.left,
+                y
+            );
+
+            ctx.lineTo(
+                width - padding.right,
+                y
+            );
+
+            ctx.stroke();
+
+
+            /* الرقم */
+
+            const value =
+                maxValue * ratio;
+
+
+            ctx.fillText(
+                formatNumber(value),
+                padding.left - 10,
+                y
+            );
+
+        }
+
+
+        /* -----------------------------------------------
+           عدد النقاط
+           ----------------------------------------------- */
+
+        const count =
+            salesLabels.length;
+
+
+        if (count === 0) {
+            return;
+        }
+
+
+        const step =
+            count === 1
+                ? 0
+                : chartWidth / (count - 1);
+
+
+        const points = [];
+
+
+        /* -----------------------------------------------
+           حساب النقاط
+           ----------------------------------------------- */
+
+        for (
+            let i = 0;
+            i < count;
+            i++
+        ) {
+
+            const value =
+                Number(
+                    salesData[i] || 0
+                );
+
+
+            const x =
+                count === 1
+                    ? padding.left +
+                      chartWidth / 2
+                    : padding.left +
+                      (step * i);
+
+
+            const y =
+                padding.top +
+                chartHeight -
+                (
+                    (value / maxValue) *
+                    chartHeight
+                );
+
+
+            points.push({
+
+                x: x,
+
+                y: y,
+
+                value: value
+
+            });
+
+        }
+
+
+        /* -----------------------------------------------
+           المنطقة أسفل الخط
+           ----------------------------------------------- */
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            points[0].x,
+            padding.top + chartHeight
+        );
+
+
+        points.forEach(function (point) {
+
+            ctx.lineTo(
+                point.x,
+                point.y
+            );
+
+        });
+
+
+        ctx.lineTo(
+            points[points.length - 1].x,
+            padding.top + chartHeight
+        );
+
+
+        ctx.closePath();
+
+
+        ctx.fillStyle =
+            "rgba(82,125,146,0.10)";
+
+
+        ctx.fill();
+
+
+        /* -----------------------------------------------
+           الخط
+           ----------------------------------------------- */
+
+        ctx.beginPath();
+
+
+        points.forEach(function (
+            point,
+            index
+        ) {
+
+            if (index === 0) {
+
+                ctx.moveTo(
+                    point.x,
+                    point.y
+                );
+
+            } else {
+
+                ctx.lineTo(
+                    point.x,
+                    point.y
+                );
+
+            }
+
+        });
+
+
+        ctx.strokeStyle =
+            "#527d92";
+
+        ctx.lineWidth =
+            4;
+
+        ctx.lineJoin =
+            "round";
+
+        ctx.lineCap =
+            "round";
+
+        ctx.stroke();
+
+
+        /* -----------------------------------------------
+           النقاط + القيم
+           ----------------------------------------------- */
+
+        points.forEach(function (
+            point,
+            index
+        ) {
+
+
+            /* النقطة */
+
+            ctx.beginPath();
+
+            ctx.arc(
+                point.x,
+                point.y,
+                7,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.fillStyle =
+                "#527d92";
+
+            ctx.fill();
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                point.x,
+                point.y,
+                4,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.fillStyle =
+                "#ffffff";
+
+            ctx.fill();
+
+
+            /* -----------------------------------------
+               قيمة المبيعات
+               ----------------------------------------- */
+
+            ctx.font =
+                "700 14px Arial";
+
+            ctx.fillStyle =
+                "#182b3a";
+
+            ctx.textAlign =
+                "center";
+
+            ctx.textBaseline =
+                "bottom";
+
+
+            let valueY =
+                point.y - 14;
+
+
+            /*
+             * منع الرقم من الخروج أعلى الرسم
+             */
+
+            if (
+                valueY <
+                padding.top + 5
+            ) {
+
+                valueY =
+                    point.y + 25;
+
+                ctx.textBaseline =
+                    "top";
+
+            }
+
+
+            ctx.fillText(
+                formatNumber(point.value),
+                point.x,
+                valueY
+            );
+
+
+            /* -----------------------------------------
+               اسم الشهر
+               ----------------------------------------- */
+
+            ctx.font =
+                "700 14px Arial";
+
+            ctx.fillStyle =
+                "#536570";
+
+            ctx.textAlign =
+                "center";
+
+            ctx.textBaseline =
+                "top";
+
+
+            ctx.fillText(
+                salesLabels[index],
+                point.x,
+                padding.top +
+                chartHeight +
+                18
+            );
+
+        });
+
+
+        /* -----------------------------------------------
+           إذا كانت القيمة صفر
+           ----------------------------------------------- */
+
+        points.forEach(function (point) {
+
+            if (point.value === 0) {
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    point.x,
+                    point.y,
+                    7,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fillStyle =
+                    "#ffffff";
+
+                ctx.fill();
+
+
+                ctx.strokeStyle =
+                    "#527d92";
+
+                ctx.lineWidth =
+                    4;
+
+                ctx.stroke();
+
+            }
+
+        });
+
+    }
+
+
+
+    /* =====================================================
+       تنسيق الأرقام
+       ===================================================== */
+
+    function formatNumber(value) {
+
+        if (!Number.isFinite(value)) {
+
+            value = 0;
+
+        }
+
+
+        return value.toLocaleString(
+            "en-US",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+
+
+    /* =====================================================
+       تشغيل الرسم
+       ===================================================== */
+
+    resizeCanvas();
+
+
+    /* =====================================================
+       إعادة الرسم عند تغيير حجم الشاشة
+       ===================================================== */
+
+    let resizeTimer;
+
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            clearTimeout(
+                resizeTimer
+            );
+
+
+            resizeTimer =
+                setTimeout(
+                    resizeCanvas,
+                    150
+                );
+
+        }
+    );
 
 });
 
 </script>
+
+{% endblock %}
 
 {% endblock %}

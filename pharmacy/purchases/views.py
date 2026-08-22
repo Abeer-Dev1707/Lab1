@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from decimal import Decimal, InvalidOperation
 
 from .forms import (
     PurchaseOrderForm,
-    PurchaseItemForm,
     PurchaseItemFormSet,
 )
 
-from .models import PurchaseOrder, PurchaseItem
+from .models import PurchaseOrder
 
 
 # =========================================================
@@ -75,15 +75,21 @@ def purchase_list(request):
 # =========================================================
 # إنشاء طلب توريد
 # المدير + الصيدلي
-# يدعم عدة أدوية
+#
+# الصيدلية تحدد:
+#   - المورد
+#   - الدواء
+#   - الكمية
+#
+# المورد يحدد سعر الشراء لاحقًا.
 # =========================================================
 
 @login_required(login_url="login")
 def purchase_create(request):
 
-    # -----------------------------------------
+    # -----------------------------------------------------
     # المدير والصيدلي فقط
-    # -----------------------------------------
+    # -----------------------------------------------------
 
     if request.user.role not in ["admin", "pharmacist"]:
 
@@ -94,9 +100,9 @@ def purchase_create(request):
 
         return redirect("dashboard")
 
-    # -----------------------------------------
+    # -----------------------------------------------------
     # POST
-    # -----------------------------------------
+    # -----------------------------------------------------
 
     if request.method == "POST":
 
@@ -104,45 +110,68 @@ def purchase_create(request):
             request.POST
         )
 
-        # -------------------------------------
-        # نموذج المنتجات المتعددة
-        # -------------------------------------
-
         item_formset = PurchaseItemFormSet(
             request.POST
         )
 
-        # -------------------------------------
+        # -------------------------------------------------
         # التحقق من الطلب والمنتجات
-        # -------------------------------------
+        # -------------------------------------------------
 
         if (
             order_form.is_valid()
             and item_formset.is_valid()
         ):
 
-            # ---------------------------------
+            # ---------------------------------------------
             # إنشاء الطلب
-            # ---------------------------------
+            # ---------------------------------------------
 
             order = order_form.save()
 
-            # ---------------------------------
+            # ---------------------------------------------
             # ربط المنتجات بالطلب
-            # ---------------------------------
+            # ---------------------------------------------
 
             item_formset.instance = order
 
-            item_formset.save()
+            items = item_formset.save(
+                commit=False
+            )
+
+            # ---------------------------------------------
+            # التأكد أن كل منتج يبدأ بدون سعر
+            #
+            # السعر سيحدده المورد لاحقًا.
+            # ---------------------------------------------
+
+            for item in items:
+
+                item.purchase_price = None
+
+                item.save()
+
+            # ---------------------------------------------
+            # حذف العناصر التي تم تحديدها للحذف
+            # ---------------------------------------------
+
+            for item in item_formset.deleted_objects:
+
+                if item.pk:
+                    item.delete()
 
             messages.success(
                 request,
-                "تم إنشاء طلب التوريد بنجاح."
+                "تم إنشاء طلب التوريد بنجاح، وتم إرساله إلى المورد لتحديد السعر."
             )
 
             return redirect(
                 "purchase_list"
             )
+
+    # -----------------------------------------------------
+    # GET
+    # -----------------------------------------------------
 
     else:
 
@@ -177,9 +206,9 @@ def purchase_detail(request, pk):
         pk=pk
     )
 
-    # -----------------------------------------
+    # =====================================================
     # المورد يرى طلباته فقط
-    # -----------------------------------------
+    # =====================================================
 
     if request.user.role == "supplier":
 
@@ -194,9 +223,9 @@ def purchase_detail(request, pk):
                 "dashboard"
             )
 
-    # -----------------------------------------
+    # =====================================================
     # المستخدمون الآخرون المسموح لهم
-    # -----------------------------------------
+    # =====================================================
 
     elif request.user.role not in [
         "admin",
@@ -229,6 +258,10 @@ def purchase_detail(request, pk):
 @login_required(login_url="login")
 def supplier_orders(request):
 
+    # -----------------------------------------------------
+    # المورد فقط
+    # -----------------------------------------------------
+
     if request.user.role != "supplier":
 
         messages.error(
@@ -236,7 +269,9 @@ def supplier_orders(request):
             "🚫 غير مسموح لك بالوصول إلى هذه الصفحة."
         )
 
-        return redirect("dashboard")
+        return redirect(
+            "dashboard"
+        )
 
     orders = PurchaseOrder.objects.filter(
         supplier__user=request.user
@@ -244,6 +279,8 @@ def supplier_orders(request):
         "supplier"
     ).prefetch_related(
         "items__medicine"
+    ).order_by(
+        "-created_at"
     )
 
     return render(
@@ -257,15 +294,18 @@ def supplier_orders(request):
 
 # =========================================================
 # موافقة المورد على طلب التوريد
+#
+# المورد يحدد سعر كل منتج ثم يوافق.
+#
 # المورد صاحب الطلب فقط
 # =========================================================
 
 @login_required(login_url="login")
 def supplier_approve_order(request, pk):
 
-    # -----------------------------------------
+    # =====================================================
     # المورد فقط
-    # -----------------------------------------
+    # =====================================================
 
     if request.user.role != "supplier":
 
@@ -274,20 +314,24 @@ def supplier_approve_order(request, pk):
             "🚫 غير مسموح لك بتنفيذ هذا الإجراء."
         )
 
-        return redirect("dashboard")
+        return redirect(
+            "dashboard"
+        )
 
-    # -----------------------------------------
+    # =====================================================
     # الحصول على الطلب
-    # -----------------------------------------
+    # =====================================================
 
     order = get_object_or_404(
-        PurchaseOrder,
+        PurchaseOrder.objects.prefetch_related(
+            "items__medicine"
+        ),
         pk=pk
     )
 
-    # -----------------------------------------
+    # =====================================================
     # التأكد أن الطلب تابع لهذا المورد
-    # -----------------------------------------
+    # =====================================================
 
     if order.supplier.user != request.user:
 
@@ -296,21 +340,94 @@ def supplier_approve_order(request, pk):
             "🚫 غير مسموح لك بتعديل هذا الطلب."
         )
 
-        return redirect("supplier_orders")
+        return redirect(
+            "supplier_orders"
+        )
 
-    # -----------------------------------------
-    # الموافقة تكون عن طريق POST فقط
-    # -----------------------------------------
+    # =====================================================
+    # الموافقة يجب أن تكون POST
+    # =====================================================
 
-    if request.method == "POST":
+    if request.method != "POST":
 
-        # لا يمكن الموافقة إلا على طلب قيد المراجعة
+        messages.warning(
+            request,
+            "⚠️ يجب إرسال نموذج الموافقة بالطريقة الصحيحة."
+        )
 
-        if order.status != "pending":
+        return redirect(
+            "purchase_detail",
+            pk=order.id
+        )
 
-            messages.warning(
+    # =====================================================
+    # لا يمكن الموافقة إلا على طلب قيد المراجعة
+    # =====================================================
+
+    if order.status != "pending":
+
+        messages.warning(
+            request,
+            "⚠️ لا يمكن تغيير حالة هذا الطلب."
+        )
+
+        return redirect(
+            "purchase_detail",
+            pk=order.id
+        )
+
+    # =====================================================
+    # التأكد من وجود منتجات في الطلب
+    # =====================================================
+
+    items = list(
+        order.items.all()
+    )
+
+    if not items:
+
+        messages.error(
+            request,
+            "🚫 لا يمكن الموافقة على طلب لا يحتوي على منتجات."
+        )
+
+        return redirect(
+            "purchase_detail",
+            pk=order.id
+        )
+
+    # =====================================================
+    # قراءة الأسعار التي أدخلها المورد
+    #
+    # اسم الحقل المتوقع:
+    #
+    # purchase_price_<item_id>
+    #
+    # مثال:
+    #
+    # purchase_price_5
+    # =====================================================
+
+    prices = {}
+
+    for item in items:
+
+        field_name = f"purchase_price_{item.id}"
+
+        price_value = request.POST.get(
+            field_name,
+            ""
+        ).strip()
+
+        # -------------------------------------------------
+        # السعر فارغ
+        # -------------------------------------------------
+
+        if not price_value:
+
+            messages.error(
                 request,
-                "⚠️ لا يمكن تغيير حالة هذا الطلب."
+                f"🚫 يرجى تحديد سعر الشراء للدواء: {item.medicine.name}."
             )
 
             return redirect(
@@ -318,16 +435,83 @@ def supplier_approve_order(request, pk):
                 pk=order.id
             )
 
-        # تغيير الحالة إلى تمت الموافقة
+        # -------------------------------------------------
+        # تحويل السعر إلى Decimal
+        # -------------------------------------------------
+
+        try:
+
+            price = Decimal(
+                price_value
+            )
+
+        except (InvalidOperation, ValueError):
+
+            messages.error(
+                request,
+                f"🚫 سعر الدواء {item.medicine.name} غير صحيح."
+            )
+
+            return redirect(
+                "purchase_detail",
+                pk=order.id
+            )
+
+        # -------------------------------------------------
+        # السعر يجب أن يكون أكبر من صفر
+        # -------------------------------------------------
+
+        if price <= 0:
+
+            messages.error(
+                request,
+                f"🚫 يجب أن يكون سعر {item.medicine.name} أكبر من صفر."
+            )
+
+            return redirect(
+                "purchase_detail",
+                pk=order.id
+            )
+
+        # -------------------------------------------------
+        # حفظ السعر في الذاكرة مؤقتًا
+        # -------------------------------------------------
+
+        prices[item.id] = price
+
+    # =====================================================
+    # حفظ الأسعار وتحويل الطلب إلى approved
+    # =====================================================
+
+    with transaction.atomic():
+
+        for item in items:
+
+            item.purchase_price = prices[item.id]
+
+            item.save(
+                update_fields=[
+                    "purchase_price"
+                ]
+            )
 
         order.status = "approved"
 
-        order.save()
-
-        messages.success(
-            request,
-            "تمت الموافقة على طلب التوريد بنجاح."
+        order.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
         )
+
+    # =====================================================
+    # رسالة نجاح
+    # =====================================================
+
+    messages.success(
+        request,
+        "✅ تمت الموافقة على طلب التوريد وتسجيل أسعار المنتجات بنجاح."
+    )
 
     return redirect(
         "purchase_detail",
@@ -343,9 +527,9 @@ def supplier_approve_order(request, pk):
 @login_required(login_url="login")
 def supplier_reject_order(request, pk):
 
-    # -----------------------------------------
+    # =====================================================
     # المورد فقط
-    # -----------------------------------------
+    # =====================================================
 
     if request.user.role != "supplier":
 
@@ -354,20 +538,22 @@ def supplier_reject_order(request, pk):
             "🚫 غير مسموح لك بتنفيذ هذا الإجراء."
         )
 
-        return redirect("dashboard")
+        return redirect(
+            "dashboard"
+        )
 
-    # -----------------------------------------
+    # =====================================================
     # الحصول على الطلب
-    # -----------------------------------------
+    # =====================================================
 
     order = get_object_or_404(
         PurchaseOrder,
         pk=pk
     )
 
-    # -----------------------------------------
+    # =====================================================
     # التأكد أن الطلب تابع لهذا المورد
-    # -----------------------------------------
+    # =====================================================
 
     if order.supplier.user != request.user:
 
@@ -376,38 +562,59 @@ def supplier_reject_order(request, pk):
             "🚫 غير مسموح لك بتعديل هذا الطلب."
         )
 
-        return redirect("supplier_orders")
+        return redirect(
+            "supplier_orders"
+        )
 
-    # -----------------------------------------
-    # الرفض يكون عن طريق POST فقط
-    # -----------------------------------------
+    # =====================================================
+    # الرفض يجب أن يكون POST
+    # =====================================================
 
-    if request.method == "POST":
-
-        # لا يمكن رفض إلا طلب قيد المراجعة
-
-        if order.status != "pending":
-
-            messages.warning(
-                request,
-                "⚠️ لا يمكن تغيير حالة هذا الطلب."
-            )
-
-            return redirect(
-                "purchase_detail",
-                pk=order.id
-            )
-
-        # تغيير الحالة إلى مرفوض
-
-        order.status = "rejected"
-
-        order.save()
+    if request.method != "POST":
 
         messages.warning(
             request,
-            "تم رفض طلب التوريد."
+            "⚠️ يجب إرسال نموذج الرفض بالطريقة الصحيحة."
         )
+
+        return redirect(
+            "purchase_detail",
+            pk=order.id
+        )
+
+    # =====================================================
+    # لا يمكن رفض إلا طلب قيد المراجعة
+    # =====================================================
+
+    if order.status != "pending":
+
+        messages.warning(
+            request,
+            "⚠️ لا يمكن تغيير حالة هذا الطلب."
+        )
+
+        return redirect(
+            "purchase_detail",
+            pk=order.id
+        )
+
+    # =====================================================
+    # تغيير الحالة إلى مرفوض
+    # =====================================================
+
+    order.status = "rejected"
+
+    order.save(
+        update_fields=[
+            "status",
+            "updated_at"
+        ]
+    )
+
+    messages.warning(
+        request,
+        "تم رفض طلب التوريد."
+    )
 
     return redirect(
         "purchase_detail",
@@ -417,14 +624,17 @@ def supplier_reject_order(request, pk):
 
 # =========================================================
 # تأكيد استلام طلب التوريد
+#
 # المدير + الصيدلي
 #
 # عند الاستلام:
+#
 # PurchaseItem.quantity
 #        ↓
 # Medicine.quantity += الكمية
 #
 # ثم:
+#
 # order.status = completed
 # =========================================================
 
@@ -435,14 +645,19 @@ def purchase_receive(request, pk):
     # المدير والصيدلي فقط
     # =====================================================
 
-    if request.user.role not in ["admin", "pharmacist"]:
+    if request.user.role not in [
+        "admin",
+        "pharmacist"
+    ]:
 
         messages.error(
             request,
             "🚫 غير مسموح لك بتأكيد استلام التوريد."
         )
 
-        return redirect("dashboard")
+        return redirect(
+            "dashboard"
+        )
 
     # =====================================================
     # يجب أن يكون الطلب موجودًا
@@ -475,53 +690,11 @@ def purchase_receive(request, pk):
     # تنفيذ الاستلام يجب أن يكون POST
     # =====================================================
 
-    if request.method == "POST":
+    if request.method != "POST":
 
-        with transaction.atomic():
-
-            # ---------------------------------------------
-            # تحديث كمية كل دواء
-            # ---------------------------------------------
-
-            for item in order.items.all():
-
-                medicine = item.medicine
-
-                medicine.quantity += item.quantity
-
-                # -----------------------------------------
-                # إذا أصبحت الكمية أكبر من صفر
-                # نجعل الدواء متوفرًا
-                # -----------------------------------------
-
-                if medicine.quantity > 0:
-
-                    medicine.status = "available"
-
-                medicine.save(
-                    update_fields=[
-                        "quantity",
-                        "status",
-                        "updated_at",
-                    ]
-                )
-
-            # ---------------------------------------------
-            # تحويل حالة الطلب إلى مكتمل
-            # ---------------------------------------------
-
-            order.status = "completed"
-
-            order.save(
-                update_fields=[
-                    "status",
-                    "updated_at",
-                ]
-            )
-
-        messages.success(
+        messages.warning(
             request,
-            "✅ تم استلام طلب التوريد بنجاح وتم تحديث المخزون."
+            "⚠️ يجب تأكيد الاستلام بالطريقة الصحيحة."
         )
 
         return redirect(
@@ -530,8 +703,59 @@ def purchase_receive(request, pk):
         )
 
     # =====================================================
-    # منع الوصول المباشر بطريقة GET
+    # تنفيذ عملية الاستلام داخل Transaction
     # =====================================================
+
+    with transaction.atomic():
+
+        # -------------------------------------------------
+        # تحديث كمية كل دواء
+        # -------------------------------------------------
+
+        for item in order.items.all():
+
+            medicine = item.medicine
+
+            medicine.quantity += item.quantity
+
+            # ---------------------------------------------
+            # إذا أصبحت الكمية أكبر من صفر
+            # نجعل الدواء متوفرًا
+            # ---------------------------------------------
+
+            if medicine.quantity > 0:
+
+                medicine.status = "available"
+
+            medicine.save(
+                update_fields=[
+                    "quantity",
+                    "status",
+                    "updated_at",
+                ]
+            )
+
+        # -------------------------------------------------
+        # تحويل حالة الطلب إلى مكتمل
+        # -------------------------------------------------
+
+        order.status = "completed"
+
+        order.save(
+            update_fields=[
+                "status",
+                "updated_at",
+            ]
+        )
+
+    # =====================================================
+    # رسالة النجاح
+    # =====================================================
+
+    messages.success(
+        request,
+        "✅ تم استلام طلب التوريد بنجاح وتم تحديث المخزون."
+    )
 
     return redirect(
         "purchase_detail",

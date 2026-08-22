@@ -17,4 +17,9 @@ urlpatterns = [
 
     path("404/", views.page_not_found, name="page404"),
 
+    path("settings/", views.settings_view, name="settings"),
+
+    path("change-password/", views.change_password, name="change_password"),
+
+    
 ]

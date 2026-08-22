@@ -87,4 +87,10 @@ path(
     name="customer_sale_detail"
 ),
 
+path(
+    "profile/",
+    views.customer_profile,
+    name="customer_profile"
+),
+
 ]

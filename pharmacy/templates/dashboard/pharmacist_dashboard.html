@@ -1,0 +1,1510 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block title %}
+لوحة الصيدلي
+{% endblock %}
+
+{% block dashboard_content %}
+
+<style>
+
+/* =========================================================
+   لوحة الصيدلي
+   ========================================================= */
+
+.pharmacist-dashboard {
+    width: 100%;
+}
+
+
+/* =========================================================
+   قسم الترحيب
+   ========================================================= */
+
+.pharmacist-welcome {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 42px;
+    background: linear-gradient(
+        135deg,
+        #5fae9b,
+        #176b58
+    );
+    color: white;
+    margin-bottom: 30px;
+    box-shadow: 0 12px 35px rgba(23, 107, 88, 0.18);
+}
+
+.pharmacist-welcome::before {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.10);
+    top: -130px;
+    left: -80px;
+}
+
+.pharmacist-welcome::after {
+    content: "";
+    position: absolute;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    bottom: -100px;
+    right: -50px;
+}
+
+.pharmacist-welcome-content {
+    position: relative;
+    z-index: 2;
+}
+
+.pharmacist-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.16);
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.pharmacist-welcome h1 {
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.pharmacist-welcome p {
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    max-width: 750px;
+}
+
+.pharmacist-main-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 23px;
+    border-radius: 12px;
+    background: white;
+    color: #176b58;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.pharmacist-main-btn:hover {
+    color: #176b58;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+
+/* =========================================================
+   بطاقات الإحصائيات
+   ========================================================= */
+
+.pharmacist-stat-link {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.pharmacist-stat-link:hover {
+    color: inherit;
+}
+
+.pharmacist-stat-card {
+    position: relative;
+    border: 0;
+    border-radius: 22px;
+    background: white;
+    padding: 25px;
+    min-height: 205px;
+    height: 100%;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.pharmacist-stat-card::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #f1faf7;
+    left: -35px;
+    bottom: -45px;
+    transition: all 0.3s ease;
+}
+
+.pharmacist-stat-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+}
+
+.pharmacist-stat-card:hover::after {
+    transform: scale(1.4);
+}
+
+.pharmacist-stat-icon {
+    position: relative;
+    z-index: 2;
+    width: 65px;
+    height: 65px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    background: #edf8f5;
+    color: #16a085;
+}
+
+.pharmacist-stat-icon-symbol {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.pharmacist-stat-title {
+    position: relative;
+    z-index: 2;
+    color: #607080;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.pharmacist-stat-number {
+    position: relative;
+    z-index: 2;
+    font-size: 32px;
+    font-weight: 700;
+    color: #182b3a;
+}
+
+.pharmacist-stat-action {
+    position: relative;
+    z-index: 2;
+    margin-top: 10px;
+    color: #16a085;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.3s ease;
+}
+
+.pharmacist-stat-card:hover .pharmacist-stat-action {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   الأقسام
+   ========================================================= */
+
+.pharmacist-section {
+    background: white;
+    border-radius: 22px;
+    padding: 25px;
+    height: 100%;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+.pharmacist-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #182b3a;
+}
+
+.section-title-icon {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #edf8f5;
+}
+
+.section-title-symbol {
+    font-size: 23px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   تنبيه المخزون
+   ========================================================= */
+
+.stock-alert-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.stock-alert-link:hover {
+    color: inherit;
+}
+
+.stock-alert-item {
+    background: #f8fafb;
+    border-radius: 16px;
+    padding: 17px;
+    margin-bottom: 12px;
+    transition: all 0.25s ease;
+    border: 1px solid transparent;
+}
+
+.stock-alert-item:hover {
+    background: white;
+    border-color: #b9e5d8;
+    transform: translateX(-4px);
+    box-shadow: 0 6px 18px rgba(22,160,133,0.10);
+}
+
+.stock-alert-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.stock-alert-name {
+    font-weight: 700;
+    color: #182b3a;
+    margin-bottom: 5px;
+}
+
+.stock-alert-quantity {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.stock-danger-badge,
+.stock-warning-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.stock-danger-badge {
+    background: #fde7eb;
+    color: #dc3545;
+}
+
+.stock-warning-badge {
+    background: #fff4d6;
+    color: #c28a00;
+}
+
+.stock-progress {
+    height: 7px;
+    border-radius: 10px;
+    background: #e9ecef;
+    margin-top: 12px;
+    overflow: hidden;
+}
+
+.stock-progress-danger {
+    width: 25%;
+    height: 100%;
+    background: #dc3545;
+    border-radius: 10px;
+}
+
+.stock-progress-warning {
+    width: 50%;
+    height: 100%;
+    background: #ffc107;
+    border-radius: 10px;
+}
+
+.empty-stock {
+    text-align: center;
+    padding: 35px 15px;
+}
+
+.empty-stock-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #edf8f5;
+    color: #16a085;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   المتابعة اليومية
+   ========================================================= */
+
+.daily-action {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 17px;
+    margin-bottom: 12px;
+    border-radius: 17px;
+    background: #f8fafb;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+}
+
+.daily-action:last-child {
+    margin-bottom: 0;
+}
+
+.daily-action:hover {
+    color: inherit;
+    background: white;
+    border-color: #b9e5d8;
+    transform: translateX(-5px);
+    box-shadow: 0 6px 18px rgba(22,160,133,0.10);
+}
+
+.daily-action-icon {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: #edf8f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.daily-action-symbol {
+    font-size: 27px;
+    line-height: 1;
+}
+
+.daily-action-content {
+    flex: 1;
+}
+
+.daily-action-content strong {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: #182b3a;
+}
+
+.daily-action-content span {
+    display: block;
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.daily-action-count {
+    min-width: 42px;
+    height: 42px;
+    padding: 0 10px;
+    border-radius: 50%;
+    background: #16a085;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.daily-action-arrow {
+    color: #16a085;
+    font-size: 23px;
+    transition: transform 0.25s ease;
+}
+
+.daily-action:hover .daily-action-arrow {
+    transform: translateX(-6px);
+}
+
+
+/* =========================================================
+   ملخص المبيعات
+   ========================================================= */
+
+.sales-summary-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: linear-gradient(
+        135deg,
+        #f1faf7,
+        #ffffff
+    );
+    border: 1px solid #d8eee7;
+    border-radius: 18px;
+    padding: 22px;
+}
+
+.sales-summary-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sales-summary-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 16px;
+    background: #16a085;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sales-summary-symbol {
+    font-size: 25px;
+}
+
+.sales-summary-title {
+    font-weight: 700;
+    color: #182b3a;
+}
+
+.sales-summary-description {
+    color: #6c757d;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.sales-summary-value {
+    font-size: 25px;
+    font-weight: 700;
+    color: #16a085;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   جدول آخر المبيعات
+   ========================================================= */
+
+.pharmacist-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.pharmacist-table th {
+    color: #6c757d;
+    font-weight: 600;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+}
+
+.pharmacist-table td {
+    padding: 14px 12px;
+    background: #f8fafb;
+    white-space: nowrap;
+}
+
+.pharmacist-table tr td:first-child {
+    border-radius: 0 10px 10px 0;
+}
+
+.pharmacist-table tr td:last-child {
+    border-radius: 10px 0 0 10px;
+}
+
+.sale-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #20b486;
+    color: white;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   الأزرار
+   ========================================================= */
+
+.pharmacist-outline-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 11px;
+}
+
+
+/* =========================================================
+   الجوال
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .pharmacist-welcome {
+        padding: 30px 25px;
+    }
+
+    .pharmacist-welcome h1 {
+        font-size: 27px;
+    }
+
+    .pharmacist-welcome p {
+        font-size: 15px;
+    }
+
+    .pharmacist-stat-card {
+        min-height: 185px;
+    }
+
+    .daily-action {
+        gap: 10px;
+        padding: 13px;
+    }
+
+    .daily-action-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .daily-action-symbol {
+        font-size: 22px;
+    }
+
+    .daily-action-content strong {
+        font-size: 14px;
+    }
+
+    .daily-action-content span {
+        font-size: 12px;
+    }
+
+    .daily-action-count {
+        min-width: 35px;
+        height: 35px;
+    }
+
+    .sales-summary-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .pharmacist-table {
+        font-size: 13px;
+    }
+
+}
+
+
+/* =========================================================
+   الشاشات الصغيرة جدًا
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .pharmacist-stat-card {
+        padding: 20px;
+    }
+
+    .pharmacist-section {
+        padding: 18px;
+    }
+
+    .pharmacist-section-title {
+        font-size: 19px;
+    }
+
+    .daily-action-arrow {
+        display: none;
+    }
+
+}
+
+</style>
+
+
+<div class="pharmacist-dashboard">
+
+
+    <!-- =====================================================
+         الترحيب
+         ===================================================== -->
+
+    <div class="pharmacist-welcome">
+
+        <div class="pharmacist-welcome-content">
+
+            <div class="pharmacist-badge">
+
+                <span>💊</span>
+
+                لوحة الصيدلي
+
+            </div>
+
+
+            <h1>
+                أهلاً بك في صيدلية الحياة
+            </h1>
+
+
+            <p>
+                يمكنك من خلال هذه اللوحة متابعة الأدوية
+                والمخزون والمبيعات وطلبات العملاء وطلبات التوريد
+                بكل سهولة.
+            </p>
+
+
+            <a
+                href="{% url 'medicine_list' %}"
+                class="pharmacist-main-btn">
+
+                <span>💊</span>
+
+                إدارة الأدوية
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         الإحصائيات
+         ===================================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- إجمالي الأدوية -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'medicine_list' %}"
+                class="pharmacist-stat-link">
+
+                <div class="pharmacist-stat-card">
+
+                    <div class="pharmacist-stat-icon">
+
+                        <span class="pharmacist-stat-icon-symbol">
+                            💊
+                        </span>
+
+                    </div>
+
+                    <div class="pharmacist-stat-title">
+                        إجمالي الأدوية
+                    </div>
+
+                    <div class="pharmacist-stat-number">
+                        {{ medicines_count }}
+                    </div>
+
+                    <div class="pharmacist-stat-action">
+                        عرض الأدوية ←
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- مبيعات اليوم -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'sale_list' %}"
+                class="pharmacist-stat-link">
+
+                <div class="pharmacist-stat-card">
+
+                    <div class="pharmacist-stat-icon">
+
+                        <span class="pharmacist-stat-icon-symbol">
+                            🛒
+                        </span>
+
+                    </div>
+
+                    <div class="pharmacist-stat-title">
+                        مبيعات اليوم
+                    </div>
+
+                    <div class="pharmacist-stat-number">
+                        {{ today_sales_count }}
+                    </div>
+
+                    <div class="pharmacist-stat-action">
+                        عرض المبيعات ←
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- طلبات العملاء -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'customer_order_manage' %}"
+                class="pharmacist-stat-link">
+
+                <div class="pharmacist-stat-card">
+
+                    <div class="pharmacist-stat-icon">
+
+                        <span class="pharmacist-stat-icon-symbol">
+                            👥
+                        </span>
+
+                    </div>
+
+                    <div class="pharmacist-stat-title">
+                        طلبات العملاء
+                    </div>
+
+                    <div class="pharmacist-stat-number">
+                        {{ pending_customer_orders }}
+                    </div>
+
+                    <div class="pharmacist-stat-action">
+                        مراجعة الطلبات ←
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- طلبات التوريد -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <a
+                href="{% url 'purchase_list' %}"
+                class="pharmacist-stat-link">
+
+                <div class="pharmacist-stat-card">
+
+                    <div class="pharmacist-stat-icon">
+
+                        <span class="pharmacist-stat-icon-symbol">
+                            🚚
+                        </span>
+
+                    </div>
+
+                    <div class="pharmacist-stat-title">
+                        طلبات التوريد
+                    </div>
+
+                    <div class="pharmacist-stat-number">
+                        {{ pending_purchase_orders }}
+                    </div>
+
+                    <div class="pharmacist-stat-action">
+                        متابعة التوريد ←
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         المخزون + المتابعة اليومية
+         ===================================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- =================================================
+             تنبيه المخزون
+             ================================================= -->
+
+        <div class="col-xl-5">
+
+            <div class="pharmacist-section">
+
+                <div class="pharmacist-section-title">
+
+                    <span class="section-title-icon">
+
+                        <span class="section-title-symbol">
+                            📦
+                        </span>
+
+                    </span>
+
+                    تنبيه المخزون
+
+                </div>
+
+
+                {% if low_stock_medicines %}
+
+
+                    {% for medicine in low_stock_medicines|slice:":5" %}
+
+                        <a
+                            href="{% url 'medicine_list' %}"
+                            class="stock-alert-link">
+
+                            <div class="stock-alert-item">
+
+
+                                <div class="stock-alert-top">
+
+                                    <div class="stock-alert-name">
+                                        {{ medicine.name }}
+                                    </div>
+
+
+                                    {% if medicine.quantity <= 2 %}
+
+                                        <span class="stock-danger-badge">
+                                            خطر
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="stock-warning-badge">
+                                            متابعة
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="stock-alert-quantity">
+
+                                    باقي في المخزون:
+
+                                    <strong>
+                                        {{ medicine.quantity }}
+                                    </strong>
+
+
+                                    {% if medicine.quantity <= 2 %}
+
+                                        <span class="text-danger">
+                                            — مخزون منخفض جدًا
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="text-warning">
+                                            — يحتاج إلى متابعة
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="stock-progress">
+
+                                    {% if medicine.quantity <= 2 %}
+
+                                        <div class="stock-progress-danger"></div>
+
+                                    {% else %}
+
+                                        <div class="stock-progress-warning"></div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    {% endfor %}
+
+
+                {% else %}
+
+                    <div class="empty-stock">
+
+                        <div class="empty-stock-icon">
+                            ✓
+                        </div>
+
+                        <h6>
+                            المخزون بحالة جيدة
+                        </h6>
+
+                        <p class="text-muted mb-0">
+                            لا توجد أدوية تحتاج إلى تنبيه حاليًا.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if out_of_stock_count > 0 %}
+
+                    <div class="alert alert-danger mt-3">
+
+                        <strong>
+                            ⚠️ تنبيه:
+                        </strong>
+
+                        يوجد
+
+                        <strong>
+                            {{ out_of_stock_count }}
+                        </strong>
+
+                        دواء نفد من المخزون.
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             المتابعة اليومية
+             ================================================= -->
+
+        <div class="col-xl-7">
+
+            <div class="pharmacist-section">
+
+                <div class="pharmacist-section-title">
+
+                    <span class="section-title-icon">
+
+                        <span class="section-title-symbol">
+                            📊
+                        </span>
+
+                    </span>
+
+                    المتابعة اليومية
+
+                </div>
+
+
+                <!-- طلبات العملاء -->
+
+                <a
+                    href="{% url 'customer_order_manage' %}"
+                    class="daily-action">
+
+
+                    <div class="daily-action-icon">
+
+                        <span class="daily-action-symbol">
+                            👥
+                        </span>
+
+                    </div>
+
+
+                    <div class="daily-action-content">
+
+                        <strong>
+                            طلبات العملاء
+                        </strong>
+
+                        <span>
+                            مراجعة طلبات العملاء الجديدة
+                        </span>
+
+                    </div>
+
+
+                    <div class="daily-action-count">
+                        {{ pending_customer_orders }}
+                    </div>
+
+
+                    <div class="daily-action-arrow">
+                        ←
+                    </div>
+
+                </a>
+
+
+
+                <!-- طلبات التوريد -->
+
+                <a
+                    href="{% url 'purchase_list' %}"
+                    class="daily-action">
+
+
+                    <div class="daily-action-icon">
+
+                        <span class="daily-action-symbol">
+                            🚚
+                        </span>
+
+                    </div>
+
+
+                    <div class="daily-action-content">
+
+                        <strong>
+                            طلبات التوريد
+                        </strong>
+
+                        <span>
+                            متابعة طلبات التوريد
+                        </span>
+
+                    </div>
+
+
+                    <div class="daily-action-count">
+                        {{ pending_purchase_orders }}
+                    </div>
+
+
+                    <div class="daily-action-arrow">
+                        ←
+                    </div>
+
+                </a>
+
+
+
+                <!-- المبيعات -->
+
+                <a
+                    href="{% url 'sale_list' %}"
+                    class="daily-action">
+
+
+                    <div class="daily-action-icon">
+
+                        <span class="daily-action-symbol">
+                            🛒
+                        </span>
+
+                    </div>
+
+
+                    <div class="daily-action-content">
+
+                        <strong>
+                            مبيعات اليوم
+                        </strong>
+
+                        <span>
+                            عرض الفواتير المكتملة اليوم
+                        </span>
+
+                    </div>
+
+
+                    <div class="daily-action-count">
+                        {{ today_sales_count }}
+                    </div>
+
+
+                    <div class="daily-action-arrow">
+                        ←
+                    </div>
+
+                </a>
+
+
+
+                <!-- الأدوية -->
+
+                <a
+                    href="{% url 'medicine_list' %}"
+                    class="daily-action">
+
+
+                    <div class="daily-action-icon">
+
+                        <span class="daily-action-symbol">
+                            💊
+                        </span>
+
+                    </div>
+
+
+                    <div class="daily-action-content">
+
+                        <strong>
+                            الأدوية
+                        </strong>
+
+                        <span>
+                            إدارة الأدوية والمخزون
+                        </span>
+
+                    </div>
+
+
+                    <div class="daily-action-count">
+                        {{ medicines_count }}
+                    </div>
+
+
+                    <div class="daily-action-arrow">
+                        ←
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ملخص مبيعات اليوم
+         ===================================================== -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-12">
+
+            <div class="pharmacist-section">
+
+
+                <div class="pharmacist-section-title">
+
+                    <span class="section-title-icon">
+
+                        <span class="section-title-symbol">
+                            💰
+                        </span>
+
+                    </span>
+
+                    ملخص مبيعات اليوم
+
+                </div>
+
+
+                <div class="sales-summary-card">
+
+
+                    <div class="sales-summary-info">
+
+
+                        <div class="sales-summary-icon">
+
+                            <span class="sales-summary-symbol">
+                                💰
+                            </span>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="sales-summary-title">
+                                إجمالي المبيعات المكتملة اليوم
+                            </div>
+
+                            <div class="sales-summary-description">
+                                إجمالي قيمة الفواتير المكتملة خلال اليوم.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sales-summary-value">
+
+                        {{ today_sales_total }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         آخر المبيعات
+         ===================================================== -->
+
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="pharmacist-section">
+
+
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+
+
+                    <div>
+
+                        <div class="pharmacist-section-title mb-1">
+
+                            <span class="section-title-icon">
+
+                                <span class="section-title-symbol">
+                                    🧾
+                                </span>
+
+                            </span>
+
+                            آخر المبيعات
+
+                        </div>
+
+
+                        <p class="text-muted mb-0">
+                            أحدث عمليات البيع داخل الصيدلية.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'sale_list' %}"
+                        class="btn btn-outline-success pharmacist-outline-btn">
+
+                        <span>
+                            📋
+                        </span>
+
+                        عرض جميع المبيعات
+
+                    </a>
+
+                </div>
+
+
+
+                {% if latest_sales %}
+
+
+                    <div class="table-responsive">
+
+                        <table class="pharmacist-table">
+
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        #
+                                    </th>
+
+                                    <th>
+                                        الفاتورة
+                                    </th>
+
+                                    <th>
+                                        العميل
+                                    </th>
+
+                                    <th>
+                                        الإجمالي
+                                    </th>
+
+                                    <th>
+                                        الحالة
+                                    </th>
+
+                                    <th>
+                                        التاريخ
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                                {% for sale in latest_sales %}
+
+                                    <tr>
+
+                                        <td>
+                                            {{ forloop.counter }}
+                                        </td>
+
+
+                                        <td>
+                                            <strong>
+                                                #{{ sale.id }}
+                                            </strong>
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if sale.customer %}
+
+                                                {{ sale.customer.full_name }}
+
+                                            {% else %}
+
+                                                عميل نقدي
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <strong>
+                                                {{ sale.total_amount }}
+                                            </strong>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if sale.status == "completed" %}
+
+                                                <span class="sale-status">
+
+                                                    ✓
+
+                                                    مكتملة
+
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="badge bg-danger">
+
+                                                    ✕
+
+                                                    ملغاة
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ sale.created_at|date:"Y-m-d H:i" }}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <div class="text-center py-5">
+
+                        <div
+                            class="empty-stock-icon mb-3">
+
+                            🧾
+
+                        </div>
+
+
+                        <h5>
+                            لا توجد مبيعات حتى الآن
+                        </h5>
+
+
+                        <p class="text-muted">
+                            ستظهر أحدث عمليات البيع هنا.
+                        </p>
+
+                    </div>
+
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

@@ -5,6 +5,7 @@ from pathlib import Path
 # ==========================================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # ==========================================
 # Security
 # ==========================================
@@ -13,6 +14,7 @@ SECRET_KEY = 'django-insecure-8*xmze7$@i+0og!w5ix_he8$m-v8k+oaf)wcsviu-1z)&-(#8=
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 # ==========================================
 # Installed Apps
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'product_types',
 ]
 
+
 # ==========================================
 # Middleware
 # ==========================================
@@ -53,10 +56,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 # ==========================================
 # URL Configuration
 # ==========================================
 ROOT_URLCONF = 'config.urls'
+
 
 # ==========================================
 # Templates
@@ -81,20 +86,55 @@ TEMPLATES = [
     },
 ]
 
+
 # ==========================================
 # WSGI
 # ==========================================
 WSGI_APPLICATION = 'config.wsgi.application'
 
+
 # ==========================================
 # Database
 # ==========================================
 DATABASES = {
+
+    # ======================================
+    # قاعدة البيانات الجديدة - PostgreSQL
+    # ======================================
     'default': {
+
+        'ENGINE': 'django.db.backends.postgresql',
+
+        # اسم قاعدة البيانات
+        'NAME': 'pharmacy_db',
+
+        # مستخدم PostgreSQL
+        'USER': 'postgres',
+
+        # كلمة مرور PostgreSQL
+        'PASSWORD': '17072022',
+
+        # السيرفر المحلي
+        'HOST': 'localhost',
+
+        # منفذ PostgreSQL
+        'PORT': '5432',
+    },
+
+
+    # ======================================
+    # قاعدة البيانات القديمة - SQLite
+    # ======================================
+    # نستخدمها فقط لنقل البيانات القديمة
+    # إلى PostgreSQL.
+    'old_sqlite': {
+
         'ENGINE': 'django.db.backends.sqlite3',
+
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
 }
+
 
 # ==========================================
 # Password Validation
@@ -114,6 +154,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # ==========================================
 # Language
 # ==========================================
@@ -124,6 +165,7 @@ TIME_ZONE = 'Asia/Aden'
 USE_I18N = True
 
 USE_TZ = True
+
 
 # ==========================================
 # Static Files
@@ -136,12 +178,14 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+
 # ==========================================
 # Media Files
 # ==========================================
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # ==========================================
 # Authentication
@@ -152,11 +196,14 @@ LOGIN_REDIRECT_URL = 'dashboard'
 
 LOGOUT_REDIRECT_URL = 'login'
 
+
 # ==========================================
 # Default Auto Field
 # ==========================================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# ==========================================
+# Custom User Model
+# ==========================================
 AUTH_USER_MODEL = "accounts.User"
-
-

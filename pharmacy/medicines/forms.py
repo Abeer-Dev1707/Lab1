@@ -2,6 +2,31 @@ from django import forms
 from .models import Medicine
 
 
+# =========================================================
+# الطريقة الثانية لكتابة Form
+# باستخدام forms.Form
+# =========================================================
+
+class SearchMedicineForm(forms.Form):
+
+    search = forms.CharField(
+        max_length=200,
+        required=False,
+        label="البحث عن دواء",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "اكتب اسم الدواء أو الباركود..."
+            }
+        )
+    )
+
+
+# =========================================================
+# الطريقة الثالثة لكتابة Form
+# باستخدام forms.ModelForm
+# =========================================================
+
 class MedicineForm(forms.ModelForm):
 
     class Meta:
