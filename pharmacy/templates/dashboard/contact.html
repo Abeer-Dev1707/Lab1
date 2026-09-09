@@ -19,16 +19,150 @@
         <h2 class="mb-4">تواصل معنا</h2>
 
         <p>
-            إذا كان لديك أي استفسار أو اقتراح بخصوص نظام صيدلية الحياة، يمكنك التواصل مع فريق التطوير.
+            إذا كان لديك أي استفسار أو اقتراح بخصوص نظام صيدلية الحياة،
+            يمكنك إرسال رسالة مباشرة.
         </p>
 
-        <ul class="list-group mb-4">
-            <li class="list-group-item"><strong>البريد الإلكتروني:</strong> pharmacy@gmail.com</li>
-            <li class="list-group-item"><strong>الهاتف:</strong> +967 777231678</li>
-            <li class="list-group-item"><strong>العنوان:</strong> اليمن</li>
-        </ul>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mt-3">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-        <a href="{% url 'login' %}" class="btn btn-success">
+        <form method="POST" class="text-end mt-4">
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+
+            <!-- ==========================================
+                 اسم المرسل
+                 ========================================== -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    اسم المرسل
+                </label>
+
+                {{ form.name }}
+
+                {% if form.name.errors %}
+                    <div class="text-danger mt-1">
+                        {{ form.name.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- ==========================================
+                 بريد المرسل
+                 ========================================== -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    بريد المرسل
+                </label>
+
+                {{ form.email }}
+
+                {% if form.email.errors %}
+                    <div class="text-danger mt-1">
+                        {{ form.email.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- ==========================================
+                 اسم المستقبل
+                 ========================================== -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    اسم المستقبل
+                </label>
+
+                {{ form.recipient_name }}
+
+                {% if form.recipient_name.errors %}
+                    <div class="text-danger mt-1">
+                        {{ form.recipient_name.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- ==========================================
+                 بريد المستقبل
+                 ========================================== -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    بريد المستقبل
+                </label>
+
+                {{ form.recipient_email }}
+
+                {% if form.recipient_email.errors %}
+                    <div class="text-danger mt-1">
+                        {{ form.recipient_email.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- ==========================================
+                 الرسالة
+                 ========================================== -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    الرسالة
+                </label>
+
+                {{ form.message }}
+
+                {% if form.message.errors %}
+                    <div class="text-danger mt-1">
+                        {{ form.message.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- ==========================================
+                 زر الإرسال
+                 ========================================== -->
+
+            <button type="submit" class="btn btn-success w-100">
+                إرسال الرسالة
+            </button>
+
+        </form>
+
+
+        <!-- ==========================================
+             العودة إلى تسجيل الدخول
+             ========================================== -->
+
+        <a href="{% url 'login' %}" class="btn btn-outline-success mt-3">
             العودة إلى تسجيل الدخول
         </a>
 

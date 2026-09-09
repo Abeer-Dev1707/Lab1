@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from django.db import transaction
 
 from .models import (
     Customer,
@@ -16,31 +19,13 @@ from .forms import (
 )
 
 from accounts.decorators import pharmacist_required
+from accounts.models import User
 
 from medicines.models import Medicine
 from sales.models import Sale, SaleItem
-from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 
-from django.db import transaction
-
-from .models import Customer, CustomerOrder
-
-from django.db import transaction
-from django.utils import timezone
-
-from .models import (
-    Customer,
-    CustomerOrder,
-    CustomerOrderItem,
-)
-
-from medicines.models import Medicine
-
-from sales.models import Sale, SaleItem
-
-from sales.models import Sale
-
+from notifications.models import Notification
+from notifications.services import notify_admins_and_pharmacists
 
 
 # =========================================================
@@ -142,6 +127,36 @@ def customer_update(request, pk):
         if form.is_valid():
 
             form.save()
+
+            # =========================================
+            # إشعار العميل بتعديل بياناته من الإدارة
+            # =========================================
+
+            if customer.user:
+
+                Notification.objects.create(
+                    user=customer.user,
+                    title="تم تعديل بيانات حسابك",
+                    message=(
+                        "تم تعديل بيانات حسابك "
+                        "من قبل إدارة الصيدلية."
+                    ),
+                    notification_type="profile"
+                )
+
+            # =========================================
+            # إشعار المدير والصيدلي بتعديل بيانات العميل
+            # =========================================
+
+            notify_admins_and_pharmacists(
+                title="تم تعديل بيانات عميل",
+                message=(
+                    f"تم تعديل بيانات العميل "
+                    f"{customer.full_name} "
+                    f"من قبل إدارة الصيدلية."
+                ),
+                notification_type="profile"
+            )
 
             messages.success(
                 request,
@@ -500,6 +515,28 @@ def customer_order_create(request):
                         ]
                     )
 
+
+                # =========================================
+                # إشعار المدير والصيدلي بطلب عميل جديد
+                # =========================================
+
+                staff_users = User.objects.filter(
+                    role__in=["admin", "pharmacist"],
+                    is_active=True
+                )
+
+                for staff_user in staff_users:
+
+                    Notification.objects.create(
+                        user=staff_user,
+                        title="طلب عميل جديد",
+                        message=(
+                            f"تم إنشاء طلب جديد رقم #{order.id} "
+                            f"من العميل {customer.full_name} "
+                            f"وهو الآن قيد المراجعة."
+                        ),
+                        notification_type="order"
+                    )
 
                 messages.success(
                     request,
@@ -1001,6 +1038,22 @@ def customer_order_approve(request, pk):
         # رسالة النجاح
         # =============================================
 
+        # =============================================
+        # إشعار العميل بالموافقة على طلبه
+        # =============================================
+
+        if order.customer.user:
+
+            Notification.objects.create(
+                user=order.customer.user,
+                title="تمت الموافقة على طلبك",
+                message=(
+                    f"تمت الموافقة على طلبك رقم #{order.id} "
+                    f"وإنشاء فاتورة البيع #{sale.id}."
+                ),
+                notification_type="approval"
+            )
+
         messages.success(
             request,
             f"تمت الموافقة على الطلب #{order.id} "
@@ -1090,6 +1143,22 @@ def customer_order_reject(request, pk):
     )
 
 
+    # =============================================
+    # إشعار العميل برفض طلبه
+    # =============================================
+
+    if order.customer.user:
+
+        Notification.objects.create(
+            user=order.customer.user,
+            title="تم رفض طلبك",
+            message=(
+                f"تم رفض طلبك رقم #{order.id}. "
+                f"يرجى التواصل مع إدارة الصيدلية لمزيد من المعلومات."
+            ),
+            notification_type="rejection"
+        )
+
     messages.success(
         request,
         f"تم رفض الطلب #{order.id}."
@@ -1145,6 +1214,32 @@ def customer_profile(request):
         if form.is_valid():
 
             form.save()
+
+            # =============================================
+            # إشعار بتحديث البيانات الشخصية
+            # =============================================
+
+            Notification.objects.create(
+                user=request.user,
+                title="تم تحديث بياناتك",
+                message=(
+                    "تم تحديث بيانات ملفك الشخصي بنجاح."
+                ),
+                notification_type="profile"
+            )
+
+            # =============================================
+            # إشعار المدير والصيدلي بتحديث بيانات العميل
+            # =============================================
+
+            notify_admins_and_pharmacists(
+                title="تم تحديث بيانات عميل",
+                message=(
+                    f"قام العميل {customer.full_name} "
+                    f"بتحديث بيانات ملفه الشخصي."
+                ),
+                notification_type="profile"
+            )
 
             messages.success(
                 request,

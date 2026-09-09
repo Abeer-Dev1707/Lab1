@@ -1,0 +1,124 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}
+الإشعارات | صيدلية الحياة
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h3>
+            <i class="fa-solid fa-bell"></i>
+            الإشعارات
+        </h3>
+
+        <form
+            method="post"
+            action="{% url 'mark_all_notifications_read' %}">
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-outline-primary">
+
+                <i class="fa-solid fa-check-double"></i>
+
+                تحديد الكل كمقروء
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if notifications %}
+
+        <div class="list-group">
+
+            {% for notification in notifications %}
+
+                <a
+                    href="{% url 'notification_detail' notification.id %}"
+                    class="list-group-item list-group-item-action
+                    {% if not notification.is_read %}
+                        fw-bold
+                    {% endif %}">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            {% if notification.notification_type == "account" %}
+                                👤
+                            {% elif notification.notification_type == "approval" %}
+                                ✅
+                            {% elif notification.notification_type == "rejection" %}
+                                ❌
+                            {% elif notification.notification_type == "order" %}
+                                🛒
+                            {% elif notification.notification_type == "stock" %}
+                                ⚠️
+                            {% elif notification.notification_type == "purchase" %}
+                                📦
+                            {% elif notification.notification_type == "password" %}
+                                🔐
+                            {% elif notification.notification_type == "profile" %}
+                                👤
+                            {% else %}
+                                🔔
+                            {% endif %}
+
+                            {{ notification.title }}
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            {{ notification.created_at|timesince }}
+                            مضت
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="mt-2 text-muted">
+
+                        {{ notification.message }}
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="text-center py-5">
+
+            <div style="font-size:50px;">
+                🔔
+            </div>
+
+            <h5 class="mt-3">
+                لا توجد إشعارات
+            </h5>
+
+            <p class="text-muted">
+                لا توجد إشعارات مسجلة لحسابك حاليًا.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

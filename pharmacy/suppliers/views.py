@@ -9,6 +9,9 @@ from .forms import SupplierForm
 
 from accounts.decorators import pharmacist_required
 
+from notifications.models import Notification
+from notifications.services import notify_admins_and_pharmacists
+
 
 # =========================================================
 # قائمة الموردين
@@ -110,6 +113,36 @@ def supplier_update(request, pk):
         if form.is_valid():
 
             form.save()
+
+            # =========================================
+            # إشعار المورد بتعديل بيانات حسابه
+            # =========================================
+
+            if supplier.user:
+
+                Notification.objects.create(
+                    user=supplier.user,
+                    title="تم تعديل بيانات حسابك",
+                    message=(
+                        "تم تعديل بيانات حسابك "
+                        "من قبل إدارة الصيدلية."
+                    ),
+                    notification_type="profile"
+                )
+
+            # =========================================
+            # إشعار المدير والصيدلي بتعديل بيانات المورد
+            # =========================================
+
+            notify_admins_and_pharmacists(
+                title="تم تعديل بيانات مورد",
+                message=(
+                    f"تم تعديل بيانات المورد "
+                    f"{supplier.full_name} "
+                    f"من قبل إدارة الصيدلية."
+                ),
+                notification_type="profile"
+            )
 
             messages.success(
                 request,
@@ -213,6 +246,32 @@ def supplier_profile(request):
         if form.is_valid():
 
             form.save()
+
+            # =============================================
+            # إشعار بتحديث البيانات الشخصية
+            # =============================================
+
+            Notification.objects.create(
+                user=request.user,
+                title="تم تحديث بياناتك",
+                message=(
+                    "تم تحديث بيانات ملفك الشخصي بنجاح."
+                ),
+                notification_type="profile"
+            )
+
+            # =============================================
+            # إشعار المدير والصيدلي بتحديث بيانات المورد
+            # =============================================
+
+            notify_admins_and_pharmacists(
+                title="تم تحديث بيانات مورد",
+                message=(
+                    f"قام المورد {supplier.full_name} "
+                    f"بتحديث بيانات ملفه الشخصي."
+                ),
+                notification_type="profile"
+            )
 
             messages.success(
                 request,

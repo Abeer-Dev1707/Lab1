@@ -145,4 +145,9 @@ urlpatterns = [
         include("reports.urls")
     ),
 
+    path(
+    "notifications/",
+    include("notifications.urls")
+),
+
 ]

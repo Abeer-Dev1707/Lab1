@@ -8,6 +8,10 @@ from .models import (
 )
 
 from medicines.models import Medicine
+from accounts.validators import (
+    validate_person_name,
+    validate_yemeni_phone,
+)
 
 
 # =========================================================
@@ -15,6 +19,22 @@ from medicines.models import Medicine
 # =========================================================
 
 class CustomerForm(forms.ModelForm):
+
+    full_name = forms.CharField(
+        validators=[validate_person_name],
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "أدخل الاسم الكامل",
+        }),
+    )
+
+    phone = forms.CharField(
+        validators=[validate_yemeni_phone],
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "أدخل رقم الهاتف",
+        }),
+    )
 
     class Meta:
 

@@ -9,6 +9,10 @@ from .forms import SaleForm, SaleItemFormSet
 
 from accounts.decorators import pharmacist_required
 
+from notifications.services import (
+    notify_admins_and_pharmacists,
+)
+
 
 # =========================================================
 # قائمة المبيعات
@@ -223,6 +227,12 @@ def sale_create(request):
 
 
                         # -------------------------------------
+                        # حفظ الكمية السابقة قبل خصم البيع
+                        # -------------------------------------
+
+                        previous_quantity = medicine.quantity
+
+                        # -------------------------------------
                         # خصم الكمية من المخزون
                         # -------------------------------------
 
@@ -272,6 +282,108 @@ def sale_create(request):
                             "updated_at",
                         ]
                     )
+
+
+                # =========================================
+                # إشعار إنشاء فاتورة بيع
+                # المدير + الصيدلي
+                # =========================================
+
+                notify_admins_and_pharmacists(
+
+                    title="فاتورة بيع جديدة",
+
+                    message=(
+                        f"تم إنشاء فاتورة بيع جديدة "
+                        f"رقم #{sale.id} "
+                        f"بواسطة {request.user.full_name}."
+                    ),
+
+                    notification_type="order"
+                )
+
+
+                # =========================================
+                # إشعارات المخزون بعد البيع
+                # =========================================
+                # يتم إرسال الإشعار فقط عند انتقال الدواء
+                # من مستوى طبيعي إلى مستوى منخفض/منعدم.
+                # حتى لا يتكرر الإشعار مع كل عملية بيع
+                # بينما الدواء ما زال أصلًا في حالة منخفضة.
+
+                for form in valid_items:
+
+                    medicine = form.cleaned_data[
+                        "medicine"
+                    ]
+
+                    medicine = medicine.__class__.objects.get(
+                        pk=medicine.pk
+                    )
+
+                    # -----------------------------------------
+                    # الحصول على الكمية السابقة من تفاصيل البيع
+                    # -----------------------------------------
+
+                    quantity_sold = form.cleaned_data[
+                        "quantity"
+                    ]
+
+                    previous_quantity = (
+                        medicine.quantity + quantity_sold
+                    )
+
+                    # -----------------------------------------
+                    # نفاد المخزون
+                    # -----------------------------------------
+
+                    if (
+                        medicine.quantity == 0
+                        and previous_quantity > 0
+                    ):
+
+                        notify_admins_and_pharmacists(
+
+                            title="نفاد المخزون",
+
+                            message=(
+                                f"نفد مخزون الدواء "
+                                f"{medicine.name} "
+                                f"بعد إنشاء فاتورة البيع "
+                                f"#{sale.id}."
+                            ),
+
+                            notification_type="stock"
+                        )
+
+                    # -----------------------------------------
+                    # انخفاض المخزون
+                    # -----------------------------------------
+                    # لا نرسل الإشعار إلا إذا كان المخزون
+                    # قبل البيع أعلى من الحد الأدنى وأصبح
+                    # بعد البيع عند الحد الأدنى أو أقل.
+
+                    elif (
+                        previous_quantity
+                        > medicine.minimum_stock
+                        and medicine.quantity
+                        <= medicine.minimum_stock
+                    ):
+
+                        notify_admins_and_pharmacists(
+
+                            title="انخفاض المخزون",
+
+                            message=(
+                                f"انخفض مخزون الدواء "
+                                f"{medicine.name} "
+                                f"إلى {medicine.quantity} "
+                                f"وهو عند أو أقل من الحد الأدنى "
+                                f"للمخزون."
+                            ),
+
+                            notification_type="stock"
+                        )
 
 
                 messages.success(

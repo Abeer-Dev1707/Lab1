@@ -15,91 +15,128 @@
             <h3 class="mb-0">الفئات الموجودة في النظام</h3>
 
             <a href="{% url 'category_create' %}" class="btn btn-primary">
-                <i class="fas fa-plus"></i>
                 إضافة فئة
             </a>
 
         </div>
 
         <div class="card-body">
-          <form method="GET" class="mb-4">
 
-    <div class="row">
+            <form method="GET" class="mb-4">
 
-        <div class="col-md-6">
+                <div class="row">
 
-            <div class="input-group">
+                    <div class="col-md-6">
 
-                <input
-                    type="text"
-                    name="search"
-                    class="form-control"
-                    placeholder="ابحث باسم الفئة أو الوصف..."
-                    value="{{ search }}">
+                        <div class="input-group">
 
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search"></i>
-                    بحث
-                </button>
+                            <input
+                                type="text"
+                                name="search"
+                                class="form-control"
+                                placeholder="ابحث باسم الفئة أو الوصف..."
+                                value="{{ search }}">
 
-                {% if search %}
-                <a href="{% url 'category_list' %}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i>
-                    مسح
-                </a>
-                {% endif %}
+                            <button
+                                class="btn btn-primary"
+                                type="submit">
+                                بحث
+                            </button>
 
-            </div>
+                            {% if search %}
 
-        </div>
+                            <a
+                                href="{% url 'category_list' %}"
+                                class="btn btn-secondary">
+                                مسح
+                            </a>
 
-    </div>
+                            {% endif %}
 
-</form>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
 
             <table class="table table-striped">
 
                 <thead>
+
                     <tr>
+
                         <th>#</th>
+
                         <th>اسم الفئة</th>
+
                         <th>الوصف</th>
+
                         <th>تاريخ الإنشاء</th>
+
                         <th width="150">الإجراءات</th>
+
                     </tr>
+
                 </thead>
+
 
                 <tbody>
 
                 {% for category in page_obj %}
 
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ category.name|title|slice:":20" }}</td>
-                        <td>{{ category.description|default:"لا يوجد وصف"|truncatechars:30 }}</td>
-                        <td>{{ category.created_at|date:"Y-m-d" }}</td>
 
                         <td>
-                          <a href="{% url 'category_update' category.id %}"
-                          class="btn btn-warning btn-sm">
-                          <i class="fas fa-edit"></i>
-                            تعديل
-                          </a>
-
-                           <a href="{% url 'category_delete' category.id %}"
-                           class="btn btn-danger btn-sm">
-                          <i class="fas fa-trash"></i>
-                            حذف
-                          </a>
+                            {{ forloop.counter }}
                         </td>
+
+                        <td>
+                            {{ category.name|title|slice:":20" }}
+                        </td>
+
+                        <td>
+                            {{ category.description|default:"لا يوجد وصف"|truncatechars:30 }}
+                        </td>
+
+                        <td>
+                            {{ category.created_at|date:"Y-m-d" }}
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                href="{% url 'category_update' category.id %}"
+                                class="btn btn-warning btn-sm">
+                                تعديل
+                            </a>
+
+
+                            <a
+                                href="{% url 'category_delete' category.id %}"
+                                class="btn btn-danger btn-sm">
+                                حذف
+                            </a>
+
+                        </td>
+
                     </tr>
 
                 {% empty %}
 
                     <tr>
-                        <td colspan="5" class="text-center">
+
+                        <td
+                            colspan="5"
+                            class="text-center">
+
                             لا توجد فئات
+
                         </td>
+
                     </tr>
 
                 {% endfor %}
@@ -107,52 +144,79 @@
                 </tbody>
 
             </table>
+
+
             <nav class="mt-4">
 
-    <ul class="pagination justify-content-center">
+                <ul class="pagination justify-content-center">
 
-        {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">
-                    السابق
-                </a>
-            </li>
-        {% endif %}
+                    {% if page_obj.has_previous %}
 
-        {% for num in page_obj.paginator.page_range %}
+                        <li class="page-item">
 
-            {% if page_obj.number == num %}
+                            <a
+                                class="page-link"
+                                href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">
 
-                <li class="page-item active">
-                    <span class="page-link">{{ num }}</span>
-                </li>
+                                السابق
 
-            {% else %}
+                            </a>
 
-                <li class="page-item">
-                    <a class="page-link"
-                       href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}">
-                        {{ num }}
-                    </a>
-                </li>
+                        </li>
 
-            {% endif %}
+                    {% endif %}
 
-        {% endfor %}
 
-        {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
-                    التالي
-                </a>
-            </li>
-        {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
 
-    </ul>
+                        {% if page_obj.number == num %}
 
-</nav>
+                            <li class="page-item active">
+
+                                <span class="page-link">
+                                    {{ num }}
+                                </span>
+
+                            </li>
+
+                        {% else %}
+
+                            <li class="page-item">
+
+                                <a
+                                    class="page-link"
+                                    href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}">
+
+                                    {{ num }}
+
+                                </a>
+
+                            </li>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+
+                    {% if page_obj.has_next %}
+
+                        <li class="page-item">
+
+                            <a
+                                class="page-link"
+                                href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
+
+                                التالي
+
+                            </a>
+
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
 
         </div>
 

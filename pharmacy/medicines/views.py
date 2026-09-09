@@ -13,6 +13,8 @@ from accounts.decorators import pharmacist_required
 from suppliers.models import Supplier
 from purchases.models import PurchaseItem
 
+from notifications.services import notify_admins_and_pharmacists
+
 
 # =========================================================
 # قائمة الأدوية
@@ -124,7 +126,21 @@ def medicine_create(request):
 
         if form.is_valid():
 
-            form.save()
+            medicine = form.save()
+
+            # =============================================
+            # إشعار المدير والصيدلي بإضافة دواء جديد
+            # =============================================
+
+            notify_admins_and_pharmacists(
+                title="تمت إضافة دواء جديد",
+                message=(
+                    f"تمت إضافة الدواء "
+                    f"{medicine.name} "
+                    f"إلى قائمة الأدوية."
+                ),
+                notification_type="medicine"
+            )
 
             messages.success(
                 request,
@@ -170,7 +186,20 @@ def medicine_update(request, pk):
 
         if form.is_valid():
 
-            form.save()
+            medicine = form.save()
+
+            # =============================================
+            # إشعار المدير والصيدلي بتعديل دواء
+            # =============================================
+
+            notify_admins_and_pharmacists(
+                title="تم تعديل دواء",
+                message=(
+                    f"تم تعديل بيانات الدواء "
+                    f"{medicine.name}."
+                ),
+                notification_type="medicine"
+            )
 
             messages.success(
                 request,
@@ -210,7 +239,23 @@ def medicine_delete(request, pk):
 
     if request.method == "POST":
 
+        medicine_name = medicine.name
+
         medicine.delete()
+
+        # =============================================
+        # إشعار المدير والصيدلي بحذف دواء
+        # =============================================
+
+        notify_admins_and_pharmacists(
+            title="تم حذف دواء",
+            message=(
+                f"تم حذف الدواء "
+                f"{medicine_name} "
+                f"من قائمة الأدوية."
+            ),
+            notification_type="medicine"
+        )
 
         messages.success(
             request,

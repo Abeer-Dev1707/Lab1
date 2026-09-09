@@ -1,5 +1,13 @@
 from django import forms
 from .models import User
+from .validators import (
+    validate_person_name,
+    validate_project_username,
+    validate_yemeni_phone,
+)
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.password_validation import validate_password
 
 
 # =========================================================
@@ -19,6 +27,32 @@ class RegistrationForm(forms.ModelForm):
                 "value": ""
             }
         )
+    )
+
+    full_name = forms.CharField(
+        validators=[validate_person_name],
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "أدخل الاسم الكامل",
+        }),
+    )
+
+    username = forms.CharField(
+        validators=[validate_project_username],
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "أدخل اسم المستخدم",
+            "autocomplete": "new-username",
+        }),
+    )
+
+    phone = forms.CharField(
+        validators=[validate_yemeni_phone],
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "أدخل رقم الهاتف",
+            "autocomplete": "off",
+        }),
     )
 
     password_confirm = forms.CharField(
@@ -108,6 +142,15 @@ class RegistrationForm(forms.ModelForm):
             ("supplier", "مورد"),
         ]
 
+    def clean_password(self):
+
+        password = self.cleaned_data.get("password")
+
+        if password:
+            validate_password(password, self.instance)
+
+        return password
+
     # =====================================================
     # التحقق من تطابق كلمتي المرور
     # =====================================================
@@ -135,6 +178,18 @@ class RegistrationForm(forms.ModelForm):
 # =========================================================
 
 class UserForm(forms.ModelForm):
+
+    password = forms.CharField(
+        label="كلمة المرور",
+        required=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "اترك الحقل فارغًا إذا لم ترد تغيير كلمة المرور",
+                "autocomplete": "new-password"
+            }
+        )
+    )
 
     class Meta:
 
@@ -197,12 +252,6 @@ class UserForm(forms.ModelForm):
                 }
             ),
 
-            "password": forms.PasswordInput(
-                attrs={
-                    "class": "form-control"
-                }
-            ),
-
             "role": forms.Select(
                 attrs={
                     "class": "form-select"
@@ -215,3 +264,42 @@ class UserForm(forms.ModelForm):
                 }
             ),
         }
+
+        # =========================================================
+# نموذج تغيير كلمة المرور
+# =========================================================
+
+class UserPasswordChangeForm(PasswordChangeForm):
+
+    old_password = forms.CharField(
+        label="كلمة المرور الحالية",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "أدخل كلمة المرور الحالية",
+                "autocomplete": "current-password"
+            }
+        )
+    )
+
+    new_password1 = forms.CharField(
+        label="كلمة المرور الجديدة",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "أدخل كلمة المرور الجديدة",
+                "autocomplete": "new-password"
+            }
+        )
+    )
+
+    new_password2 = forms.CharField(
+        label="تأكيد كلمة المرور الجديدة",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "أعد إدخال كلمة المرور الجديدة",
+                "autocomplete": "new-password"
+            }
+        )
+    )

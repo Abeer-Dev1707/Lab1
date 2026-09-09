@@ -1,0 +1,89 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}
+تفاصيل الإشعار | صيدلية الحياة
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <div class="d-flex align-items-center mb-3">
+
+                <span style="font-size:35px; margin-left:15px;">
+
+                    {% if notification.notification_type == "account" %}
+                        👤
+                    {% elif notification.notification_type == "approval" %}
+                        ✅
+                    {% elif notification.notification_type == "rejection" %}
+                        ❌
+                    {% elif notification.notification_type == "order" %}
+                        🛒
+                    {% elif notification.notification_type == "stock" %}
+                        ⚠️
+                    {% elif notification.notification_type == "purchase" %}
+                        📦
+                    {% elif notification.notification_type == "password" %}
+                        🔐
+                    {% elif notification.notification_type == "profile" %}
+                        👤
+                    {% else %}
+                        🔔
+                    {% endif %}
+
+                </span>
+
+
+                <div>
+
+                    <h4 class="mb-1">
+                        {{ notification.title }}
+                    </h4>
+
+                    <small class="text-muted">
+
+                        {{ notification.created_at|date:"Y-m-d H:i" }}
+
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <hr>
+
+
+            <p
+                style="
+                    font-size:17px;
+                    line-height:2;
+                ">
+
+                {{ notification.message }}
+
+            </p>
+
+
+            <a
+                href="{% url 'notifications' %}"
+                class="btn btn-primary">
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+                العودة إلى الإشعارات
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

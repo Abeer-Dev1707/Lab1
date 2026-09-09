@@ -32,7 +32,7 @@ urlpatterns = [
         name="supplier_orders"
     ),
 
-     # موافقة المورد
+    # موافقة المورد
     path(
         "supplier/approve/<int:pk>/",
         views.supplier_approve_order,
@@ -46,17 +46,11 @@ urlpatterns = [
         name="supplier_reject_order"
     ),
 
-       # تأكيد استلام التوريد
+    # تأكيد استلام التوريد
     path(
         "receive/<int:pk>/",
         views.purchase_receive,
         name="purchase_receive"
     ),
-
-    path(
-    "receive/<int:pk>/",
-    views.purchase_receive,
-    name="purchase_receive"
-),
 
 ]

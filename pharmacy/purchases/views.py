@@ -11,6 +11,11 @@ from .forms import (
 
 from .models import PurchaseOrder
 
+from notifications.services import (
+    notify_admins_and_pharmacists,
+    notify_user,
+)
+
 
 # =========================================================
 # قائمة طلبات التوريد
@@ -36,6 +41,7 @@ def purchase_list(request):
             "-created_at"
         )
 
+
     # =====================================================
     # المدير والصيدلي يرون جميع الطلبات
     # =====================================================
@@ -50,6 +56,7 @@ def purchase_list(request):
             "-created_at"
         )
 
+
     # =====================================================
     # باقي المستخدمين
     # =====================================================
@@ -62,6 +69,7 @@ def purchase_list(request):
         )
 
         return redirect("dashboard")
+
 
     return render(
         request,
@@ -100,6 +108,7 @@ def purchase_create(request):
 
         return redirect("dashboard")
 
+
     # -----------------------------------------------------
     # POST
     # -----------------------------------------------------
@@ -113,6 +122,7 @@ def purchase_create(request):
         item_formset = PurchaseItemFormSet(
             request.POST
         )
+
 
         # -------------------------------------------------
         # التحقق من الطلب والمنتجات
@@ -129,6 +139,7 @@ def purchase_create(request):
 
             order = order_form.save()
 
+
             # ---------------------------------------------
             # ربط المنتجات بالطلب
             # ---------------------------------------------
@@ -138,6 +149,7 @@ def purchase_create(request):
             items = item_formset.save(
                 commit=False
             )
+
 
             # ---------------------------------------------
             # التأكد أن كل منتج يبدأ بدون سعر
@@ -151,6 +163,7 @@ def purchase_create(request):
 
                 item.save()
 
+
             # ---------------------------------------------
             # حذف العناصر التي تم تحديدها للحذف
             # ---------------------------------------------
@@ -158,7 +171,52 @@ def purchase_create(request):
             for item in item_formset.deleted_objects:
 
                 if item.pk:
+
                     item.delete()
+
+
+            # =============================================
+            # إشعار المورد بالطلب الجديد
+            # =============================================
+
+            if order.supplier and order.supplier.user:
+
+                notify_user(
+
+                    user=order.supplier.user,
+
+                    title="طلب توريد جديد",
+
+                    message=(
+                        f"تم إرسال طلب توريد جديد "
+                        f"رقم #{order.id} إليك. "
+                        f"يرجى مراجعة الطلب وتحديد أسعار المنتجات."
+                    ),
+
+                    notification_type="purchase"
+                )
+
+
+            # =============================================
+            # إشعار المدير والصيدلي
+            # المدير والصيدلي يملكان صلاحية متابعة طلبات التوريد
+            # سواء قام المدير أو الصيدلي بإنشاء الطلب.
+            # =============================================
+
+            notify_admins_and_pharmacists(
+
+                title="طلب توريد جديد",
+
+                message=(
+                    f"تم إنشاء طلب توريد جديد "
+                    f"رقم #{order.id} "
+                    f"وتم إرساله إلى المورد "
+                    f"{order.supplier}."
+                ),
+
+                notification_type="purchase"
+            )
+
 
             messages.success(
                 request,
@@ -169,6 +227,7 @@ def purchase_create(request):
                 "purchase_list"
             )
 
+
     # -----------------------------------------------------
     # GET
     # -----------------------------------------------------
@@ -178,6 +237,7 @@ def purchase_create(request):
         order_form = PurchaseOrderForm()
 
         item_formset = PurchaseItemFormSet()
+
 
     return render(
         request,
@@ -206,6 +266,7 @@ def purchase_detail(request, pk):
         pk=pk
     )
 
+
     # =====================================================
     # المورد يرى طلباته فقط
     # =====================================================
@@ -222,6 +283,7 @@ def purchase_detail(request, pk):
             return redirect(
                 "dashboard"
             )
+
 
     # =====================================================
     # المستخدمون الآخرون المسموح لهم
@@ -240,6 +302,7 @@ def purchase_detail(request, pk):
         return redirect(
             "dashboard"
         )
+
 
     return render(
         request,
@@ -273,6 +336,7 @@ def supplier_orders(request):
             "dashboard"
         )
 
+
     orders = PurchaseOrder.objects.filter(
         supplier__user=request.user
     ).select_related(
@@ -282,6 +346,7 @@ def supplier_orders(request):
     ).order_by(
         "-created_at"
     )
+
 
     return render(
         request,
@@ -318,6 +383,7 @@ def supplier_approve_order(request, pk):
             "dashboard"
         )
 
+
     # =====================================================
     # الحصول على الطلب
     # =====================================================
@@ -328,6 +394,7 @@ def supplier_approve_order(request, pk):
         ),
         pk=pk
     )
+
 
     # =====================================================
     # التأكد أن الطلب تابع لهذا المورد
@@ -343,6 +410,7 @@ def supplier_approve_order(request, pk):
         return redirect(
             "supplier_orders"
         )
+
 
     # =====================================================
     # الموافقة يجب أن تكون POST
@@ -360,6 +428,7 @@ def supplier_approve_order(request, pk):
             pk=order.id
         )
 
+
     # =====================================================
     # لا يمكن الموافقة إلا على طلب قيد المراجعة
     # =====================================================
@@ -376,6 +445,7 @@ def supplier_approve_order(request, pk):
             pk=order.id
         )
 
+
     # =====================================================
     # التأكد من وجود منتجات في الطلب
     # =====================================================
@@ -383,6 +453,7 @@ def supplier_approve_order(request, pk):
     items = list(
         order.items.all()
     )
+
 
     if not items:
 
@@ -395,6 +466,7 @@ def supplier_approve_order(request, pk):
             "purchase_detail",
             pk=order.id
         )
+
 
     # =====================================================
     # قراءة الأسعار التي أدخلها المورد
@@ -410,6 +482,7 @@ def supplier_approve_order(request, pk):
 
     prices = {}
 
+
     for item in items:
 
         field_name = f"purchase_price_{item.id}"
@@ -418,6 +491,7 @@ def supplier_approve_order(request, pk):
             field_name,
             ""
         ).strip()
+
 
         # -------------------------------------------------
         # السعر فارغ
@@ -434,6 +508,7 @@ def supplier_approve_order(request, pk):
                 "purchase_detail",
                 pk=order.id
             )
+
 
         # -------------------------------------------------
         # تحويل السعر إلى Decimal
@@ -457,6 +532,7 @@ def supplier_approve_order(request, pk):
                 pk=order.id
             )
 
+
         # -------------------------------------------------
         # السعر يجب أن يكون أكبر من صفر
         # -------------------------------------------------
@@ -473,11 +549,13 @@ def supplier_approve_order(request, pk):
                 pk=order.id
             )
 
+
         # -------------------------------------------------
         # حفظ السعر في الذاكرة مؤقتًا
         # -------------------------------------------------
 
         prices[item.id] = price
+
 
     # =====================================================
     # حفظ الأسعار وتحويل الطلب إلى approved
@@ -495,6 +573,7 @@ def supplier_approve_order(request, pk):
                 ]
             )
 
+
         order.status = "approved"
 
         order.save(
@@ -503,6 +582,25 @@ def supplier_approve_order(request, pk):
                 "updated_at"
             ]
         )
+
+
+    # =====================================================
+    # إشعار المدير والصيدلي
+    # =====================================================
+
+    notify_admins_and_pharmacists(
+
+        title="تمت الموافقة على طلب التوريد",
+
+        message=(
+            f"تمت الموافقة على طلب التوريد "
+            f"رقم #{order.id} "
+            f"من المورد {order.supplier}."
+        ),
+
+        notification_type="purchase"
+    )
+
 
     # =====================================================
     # رسالة نجاح
@@ -542,6 +640,7 @@ def supplier_reject_order(request, pk):
             "dashboard"
         )
 
+
     # =====================================================
     # الحصول على الطلب
     # =====================================================
@@ -550,6 +649,7 @@ def supplier_reject_order(request, pk):
         PurchaseOrder,
         pk=pk
     )
+
 
     # =====================================================
     # التأكد أن الطلب تابع لهذا المورد
@@ -565,6 +665,7 @@ def supplier_reject_order(request, pk):
         return redirect(
             "supplier_orders"
         )
+
 
     # =====================================================
     # الرفض يجب أن يكون POST
@@ -582,6 +683,7 @@ def supplier_reject_order(request, pk):
             pk=order.id
         )
 
+
     # =====================================================
     # لا يمكن رفض إلا طلب قيد المراجعة
     # =====================================================
@@ -598,6 +700,7 @@ def supplier_reject_order(request, pk):
             pk=order.id
         )
 
+
     # =====================================================
     # تغيير الحالة إلى مرفوض
     # =====================================================
@@ -610,6 +713,24 @@ def supplier_reject_order(request, pk):
             "updated_at"
         ]
     )
+
+
+    # =====================================================
+    # إشعار المدير والصيدلي
+    # =====================================================
+
+    notify_admins_and_pharmacists(
+
+        title="رفض طلب التوريد",
+
+        message=(
+            f"قام المورد {order.supplier} "
+            f"برفض طلب التوريد رقم #{order.id}."
+        ),
+
+        notification_type="purchase"
+    )
+
 
     messages.warning(
         request,
@@ -659,6 +780,7 @@ def purchase_receive(request, pk):
             "dashboard"
         )
 
+
     # =====================================================
     # يجب أن يكون الطلب موجودًا
     # =====================================================
@@ -669,6 +791,7 @@ def purchase_receive(request, pk):
         ),
         pk=pk
     )
+
 
     # =====================================================
     # يجب أن تكون حالة الطلب تمت الموافقة
@@ -686,6 +809,7 @@ def purchase_receive(request, pk):
             pk=order.id
         )
 
+
     # =====================================================
     # تنفيذ الاستلام يجب أن يكون POST
     # =====================================================
@@ -701,6 +825,7 @@ def purchase_receive(request, pk):
             "purchase_detail",
             pk=order.id
         )
+
 
     # =====================================================
     # تنفيذ عملية الاستلام داخل Transaction
@@ -718,6 +843,7 @@ def purchase_receive(request, pk):
 
             medicine.quantity += item.quantity
 
+
             # ---------------------------------------------
             # إذا أصبحت الكمية أكبر من صفر
             # نجعل الدواء متوفرًا
@@ -727,6 +853,7 @@ def purchase_receive(request, pk):
 
                 medicine.status = "available"
 
+
             medicine.save(
                 update_fields=[
                     "quantity",
@@ -734,6 +861,7 @@ def purchase_receive(request, pk):
                     "updated_at",
                 ]
             )
+
 
         # -------------------------------------------------
         # تحويل حالة الطلب إلى مكتمل
@@ -747,6 +875,47 @@ def purchase_receive(request, pk):
                 "updated_at",
             ]
         )
+
+
+    # =====================================================
+    # إشعار المورد
+    # =====================================================
+
+    if order.supplier and order.supplier.user:
+
+        notify_user(
+
+            user=order.supplier.user,
+
+            title="تم استلام طلب التوريد",
+
+            message=(
+                f"تم استلام طلب التوريد "
+                f"رقم #{order.id} "
+                f"بنجاح من قبل الصيدلية."
+            ),
+
+            notification_type="purchase"
+        )
+
+
+    # =====================================================
+    # إشعار المدير والصيدلي
+    # =====================================================
+
+    notify_admins_and_pharmacists(
+
+        title="تم استلام طلب التوريد",
+
+        message=(
+            f"تم استلام طلب التوريد "
+            f"رقم #{order.id} "
+            f"وتحديث المخزون بنجاح."
+        ),
+
+        notification_type="purchase"
+    )
+
 
     # =====================================================
     # رسالة النجاح

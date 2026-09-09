@@ -7,6 +7,13 @@ from django.shortcuts import (
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.mail import EmailMessage
+from django.conf import settings
+
+from .forms import ContactForm
 
 from django.utils import timezone
 from django.db.models import Sum, F
@@ -19,7 +26,6 @@ from customers.models import Customer, CustomerOrder
 from suppliers.models import Supplier
 from purchases.models import PurchaseOrder
 from sales.models import Sale
-from django.contrib.auth import update_session_auth_hash
 
 
 # =========================================================
@@ -779,108 +785,6 @@ def home(request):
 
 
 # =========================================================
-# الإعدادات
-# المدير فقط
-# =========================================================
-
-@login_required(login_url="login")
-def settings_view(request):
-
-    # -----------------------------------------------------
-    # التحقق من صلاحية المستخدم
-    # -----------------------------------------------------
-
-    if request.user.role != "admin":
-
-        return render(
-            request,
-            "dashboard/dashboard.html",
-            {
-                "error_message":
-                    "غير مسموح لك بالوصول إلى الإعدادات."
-            }
-        )
-
-    # -----------------------------------------------------
-    # عرض صفحة الإعدادات
-    # -----------------------------------------------------
-
-    return render(
-        request,
-        "dashboard/settings.html"
-    )
-
-# =========================================================
-# تغيير كلمة المرور
-# المدير فقط
-# =========================================================
-
-@login_required(login_url="login")
-def change_password(request):
-
-    if request.user.role != "admin":
-        return redirect("dashboard")
-
-    if request.method == "POST":
-
-        old_password = request.POST.get("old_password")
-        new_password = request.POST.get("new_password")
-        confirm_password = request.POST.get("confirm_password")
-
-        # التحقق من كلمة المرور الحالية
-        if not request.user.check_password(old_password):
-
-            messages.error(
-                request,
-                "كلمة المرور الحالية غير صحيحة."
-            )
-
-            return redirect("change_password")
-
-        # التحقق من تطابق كلمتي المرور
-        if new_password != confirm_password:
-
-            messages.error(
-                request,
-                "كلمتا المرور الجديدتان غير متطابقتين."
-            )
-
-            return redirect("change_password")
-
-        # التحقق من طول كلمة المرور
-        if len(new_password) < 8:
-
-            messages.error(
-                request,
-                "يجب أن تتكون كلمة المرور من 8 أحرف أو أرقام على الأقل."
-            )
-
-            return redirect("change_password")
-
-        # تغيير كلمة المرور
-        request.user.set_password(new_password)
-        request.user.save()
-
-        # إبقاء المدير مسجل الدخول
-        update_session_auth_hash(
-            request,
-            request.user
-        )
-
-        messages.success(
-            request,
-            "تم تغيير كلمة المرور بنجاح."
-        )
-
-        return redirect("settings")
-
-    return render(
-        request,
-        "dashboard/change_password.html"
-    )
-
-
-# =========================================================
 # من نحن
 # =========================================================
 
@@ -898,11 +802,94 @@ def about(request):
 
 def contact(request):
 
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+
+        form = ContactForm(request.POST)
+
+        if form.is_valid():
+
+            # ==========================================
+            # بيانات المرسل
+            # ==========================================
+
+            sender_name = form.cleaned_data["name"]
+            sender_email = form.cleaned_data["email"]
+
+            # ==========================================
+            # بيانات المستقبل
+            # ==========================================
+
+            recipient_name = form.cleaned_data["recipient_name"]
+            recipient_email = form.cleaned_data["recipient_email"]
+
+            # ==========================================
+            # نص الرسالة
+            # ==========================================
+
+            message_body = form.cleaned_data["message"]
+
+            # ==========================================
+            # عنوان الرسالة
+            # ==========================================
+
+            subject = (
+                f"رسالة من {sender_name} إلى {recipient_name}"
+            )
+
+            # ==========================================
+            # محتوى الرسالة
+            # ==========================================
+
+            body = (
+                f"اسم المرسل: {sender_name}\n"
+                f"بريد المرسل: {sender_email}\n\n"
+                f"اسم المستقبل: {recipient_name}\n"
+                f"بريد المستقبل: {recipient_email}\n\n"
+                f"الرسالة:\n"
+                f"{message_body}"
+            )
+
+            # ==========================================
+            # إنشاء البريد
+            # ==========================================
+
+            email = EmailMessage(
+                subject=subject,
+                body=body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[recipient_email],
+                reply_to=[sender_email],
+            )
+
+            # ==========================================
+            # إرسال البريد
+            # ==========================================
+
+            email.send(fail_silently=False)
+
+            # ==========================================
+            # رسالة نجاح
+            # ==========================================
+
+            messages.success(
+                request,
+                "تم إرسال رسالتك بنجاح. شكرًا لتواصلك معنا."
+            )
+
+            return redirect("contact")
+
+    else:
+
+        form = ContactForm()
+
     return render(
         request,
-        "dashboard/contact.html"
+        "dashboard/contact.html",
+        {"form": form}
     )
-
 
 # =========================================================
 # صفحة 404
@@ -922,9 +909,33 @@ def page_not_found(request):
 
 def forgot_password(request):
 
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+
+        form = PasswordResetForm(request.POST)
+
+        if form.is_valid():
+
+            form.save(
+                request=request,
+                use_https=request.is_secure(),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                email_template_name="registration/password_reset_email.txt",
+                subject_template_name="registration/password_reset_subject.txt",
+                html_email_template_name="registration/password_reset_email.html",
+            )
+
+            return redirect("password_reset_done")
+
+    else:
+        form = PasswordResetForm()
+
     return render(
         request,
-        "dashboard/forgot_password.html"
+        "dashboard/forgot_password.html",
+        {"form": form}
     )
 
 

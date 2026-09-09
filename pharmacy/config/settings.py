@@ -1,86 +1,151 @@
 from pathlib import Path
+import os
+
+from dotenv import load_dotenv
+
 
 # ==========================================
 # Base Directory
 # ==========================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# ==========================================
+# تحميل ملف .env
+# ==========================================
+
+load_dotenv(BASE_DIR / ".env")
 
 
 # ==========================================
 # Security
 # ==========================================
-SECRET_KEY = 'django-insecure-8*xmze7$@i+0og!w5ix_he8$m-v8k+oaf)wcsviu-1z)&-(#8='
 
-DEBUG = True
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+if not SECRET_KEY:
+    raise RuntimeError(
+        "SECRET_KEY must be set in the .env file."
+    )
+
+DEBUG = os.getenv(
+    "DEBUG",
+    "True"
+).lower() == "true"
 
 ALLOWED_HOSTS = []
 
 
 # ==========================================
+# Django Admin Theme
+# ==========================================
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
+
+SILENCED_SYSTEM_CHECKS = [
+    "security.W019"
+]
+
+
+# ==========================================
 # Installed Apps
 # ==========================================
-INSTALLED_APPS = [
-    # Django Apps
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
 
+INSTALLED_APPS = [
+
+    # ======================================
+    # Django Admin Theme
+    # ======================================
+
+    "admin_interface",
+    "colorfield",
+
+    # ======================================
+    # Django Apps
+    # ======================================
+
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    # ======================================
     # Project Apps
-    'accounts',
-    'dashboard',
-    'medicines',
-    'categories',
-    'suppliers',
-    'customers',
-    'sales',
-    'purchases',
-    'inventory',
-    'reports',
-    'product_types',
+    # ======================================
+
+    "accounts",
+    "dashboard",
+    "medicines",
+    "categories",
+    "suppliers",
+    "customers",
+    "sales",
+    "purchases",
+    "inventory",
+    "reports",
+    "product_types",
+    "notifications",
 ]
 
 
 # ==========================================
 # Middleware
 # ==========================================
+
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    "django.middleware.security.SecurityMiddleware",
+
+    "django.contrib.sessions.middleware.SessionMiddleware",
+
+    "django.middleware.common.CommonMiddleware",
+
+    "django.middleware.csrf.CsrfViewMiddleware",
+
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+
+    "django.contrib.messages.middleware.MessageMiddleware",
+
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 
 # ==========================================
 # URL Configuration
 # ==========================================
-ROOT_URLCONF = 'config.urls'
+
+ROOT_URLCONF = "config.urls"
 
 
 # ==========================================
 # Templates
 # ==========================================
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
 
-        'DIRS': [
-            BASE_DIR / 'templates',
+TEMPLATES = [
+
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+
+        "DIRS": [
+            BASE_DIR / "templates",
         ],
 
-        'APP_DIRS': True,
+        "APP_DIRS": True,
 
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "OPTIONS": {
+
+            "context_processors": [
+
+                "django.template.context_processors.request",
+
+                "django.contrib.auth.context_processors.auth",
+
+                "django.contrib.messages.context_processors.messages",
+
+                "notifications.context_processors.notifications_context",
             ],
         },
     },
@@ -90,48 +155,61 @@ TEMPLATES = [
 # ==========================================
 # WSGI
 # ==========================================
-WSGI_APPLICATION = 'config.wsgi.application'
+
+WSGI_APPLICATION = "config.wsgi.application"
 
 
 # ==========================================
 # Database
 # ==========================================
+
 DATABASES = {
 
     # ======================================
-    # قاعدة البيانات الجديدة - PostgreSQL
+    # PostgreSQL
     # ======================================
-    'default': {
 
-        'ENGINE': 'django.db.backends.postgresql',
+    "default": {
 
-        # اسم قاعدة البيانات
-        'NAME': 'pharmacy_db',
+        "ENGINE": "django.db.backends.postgresql",
 
-        # مستخدم PostgreSQL
-        'USER': 'postgres',
+        "NAME": os.getenv(
+            "DB_NAME",
+            "pharmacy_db"
+        ),
 
-        # كلمة مرور PostgreSQL
-        'PASSWORD': '17072022',
+        "USER": os.getenv(
+            "DB_USER",
+            "postgres"
+        ),
 
-        # السيرفر المحلي
-        'HOST': 'localhost',
+        "PASSWORD": os.getenv(
+            "DB_PASSWORD",
+            ""
+        ),
 
-        # منفذ PostgreSQL
-        'PORT': '5432',
+        "HOST": os.getenv(
+            "DB_HOST",
+            "localhost"
+        ),
+
+        "PORT": os.getenv(
+            "DB_PORT",
+            "5432"
+        ),
     },
 
 
     # ======================================
-    # قاعدة البيانات القديمة - SQLite
+    # SQLite القديمة
+    # تستخدم فقط لنقل البيانات القديمة
     # ======================================
-    # نستخدمها فقط لنقل البيانات القديمة
-    # إلى PostgreSQL.
-    'old_sqlite': {
 
-        'ENGINE': 'django.db.backends.sqlite3',
+    "old_sqlite": {
 
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": "django.db.backends.sqlite3",
+
+        "NAME": BASE_DIR / "db.sqlite3",
     },
 }
 
@@ -139,18 +217,31 @@ DATABASES = {
 # ==========================================
 # Password Validation
 # ==========================================
+
 AUTH_PASSWORD_VALIDATORS = [
+
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME":
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator",
     },
+
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME":
+            "django.contrib.auth.password_validation."
+            "MinimumLengthValidator",
     },
+
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME":
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator",
     },
+
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME":
+            "django.contrib.auth.password_validation."
+            "NumericPasswordValidator",
     },
 ]
 
@@ -158,9 +249,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # ==========================================
 # Language
 # ==========================================
-LANGUAGE_CODE = 'ar'
 
-TIME_ZONE = 'Asia/Aden'
+LANGUAGE_CODE = "ar"
+
+TIME_ZONE = "Asia/Aden"
 
 USE_I18N = True
 
@@ -170,40 +262,76 @@ USE_TZ = True
 # ==========================================
 # Static Files
 # ==========================================
-STATIC_URL = '/static/'
+
+STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / "static",
 ]
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 # ==========================================
 # Media Files
 # ==========================================
-MEDIA_URL = '/media/'
 
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # ==========================================
 # Authentication
 # ==========================================
-LOGIN_URL = 'login'
 
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_URL = "login"
 
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = "dashboard"
+
+LOGOUT_REDIRECT_URL = "login"
+
+
+# ==========================================
+# Email / SMTP - Gmail
+# ==========================================
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+
+EMAIL_PORT = 465
+
+EMAIL_USE_SSL = True
+
+EMAIL_USE_TLS = False
+
+EMAIL_HOST_USER = os.getenv(
+    "EMAIL_HOST_USER",
+    "zicoalmufti2025@gmail.com"
+)
+
+EMAIL_HOST_PASSWORD = os.getenv(
+    "EMAIL_HOST_PASSWORD",
+    ""
+)
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+EMAIL_TIMEOUT = 60
 
 
 # ==========================================
 # Default Auto Field
 # ==========================================
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DEFAULT_AUTO_FIELD = (
+    "django.db.models.BigAutoField"
+)
 
 
 # ==========================================
 # Custom User Model
 # ==========================================
+
 AUTH_USER_MODEL = "accounts.User"

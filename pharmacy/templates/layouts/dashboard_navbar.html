@@ -7,8 +7,8 @@
 
         <!-- Sidebar Toggle -->
         <button id="menuToggle" class="menu-btn">
-    <span style="font-size:22px;color:white;">☰</span>
-</button>
+            <span style="font-size:22px;color:white;">☰</span>
+        </button>
 
         <!-- Page Title -->
         <div class="page-title">
@@ -16,16 +16,24 @@
             <h4>لوحة التحكم</h4>
 
             {% if user.is_authenticated %}
-            
-            <span>مرحباً {{ user.username|capfirst }}، نتمنى لك يوماً موفقاً 🌿</span>
+
+            <span>
+                مرحباً {{ user.username|capfirst }}،
+                نتمنى لك يوماً موفقاً 🌿
+            </span>
+
             {% else %}
-            
-            <span>مرحباً بك، نتمنى لك يوماً موفقاً 🌿</span>
+
+            <span>
+                مرحباً بك، نتمنى لك يوماً موفقاً 🌿
+            </span>
+
             {% endif %}
 
         </div>
 
     </div>
+
 
     <!-- Center -->
     <div class="navbar-center">
@@ -36,45 +44,403 @@
 
             <input
                 type="text"
-                placeholder="ابحث هنا...">
+                placeholder="ابحث هنا..."
+                id="globalSearch">
 
         </div>
 
     </div>
+
 
     <!-- Left -->
     <div class="navbar-left">
 
+
         <!-- Messages -->
-        <button class="nav-icon">
+        <button
+            type="button"
+            class="nav-icon"
+            title="الرسائل">
 
-    <span style="font-size:22px;">✉</span>
+            <span style="font-size:22px;">✉</span>
 
-</button>
+        </button>
 
-      <!-- Notifications -->
-<button class="nav-icon">
 
-    <span style="font-size:22px;">🔔</span>
+        <!-- Notifications -->
+        <div style="position:relative;">
 
-    <span class="badge">3</span>
+            <button
+                type="button"
+                class="nav-icon"
+                id="notificationButton"
+                title="الإشعارات">
 
-</button>
+                <span style="font-size:22px;">🔔</span>
+
+                {% if user.is_authenticated and unread_notifications_count > 0 %}
+
+                    <span class="badge">
+                        {{ unread_notifications_count }}
+                    </span>
+
+                {% endif %}
+
+            </button>
+
+
+            <!-- Notifications Dropdown -->
+            <div
+                id="notificationDropdown"
+                style="
+                    display:none;
+                    position:absolute;
+                    top:50px;
+                    left:0;
+                    width:360px;
+                    max-width:90vw;
+                    background:#ffffff;
+                    border-radius:12px;
+                    box-shadow:0 8px 30px rgba(0,0,0,0.15);
+                    z-index:9999;
+                    overflow:hidden;
+                    color:#333;
+                ">
+
+
+                <!-- Header -->
+                <div
+                    style="
+                        padding:15px;
+                        border-bottom:1px solid #eee;
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                    ">
+
+                    <strong>
+                        الإشعارات
+                    </strong>
+
+
+                    {% if user.is_authenticated and unread_notifications_count > 0 %}
+
+                    <span
+                        style="
+                            background:#dc3545;
+                            color:white;
+                            padding:3px 9px;
+                            border-radius:20px;
+                            font-size:12px;
+                        ">
+
+                        {{ unread_notifications_count }}
+                        جديد
+
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Notifications -->
+                <div
+                    style="
+                        max-height:350px;
+                        overflow-y:auto;
+                    ">
+
+
+                    {% if user.is_authenticated and notifications %}
+
+                        {% for notification in notifications %}
+
+                        <a
+                            href="{% url 'notification_detail' notification.id %}"
+                            style="
+                                display:block;
+                                text-decoration:none;
+                                color:inherit;
+                                padding:13px 15px;
+                                border-bottom:1px solid #f1f1f1;
+                                background:
+                                {% if not notification.is_read %}
+                                    #f7fbff
+                                {% else %}
+                                    #ffffff
+                                {% endif %};
+                            ">
+
+
+                            <div
+                                style="
+                                    display:flex;
+                                    align-items:flex-start;
+                                    gap:10px;
+                                ">
+
+
+                                <!-- Notification Icon -->
+                                <span
+                                    style="
+                                        font-size:20px;
+                                    ">
+
+                                    {% if notification.notification_type == "account" %}
+
+                                        👤
+
+                                    {% elif notification.notification_type == "approval" %}
+
+                                        ✅
+
+                                    {% elif notification.notification_type == "rejection" %}
+
+                                        ❌
+
+                                    {% elif notification.notification_type == "order" %}
+
+                                        🛒
+
+                                    {% elif notification.notification_type == "stock" %}
+
+                                        ⚠️
+
+                                    {% elif notification.notification_type == "purchase" %}
+
+                                        📦
+
+                                    {% elif notification.notification_type == "password" %}
+
+                                        🔐
+
+                                    {% elif notification.notification_type == "profile" %}
+
+                                        👤
+
+                                    {% else %}
+
+                                        🔔
+
+                                    {% endif %}
+
+                                </span>
+
+
+                                <!-- Notification Content -->
+                                <div>
+
+
+                                    <!-- Title -->
+                                    <div
+                                        style="
+                                            font-weight:700;
+                                            font-size:14px;
+                                            margin-bottom:4px;
+                                        ">
+
+                                        {{ notification.title }}
+
+                                    </div>
+
+
+                                    <!-- Message -->
+                                    <div
+                                        style="
+                                            font-size:13px;
+                                            color:#666;
+                                            line-height:1.6;
+                                        ">
+
+                                        {{ notification.message }}
+
+                                    </div>
+
+
+                                    <!-- Time -->
+                                    <div
+                                        style="
+                                            font-size:11px;
+                                            color:#999;
+                                            margin-top:5px;
+                                        ">
+
+                                        {{ notification.created_at|timesince }}
+                                        مضت
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                        {% endfor %}
+
+
+                    {% else %}
+
+
+                        <!-- No Notifications -->
+                        <div
+                            style="
+                                padding:35px 15px;
+                                text-align:center;
+                                color:#999;
+                            ">
+
+
+                            <div
+                                style="
+                                    font-size:35px;
+                                    margin-bottom:10px;
+                                ">
+
+                                🔔
+
+                            </div>
+
+
+                            <div>
+
+                                لا توجد إشعارات جديدة
+
+                            </div>
+
+
+                        </div>
+
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Footer -->
+                <div
+                    style="
+                        padding:12px;
+                        text-align:center;
+                        border-top:1px solid #eee;
+                    ">
+
+                    <a
+                        href="{% url 'notifications' %}"
+                        style="
+                            text-decoration:none;
+                            font-weight:600;
+                        ">
+
+                        عرض جميع الإشعارات
+
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
 
         <!-- User -->
         <div class="user-menu">
-          <img src="{% static 'images/logo/1.jpg' %}" alt="Administrator">
-          
-          {% if user.is_authenticated %}
-          <span>{{ user.username }}</span>
-          {% else %}
-          
-          <span>زائر</span>
-          {% endif %}
-          
-          <i class="fa-solid fa-angle-down"></i>
+
+            <img
+                src="{% static 'images/logo/1.jpg' %}"
+                alt="Administrator">
+
+
+            {% if user.is_authenticated %}
+
+                <span>
+                    {{ user.username }}
+                </span>
+
+            {% else %}
+
+                <span>
+                    زائر
+                </span>
+
+            {% endif %}
+
+
+            <i class="fa-solid fa-angle-down"></i>
 
         </div>
+
+
     </div>
 
 </nav>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const notificationButton =
+        document.getElementById("notificationButton");
+
+    const notificationDropdown =
+        document.getElementById("notificationDropdown");
+
+
+    if (notificationButton && notificationDropdown) {
+
+
+        notificationButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+
+                if (
+                    notificationDropdown.style.display === "none" ||
+                    notificationDropdown.style.display === ""
+                ) {
+
+                    notificationDropdown.style.display =
+                        "block";
+
+                } else {
+
+                    notificationDropdown.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "click",
+            function () {
+
+                notificationDropdown.style.display =
+                    "none";
+
+            }
+        );
+
+
+        notificationDropdown.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+            }
+        );
+
+    }
+
+});
+
+</script>

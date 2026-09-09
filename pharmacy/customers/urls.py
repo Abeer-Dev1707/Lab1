@@ -4,6 +4,11 @@ from . import views
 
 urlpatterns = [
 
+    # =========================================================
+    # إدارة العملاء
+    # المدير + الصيدلي
+    # =========================================================
+
     path(
         "",
         views.customer_list,
@@ -28,34 +33,47 @@ urlpatterns = [
         name="customer_delete"
     ),
 
+
+    # =========================================================
+    # منتجات العميل
+    # العميل
+    # =========================================================
+
     path(
-    "products/",
-    views.customer_products,
-    name="customer_products"
-),
+        "products/",
+        views.customer_products,
+        name="customer_products"
+    ),
 
-path(
-    "orders/create/",
-    views.customer_order_create,
-    name="customer_order_create"
-),
 
-path(
-    "orders/<int:pk>/",
-    views.customer_order_detail,
-    name="customer_order_detail"
-),
+    # =========================================================
+    # طلبات العميل
+    # العميل
+    # =========================================================
 
-path(
-    "orders/",
-    views.customer_orders,
-    name="customer_orders"
-),
+    path(
+        "orders/create/",
+        views.customer_order_create,
+        name="customer_order_create"
+    ),
 
- # =====================================================
+    path(
+        "orders/<int:pk>/",
+        views.customer_order_detail,
+        name="customer_order_detail"
+    ),
+
+    path(
+        "orders/",
+        views.customer_orders,
+        name="customer_orders"
+    ),
+
+
+    # =========================================================
     # إدارة طلبات العملاء
     # المدير + الصيدلي
-    # =====================================================
+    # =========================================================
 
     path(
         "orders/manage/",
@@ -64,33 +82,44 @@ path(
     ),
 
     path(
-    "orders/manage/<int:pk>/",
-    views.customer_order_manage_detail,
-    name="customer_order_manage_detail"
-),
+        "orders/manage/<int:pk>/",
+        views.customer_order_manage_detail,
+        name="customer_order_manage_detail"
+    ),
 
-path(
-    "orders/manage/<int:pk>/approve/",
-    views.customer_order_approve,
-    name="customer_order_approve"
-),
+    path(
+        "orders/manage/<int:pk>/approve/",
+        views.customer_order_approve,
+        name="customer_order_approve"
+    ),
 
-path(
-    "orders/manage/<int:pk>/reject/",
-    views.customer_order_reject,
-    name="customer_order_reject"
-),
+    path(
+        "orders/manage/<int:pk>/reject/",
+        views.customer_order_reject,
+        name="customer_order_reject"
+    ),
 
-path(
-    "invoice/<int:pk>/",
-    views.customer_sale_detail,
-    name="customer_sale_detail"
-),
 
-path(
-    "profile/",
-    views.customer_profile,
-    name="customer_profile"
-),
+    # =========================================================
+    # فاتورة العميل
+    # =========================================================
+
+    path(
+        "invoice/<int:pk>/",
+        views.customer_sale_detail,
+        name="customer_sale_detail"
+    ),
+
+
+    # =========================================================
+    # الملف الشخصي للعميل
+    # العميل
+    # =========================================================
+
+    path(
+        "profile/",
+        views.customer_profile,
+        name="customer_profile"
+    ),
 
 ]
